@@ -438,8 +438,13 @@ class model_payPeriod {
         $employees_pay_periods = $this->system_di->db->query("SELECT `pay_period_id` FROM `employee_punch` WHERE `employee_id`=:employee_id", array(
             ':employee_id' => (int) $employee_id
         ));
-        foreach ($employees_pay_periods as $pay_period) {
-            $employees_pay_periods['pay_periods'][] = $pay_period['pay_period_id'];
+        
+        if (empty($employees_pay_periods)) {
+            $employees_pay_periods = array('pay_periods' => array());    
+        } else {
+            foreach ($employees_pay_periods as $pay_period) {
+                $employees_pay_periods['pay_periods'][] = $pay_period['pay_period_id'];
+            }
         }
 
         $table_periods_index = array(0, 1, 2, 3);
