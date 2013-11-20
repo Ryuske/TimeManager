@@ -150,7 +150,7 @@ class model_payPeriod {
                 $in = strtotime(date('g:ia', $hour['in'][$i]));
                 $out = strtotime(date('g:ia', $hour['out'][$i]));
                 
-                $return_hours[$date]['total_hours'] += round(($out/60 - $in/60)/60, 2);
+                $return_hours[$date]['total_hours'] += round((($out/60 - $in/60)/60)/0.25, 0)*0.25;
             }
             
             if (!array_key_exists('total_hours', $return_hours[$date])) {
