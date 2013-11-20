@@ -150,6 +150,7 @@ class model_payPeriod {
                 $in = strtotime(date('g:ia', $hour['in'][$i]));
                 $out = strtotime(date('g:ia', $hour['out'][$i]));
                 
+                //Used to find the difference of two timestamps in hours that are rounded to the nearest 15 minutes (.25 of an hour)
                 $return_hours[$date]['total_hours'] += round((($out/60 - $in/60)/60)/0.25, 0)*0.25;
             }
             

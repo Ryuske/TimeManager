@@ -1,7 +1,6 @@
 TODO:
     Add error handling
     Figure out how to paginate previous pay periods & employees table on the home page
-    Decide how to print mass timecards (or if I'm even going to)
     Simplify installation
     Move TimeClock to shared instead of kenyon.sexypenguins.com
     Add settings for various parameters (i.e. how to round time)
