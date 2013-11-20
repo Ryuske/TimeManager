@@ -7,7 +7,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a href="{timeclock_root}main" class="navbar-brand">TimeClock by Kenyon Haliwell</a>
+      <a href="{timeclock_root}main" class="navbar-brand">TimeClock</a>
     </div>
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
