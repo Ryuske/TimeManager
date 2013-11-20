@@ -1,0 +1,9 @@
+# Ignore Plugins Directory - Left over from framework #
+plugins
+plugins/*
+
+system/*
+
+configuration/shared.php
+
+.htaccess

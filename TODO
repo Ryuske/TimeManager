@@ -1,0 +1,6 @@
+TODO:
+    Add error handling
+    Figure out how to paginate previous pay periods & employees table on the home page
+    Decide how to print mass timecards (or if I'm even going to)
+    Simplify installation
+    Update pay period table to just say pay periods

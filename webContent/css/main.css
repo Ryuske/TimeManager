@@ -1,0 +1,158 @@
+body {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #eee;
+}
+
+.hide {
+    display: none;
+}
+
+.center {
+    text-align: center
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.title {
+    margin-top: 7px;
+}
+
+.about .heading_info {
+    margin-bottom: 20px;
+}
+
+.about h5 {
+    font-weight: bold;
+}
+
+.about p {
+    padding-left: 15px;
+}
+
+.about .indent {
+    padding-left: 15px;
+}
+
+.about .p_indent {
+    padding-left: 30px;
+}
+
+.about p .extra_indent {
+    display: inline-block;
+    padding-left: 15px;
+}
+
+.about p .double_indent {
+    padding-left: 30px;
+}
+
+.form-signin {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-signin .form-signin-heading {
+    margin-bottom: 10px;
+    text-align: center;
+}
+.form .form-control {
+    position: relative;
+    font-size: 16px;
+    height: auto;
+    padding: 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.form .form-control:focus {
+    z-index: 2;
+}
+.form input[type="text"] {
+    margin-bottom: -1px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.form input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.form input[type="submit"] {
+    width: 100%;
+}
+
+.form_failed {
+    text-align: center;
+    padding-bottom: 10px;
+    color: #8B0000;
+    font-weight: bold;
+}
+
+.form_success {
+    text-align: center;
+    padding-bottom: 10px;
+    color: #006400;
+    font-weight: bold;
+}
+
+.form .checkbox {
+    font-weight: normal;
+}
+
+.form hr {
+    border-top-color: #ccc;
+}
+
+.jumbotron {
+    padding-bottom: 0px;
+}
+
+.table td[onclick] {
+    cursor: pointer;
+}
+
+.table .icons {
+    list-style: none;
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}
+
+.table .icons li {
+    display: inline-block;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.dialog_title {
+    font-size: 1.3em;
+}
+.dialog_input {
+    padding: 2px;
+    margin-top: 10px;
+    text-align: center;
+}
+.dialog_text {
+    padding-top: 2px;
+    text-align: center;
+}
+.ui-datepicker {
+    margin: 0 auto;
+    width: 313px;
+    height: 230px;
+}
+.ui-datepicker .ui-state-highlight {
+    background: #dfeffc url(images/ui-bg_glass_85_dfeffc_1x400.png) 50% 50% repeat-x;
+}
+.ui-datepicker .ui-state-active {
+    border: 1px solid #79b7e7 !important;
+    background: #f5f8f9 url(images/ui-bg_inset-hard_100_f5f8f9_1x100.png) 50% 50% repeat-x !important;
+    color: #e17009 !important;
+}
