@@ -27,12 +27,12 @@
         the development it was abstracted using it's RESTFUL API and can be used by anything that can make a web
         call.</p>
         
-        <p>TimeClock was developed by <a href="https://plus.google.com/+KenyonHaliwell" target="_blank">Kenyon Haliwell</a> and can be download at <a href="https://github.com/Ryuske" target="_blank">GitHub</a></p>
+        <p>TimeClock was developed by <a href="https://plus.google.com/+KenyonHaliwell" target="_blank">Kenyon Haliwell</a> and can be download at <a href="https://github.com/Ryuske" target="_blank">GitHub</a>.</p>
 
     <h2>How to Use</h2>
         <div class="indent">
             <div class="heading_info">
-                Once you login, the first page you're presented with is the full list of employees. The add a new employee all you
+                Once you login the first page you're presented with is the full list of employees. To add a new employee all you
                 do is look over to the right, and click the <span class="bold">"Add New Employee"</span> button near the top and full out the basic information.
             </div>
             
@@ -49,13 +49,13 @@
                 The employee editing form looks exactly the same as adding a new employee, and it also works the same way.</p>
             
             <h4>Removing An Employee</h4>
-                <p>You can remove an employee by click on the <span class="bold">trash can</span> to the right of their name. You'll be presented with a confirmation box
-                with their name with <span class="italic">confirm and cancel buttons</span>.</p>
+                <p>You can remove an employee by clicking on the <span class="bold">trash can</span> to the right of their name. You'll be presented with a confirmation box
+                with their name with <span class="italic">confirm and cancel</span> buttons.</p>
                 
             <h4>Viewing Pay Period</h4>
-                <p>You can view an employees times by <span class="bold">click on their name</span> on the home page. The <span class="italic">first pay period you will see is the current one</span>.
-                Under the current pay period is a list of all the previous pay periods that the system is aware of. Any pay period that is <span class="bold">bold</span>
-                is one that as a time entered for that employee. The <span class="italic">italic</span> pay period is the one you are currently looking at.</p>
+                <p>You can view an employees' times by <span class="bold">clicking on their name</span> on the home page. The <span class="italic">first pay period you will see
+                is the current pay period</span>. Under the current pay period is a list of all the pay periods that the system is aware of. Any pay period that is
+                <span class="bold">bold</span> is one that has a time entered for that employee. The <span class="italic">italic</span> pay period is the one you are currently looking at.</p>
                 
                 <p>The <span class="bold">total hours</span> for the pay period are displayed by the employees name in the blue bar.</p>
                 
@@ -63,7 +63,7 @@
                 times for all of them and the date will be removed.</p>
                 
                 <h5>Edit a Time</h5>
-                    <p>You can edit any time that the employee has worked by <span class="bold">clicking on the time you wish you edit</span>. You'll be presented with a box
+                    <p>You can edit any time that the employee has worked by <span class="bold">clicking on the time you wish to edit</span>. You'll be presented with a box
                     that you can enter the time into. All <span class="italic">total hours will auto populate</span>. You can also edit the next in/out fields that are blank.</p>
                 
                 <h5>Add a Date</h5>
@@ -81,14 +81,14 @@
         
     <h2>API</h2>
         <div class="indent">
-            <div class="heading_info">The API is very simple, but for our example we are going to assume the TimeClock was install at
+            <div class="heading_info">The API is very simple, but for our example we are going to assume that TimeClock was installed at
             http://example.com/timeclock</div>
             
             <h4>API for punching in & out</h4>
                 <p><span class="italic">http://example.com/timeclock/payperiod/tx/[uid]</span> <br />
                     <span class="extra_indent">Where [uid] can be anything you want, but the auto generator will generate a 4-bye hex ID.</span></p>
                     
-                    <p>The will response in this format: <span class="bold">Kenyon, in, 11/18/13, 8:00am</span></p>
+                    <p>The responses will be in this format: <span class="bold">Kenyon, in, 11/18/13, 8:00am</span></p>
             
             <h4>Example UID</h4>
                 <p><span class="italic">0x00 0x00 0x00 0x00</span><br />
