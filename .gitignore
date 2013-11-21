@@ -4,6 +4,6 @@ plugins/*
 
 system/*
 
-configuration/shared.php
+#configuration/shared.php
 
 .htaccess
