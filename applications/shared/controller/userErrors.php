@@ -20,6 +20,7 @@ class userErrors extends controller
      */
     public function index()
     {
+        debug_print_backtrace();
         echo '404 Error';
     }//End index
 }//End errors

@@ -11,7 +11,7 @@
  * @Purpose: Controller for pay periods
  * @Extends controller
  */
-class payperiod extends controller {
+class timeclock_payperiod extends controller {
     /**
      * @Purpose: This function is used to determin if the user is logged in or not
      * @Access: Public
@@ -120,6 +120,6 @@ class payperiod extends controller {
         
         $renderPage->parse('payperiod_print');
     } //End print_friendly
-}//End payperiod
+}//End timeclock_payperiod
 
 //End File

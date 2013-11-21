@@ -38,15 +38,16 @@
                     <tbody>
                         <?php
                         for ($i=0; $i<count($this->system_di->template->employee); $i++) {
+                            
                             ?>
                             <tr>
-                            <td onclick="employeeTableClicked('view', '<?php main::writeout($i, 'id'); ?>')"><?php main::writeout($i, 'lastname'); ?>, <?php main::writeout($i, 'firstname'); ?></td>
-                            <td onclick="employeeTableClicked('view', '<?php main::writeout($i, 'id'); ?>')"><?php main::writeout($i, 'uid'); ?></td>
-                            <td onclick="employeeTableClicked('view', '<?php main::writeout($i, 'id'); ?>')"><?php main::writeout($i, 'username'); ?></td>
+                            <td onclick="employeeTableClicked('view', '<?php timeclock_main::writeout($i, 'id'); ?>')"><?php timeclock_main::writeout($i, 'lastname'); ?>, <?php timeclock_main::writeout($i, 'firstname'); ?></td>
+                            <td onclick="employeeTableClicked('view', '<?php timeclock_main::writeout($i, 'id'); ?>')"><?php timeclock_main::writeout($i, 'uid'); ?></td>
+                            <td onclick="employeeTableClicked('view', '<?php timeclock_main::writeout($i, 'id'); ?>')"><?php timeclock_main::writeout($i, 'username'); ?></td>
                                 <td>
                                     <ul class="icons">
-                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil" onclick="employeeTableClicked('edit', '<?php main::writeout($i, 'id'); ?>')"></span></li>
-                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash" onclick="employeeTableClicked('trash', '<?php main::writeout($i, 'id'); ?>')"></span></li>
+                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil" onclick="employeeTableClicked('edit', '<?php timeclock_main::writeout($i, 'id'); ?>')"></span></li>
+                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash" onclick="employeeTableClicked('trash', '<?php timeclock_main::writeout($i, 'id'); ?>')"></span></li>
                                     </ul>
                                 </td>
                             </tr>

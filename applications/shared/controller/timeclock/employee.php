@@ -11,7 +11,7 @@
  * @Purpose: Employee Controller
  * @Extends controller
  */
-class employee extends controller {
+class timeclock_employee extends controller {
     /**
      * @Purpose: This function is used to determin if the user is logged in or not
      * @Access: Public
@@ -178,6 +178,6 @@ class employee extends controller {
 
         $renderPage->parse($page, $full_view);
     } //End render
-}//End employee
+}//End timeclock_employee
 
 //End File

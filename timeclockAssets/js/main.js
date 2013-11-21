@@ -1,4 +1,4 @@
-var web_root = '/tnbtimeclock/';
+var web_root = '/tnbtimeclock/timeclock/';
 
 jQuery(document).ready(function() {   
     jQuery('input[type=submit]').button();
@@ -14,7 +14,7 @@ jQuery(document).ready(function() {
                 jQuery('.remove_employee_form').submit();
             },
             'Cancel': function() {
-                window.location = '/tnbtimeclock/';
+                window.location = web_root;
             }
         }
     });

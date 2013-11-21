@@ -11,7 +11,7 @@
  * @Purpose: Logout Controller
  * @Extends controller
  */
-class logout extends controller {
+class timeclock_logout extends controller {
     /**
      * @Purpose: This function is used to determin if the user is logged in or not
      * @Access: Public
@@ -40,6 +40,6 @@ class logout extends controller {
         //Parses the HTML from the view
         $renderPage->parse($parse, $full_page);
     }//End index
-}//End logout
+}//End timeclock_logout
 
 //End File

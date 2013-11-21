@@ -11,7 +11,7 @@
  * @Purpose: Default controller for a website
  * @Extends controller
  */
-class main extends controller {
+class timeclock_main extends controller {
     /**
      * @Purpose: This function is used to determin if the user is logged in or not
      * @Access: Protected
@@ -104,6 +104,6 @@ class main extends controller {
         //Parses the HTML from the view
         $renderPage->parse($parse, $full_page);
     } //End about
-}//End main
+}//End timeclock_main
 
 //End File

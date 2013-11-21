@@ -40,13 +40,13 @@
                         for ($i=0; $i<count($this->system_di->template->all_employees); $i++) {
                             ?>
                             <tr>
-                            <td onclick="employeeTableClicked('view', '<?php employee::writeout($i, 'id'); ?>')"><?php employee::writeout($i, 'lastname'); ?>, <?php employee::writeout($i, 'firstname'); ?></td>
-                            <td onclick="employeeTableClicked('view', '<?php employee::writeout($i, 'id'); ?>')"><?php employee::writeout($i, 'uid'); ?></td>
-                            <td onclick="employeeTableClicked('view', '<?php employee::writeout($i, 'id'); ?>')"><?php employee::writeout($i, 'username'); ?></td>
+                            <td onclick="employeeTableClicked('view', '<?php timeclock_employee::writeout($i, 'id'); ?>')"><?php timeclock_employee::writeout($i, 'lastname'); ?>, <?php timeclock_employee::writeout($i, 'firstname'); ?></td>
+                            <td onclick="employeeTableClicked('view', '<?php timeclock_employee::writeout($i, 'id'); ?>')"><?php timeclock_employee::writeout($i, 'uid'); ?></td>
+                            <td onclick="employeeTableClicked('view', '<?php timeclock_employee::writeout($i, 'id'); ?>')"><?php timeclock_employee::writeout($i, 'username'); ?></td>
                                 <td>
                                     <ul class="icons">
-                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil" onclick="employeeTableClicked('edit', '<?php employee::writeout($i, 'id'); ?>')"></span></li>
-                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash" onclick="employeeTableClicked('trash', '<?php employee::writeout($i, 'id'); ?>')"></span></li>
+                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil" onclick="employeeTableClicked('edit', '<?php timeclock_employee::writeout($i, 'id'); ?>')"></span></li>
+                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash" onclick="employeeTableClicked('trash', '<?php timeclock_employee::writeout($i, 'id'); ?>')"></span></li>
                                     </ul>
                                 </td>
                             </tr>
@@ -70,11 +70,11 @@
 <div class="remove_employee_dialog">
     <div class="dialog_text">
         Are you sure you want to remove<br />
-        <span class="bold"><?php employee::writeout($this->system_di->template->employee_id, 'firstname', 'by_id'); ?> <?php employee::writeout($this->system_di->template->employee_id, 'lastname', 'by_id'); ?></span>?
+        <span class="bold"><?php timeclock_employee::writeout($this->system_di->template->employee_id, 'firstname', 'by_id'); ?> <?php timeclock_employee::writeout($this->system_di->template->employee_id, 'lastname', 'by_id'); ?></span>?
     </div>
 
     <form class="remove_employee_form" method="post" action="">
-        <input type="hidden" name="employee_id" value="<?php employee::writeout($this->system_di->template->employee_id, 'id', 'by_id'); ?>" />
+        <input type="hidden" name="employee_id" value="<?php timeclock_employee::writeout($this->system_di->template->employee_id, 'id', 'by_id'); ?>" />
         <input type="hidden" name="remove_employee" value="remove" />
     </form>
 </div>
