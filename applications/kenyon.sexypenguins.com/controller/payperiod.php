@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/13/13
- * @Date Modified: 11/20/13
+ * @Date Modified: 11/21/13
  * @Purpose: Controller for pay periods
  * @Version: 1.0
  */
@@ -32,7 +32,7 @@ class payperiod extends controller {
      * @Access: Public
      */
     public function tx($uid) {
-        $this->pay_period = $this->load_model('payPeriod');
+        $this->pay_period = $this->load_model('payPeriod', $this->system_di->config->timeclock_subdirectories);
         
         $employee = $this->system_di->db->query("SELECT * FROM `employees` WHERE `employee_uid`=:uid", array(
             ':uid' => $uid
@@ -46,7 +46,7 @@ class payperiod extends controller {
             $this->system_di->template->response = $employee[0]['employee_firstname'] . ', ' . $response[0] . ', ' . $response[1]['date'] . ', ' . $response[1]['time'];
         }
         
-        $this->system_di->template->parse('payperiod_response');
+        $this->system_di->template->parse($this->system_di->config->timeclock_subdirectories . '_payperiod_response');
     } //End tx
     
     /**
@@ -54,7 +54,7 @@ class payperiod extends controller {
      * @Access: Public
      */
     public function rx($uid, $data, $pay_period='current') {
-        $this->pay_period = $this->load_model('payPeriod');
+        $this->pay_period = $this->load_model('payPeriod', $this->system_di->config->timeclock_subdirectories);
         $employee = $this->system_di->db->query("SELECT * FROM `employees` WHERE `employee_uid`=:uid", array(
             ':uid' => $uid
         ));
@@ -67,12 +67,15 @@ class payperiod extends controller {
         
         if (empty($employee)) {
             $this->system_di->template->response = $response;
-            $this->system_di->template->parse('payperiod_response');
+            $this->system_di->template->parse($this->system_di->config->timeclock_subdirectories . '_payperiod_response');
             
             return False;
         }
 
         switch ($data) {
+            case 'employee_name':
+                $response = $employee[0]['employee_firstname'] . ' ' . $employee[0]['employee_lastname'];
+                break;
             case 'last_op':
                 $response = $pay_period_query[0]['operation'];
                 break;
@@ -83,11 +86,11 @@ class payperiod extends controller {
                 $response = $this->pay_period->total_hours_for_pay_period($employee[0]['employee_id'], $pay_period[0][0]);
                 break;
             default:
-                $response = $employee[0]['employee_firstname'] . ' ' . $employee[0]['employee_lastname'];
+                $response = NULL;
         }
         
         $this->system_di->template->response = $response;
-        $this->system_di->template->parse('payperiod_response');
+        $this->system_di->template->parse($this->system_di->config->timeclock_subdirectories . '_payperiod_response');
         return True;
     } //End rx
     /**
@@ -95,9 +98,9 @@ class payperiod extends controller {
      * @Access: Public
      */
     public function print_friendly($employee_id, $pay_period) {
-        $renderPage = $this->load_model('renderPage');
-        $this->logged_in = $this->load_model('loggedIn');
-        $this->pay_period = $this->load_model('payPeriod');
+        $renderPage = $this->load_model('renderPage', $this->system_di->config->timeclock_subdirectories);
+        $this->logged_in = $this->load_model('loggedIn', $this->system_di->config->timeclock_subdirectories);
+        $this->pay_period = $this->load_model('payPeriod', $this->system_di->config->timeclock_subdirectories);
         $pay_period = $this->pay_period->get_pay_period($pay_period);
         
         $employee = $this->system_di->db->query("SELECT `employee_firstname`,`employee_lastname` FROM `employees` WHERE `employee_id`=:employee_id", array(

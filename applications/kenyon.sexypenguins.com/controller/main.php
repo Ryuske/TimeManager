@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/13/13
- * @Date Modified: 11/20/13
+ * @Date Modified: 11/21/13
  * @Purpose: Default controller for a website
  * @Version: 1.0
  */
@@ -38,7 +38,7 @@ class main extends controller {
      * @Access: Protected
      */
     protected function employees() {
-        $this->employees = $this->load_model('employees');
+        $this->employees = $this->load_model('employees', $this->system_di->config->timeclock_subdirectories);
         $this->employees->get_employees_for_view();
 
         return True;
@@ -58,8 +58,8 @@ class main extends controller {
      * @Access: Public
      */
     public function index() {
-        $renderPage = $this->load_model('renderPage');
-        $this->logged_in = $this->load_model('loggedIn');
+        $renderPage = $this->load_model('renderPage', $this->system_di->config->timeclock_subdirectories);
+        $this->logged_in = $this->load_model('loggedIn', $this->system_di->config->timeclock_subdirectories);
         $this->login_failed();
 
         if ($this->is_logged_in()) {
@@ -84,8 +84,8 @@ class main extends controller {
      * @Access: Public
      */
     public function about() {
-        $renderPage = $this->load_model('renderPage');
-        $this->logged_in = $this->load_model('loggedIn');
+        $renderPage = $this->load_model('renderPage', $this->system_di->config->timeclock_subdirectories);
+        $this->logged_in = $this->load_model('loggedIn', $this->system_di->config->timeclock_subdirectories);
         $this->login_failed();
 
         if ($this->is_logged_in()) {

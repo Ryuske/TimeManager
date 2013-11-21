@@ -11,8 +11,7 @@
  * Set configuration values array
  */
 $config = array(
-                'timeclock_root' => '/tnbtimeclock/'
-                );
+);
 
 return $config;
 

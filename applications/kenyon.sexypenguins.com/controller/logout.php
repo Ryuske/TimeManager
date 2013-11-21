@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/15/13
- * @Date Modified: 11/15/13
+ * @Date Modified: 11/21/13
  * @Purpose: Logout controller
  * @Version: 1.0
  */
@@ -25,8 +25,8 @@ class logout extends controller {
      * @Access: Public
      */
     public function index() {
-        $renderPage = $this->load_model('renderPage');
-        $this->logged_in = $this->load_model('loggedIn');
+        $renderPage = $this->load_model('renderPage', $this->system_di->config->timeclock_subdirectories);
+        $this->logged_in = $this->load_model('loggedIn', $this->system_di->config->timeclock_subdirectories);
         $this->system_di->template->login_failed = '';
 
         if ($this->is_logged_in()) {

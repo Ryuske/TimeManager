@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/15/13
- * @Date Modified: 11/20/13
+ * @Date Modified: 11/21/13
  * @Purpose: Employee controller
  * @Version: 1.0
  */
@@ -25,7 +25,7 @@ class employee extends controller {
      * @Access: Protected
      */
     protected function employees($by_id=True) {
-        $this->employees = $this->load_model('employees');
+        $this->employees = $this->load_model('employees', $this->system_di->config->timeclock_subdirectories);
         if (!is_bool($by_id)) {
             die(debug_print_backtrace());
         }
@@ -65,8 +65,8 @@ class employee extends controller {
      */
     public function add() {
         $this->system_di->template->response = '';
-        $this->logged_in = $this->load_model('loggedIn');
-        $this->employees = $this->load_model('employees');
+        $this->logged_in = $this->load_model('loggedIn', $this->system_di->config->timeclock_subdirectories);
+        $this->employees = $this->load_model('employees', $this->system_di->config->timeclock_subdirectories);
 
         if ($this->is_logged_in()) {
             $this->system_di->template->title = 'TimeClock | Employee | Add';
@@ -83,9 +83,9 @@ class employee extends controller {
      */
     public function edit($employee_id) {
         $this->system_di->template->response = '';
-        $this->logged_in = $this->load_model('loggedIn');
+        $this->logged_in = $this->load_model('loggedIn', $this->system_di->config->timeclock_subdirectories);
         
-        $this->employees = $this->load_model('employees');
+        $this->employees = $this->load_model('employees', $this->system_di->config->timeclock_subdirectories);
         $this->system_di->template->all_employees_by_id = $this->employees->get_employees(True);
         $this->system_di->template->employee_id = (int) $employee_id;
         
@@ -103,8 +103,7 @@ class employee extends controller {
      * @Access: Public
      */
     public function remove($employee_id) {
-        $renderPage = $this->load_model('renderPage');
-        $this->logged_in = $this->load_model('loggedIn');
+        $this->logged_in = $this->load_model('loggedIn', $this->system_di->config->timeclock_subdirectories);
 
         if ($this->is_logged_in()) {
             $this->system_di->template->all_employees = $this->employees(False);
@@ -120,7 +119,7 @@ class employee extends controller {
         }
 
         //Parses the HTML from the view
-        $renderPage->parse($parse, $full_page);
+        $this->render($parse, $full_page);
     } //End remove
 
     /**
@@ -128,9 +127,8 @@ class employee extends controller {
      * @Access: Public
      */
     public function view($employee_id, $pay_period='current') {
-        $renderPage = $this->load_model('renderPage');
-        $this->logged_in = $this->load_model('loggedIn');
-        $this->pay_period_model = $this->load_model('payPeriod');
+        $this->logged_in = $this->load_model('loggedIn', $this->system_di->config->timeclock_subdirectories);
+        $this->pay_period_model = $this->load_model('payPeriod', $this->system_di->config->timeclock_subdirectories);
         
         $this->system_di->template->employee_id = (int) $employee_id;
         
@@ -161,7 +159,7 @@ class employee extends controller {
         }
 
         //Parses the HTML from the view
-        $renderPage->parse($parse, $full_page);
+        $this->render($parse, $full_page);
     } //End view
     
     /**
@@ -176,7 +174,7 @@ class employee extends controller {
      * @Purpose: Used to load pages, including the HTML headers and footers
      */
     protected function render($page, $full_view = True) {
-        $renderPage = $this->load_model('renderPage');
+        $renderPage = $this->load_model('renderPage', $this->system_di->config->timeclock_subdirectories);
 
         $renderPage->parse($page, $full_view);
     } //End render
