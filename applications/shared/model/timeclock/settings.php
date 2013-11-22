@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/21/13
- * @Date Modified: 11/21/13
+ * @Date Modified: 11/22/13
  * @Purpose: Used to get and set settings
  * @Version: 1.0
  */
@@ -16,7 +16,7 @@
  *      $this->settings->something = 'koala';
  *      echo $this->settings->something; //Returns 'koala'
  */
-class model_settings {
+class model_timeclock_settings {
     private $_settings = array();
     private $_update_status = '';
 
@@ -92,6 +92,6 @@ class model_settings {
     public function update_status($status='') {
         return $this->_update_status;
     }
-} //End model_settings
+} //End model_timeclock_settings
 
 //End File

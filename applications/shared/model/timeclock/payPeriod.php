@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/18/13
- * @Date Modified: 11/21/13
+ * @Date Modified: 11/22/13
  * @Purpose: Used to complete various pay period functions
  * @Version: 1.0
  */
@@ -14,7 +14,7 @@
  *      $this->employees = $this->load_model('employees');
  *      $this->system_di->template->employees = $this->employees->getEmployees();
  */
-class model_payPeriod {
+class model_timeclock_payPeriod {
     protected $_dateFormat = 'm/d/y';
     protected $_timeFormat = 'g:ia';
     protected $_add_date_response = '';
@@ -507,4 +507,4 @@ class model_payPeriod {
         
         return $return_tables;
     } //End generate_previous_pay_period_table
-} //End model_payPeriod
+} //End model_timeclock_payPeriod

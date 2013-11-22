@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/13/13
- * @Date Modified: 11/21/13
+ * @Date Modified: 11/22/13
  * @Purpose: Various functions that apply to logged in users (or not logged in)
  * @Version: 1.0
  */
@@ -13,7 +13,7 @@
  *      Within your controller, use:
  *      $loggedIn = $this->load_model('loggedIn');
  */
-class model_loggedIn {
+class model_timeclock_loggedIn {
     private static $_user;
     public static $_loginError;
 
@@ -75,6 +75,6 @@ class model_loggedIn {
         self::$_user = NULL;
         session_destroy();
     }
-}//End model_loggedIn
+}//End model_timeclock_loggedIn
 
 //End File

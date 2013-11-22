@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/13/13
- * @Date Modified: 11/21/13
+ * @Date Modified: 11/22/13
  * @Purpose: Used to load additional page stuff (like HTML headers and what not)
  * @Version: 1.0
  */
@@ -14,7 +14,7 @@
  *      $renderPage = $this->load_model('renderPage');
  *      $renderPage->parse('Page you want to load');
  */
-class model_renderPage {
+class model_timeclock_renderPage {
     private $_user;
 
     /**
@@ -30,6 +30,6 @@ class model_renderPage {
         $system_di->template->parse($system_di->config->timeclock_subdirectories . '_' . $page);
         $system_di->template->parse($system_di->config->timeclock_subdirectories . '_includes_htmlend');
     }
-}//End
+}
 
 //End File
