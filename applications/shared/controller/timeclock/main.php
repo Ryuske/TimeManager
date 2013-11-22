@@ -2,27 +2,39 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/13/13
- * @Date Modified: 11/21/13
+ * @Date Modified: 11/22/13
  * @Purpose: Default controller for a website
  * @Version: 1.0
  */
 
 /**
- * @Purpose: Default controller for a website
+ * @Purpose: Default controller - used for top level pages (home, about, settings, etc)
  */
 class timeclock_main extends controller {
+    /**
+     * @Purpose: Primarily used to load models based on $this->_dependencies;
+     */
+    public function load_dependencies($dependencies) {
+        foreach ($dependencies as $dependency) {
+            $name = 'model_' . $dependency;
+            $this->$name = $this->load_model($this->system_di->config->timeclock_subdirectories . '_' . $dependency);
+        }
+    }
+    
     /**
      * @Purpose: This function is used to determin if the user is logged in or not
      */
     protected function is_logged_in() {
-        return $this->logged_in->status();
+        return $this->model_loggedIn->status();
     }
 
     /**
      * @Purpose: Used to generate a failed login attempt message
      */
     protected function login_failed() {
-        if ($this->logged_in->login_error()) {
+        $this->load_dependencies(array('loggedIn'));
+        
+        if ($this->model_loggedIn->login_error()) {
             $this->system_di->template->login_failed = '<div class="form_failed">Incorrect Username or Password</div>';
             return True;
         }
@@ -34,8 +46,8 @@ class timeclock_main extends controller {
      * @Purpose: Used to get & return employees to the view
      */
     protected function employees() {
-        $this->employees = $this->load_model('employees', $this->system_di->config->timeclock_subdirectories);
-        $this->employees->get_employees_for_view();
+        $this->load_dependencies(array('employees'));
+        $this->model_employees->get_employees_for_view();
 
         return True;
     }
@@ -52,8 +64,7 @@ class timeclock_main extends controller {
      * @Purpose: Default function to be run when class is called
      */
     public function index() {
-        $renderPage = $this->load_model('renderPage', $this->system_di->config->timeclock_subdirectories);
-        $this->logged_in = $this->load_model('loggedIn', $this->system_di->config->timeclock_subdirectories);
+        $this->load_dependencies(array('renderPage'));
         $this->login_failed();
 
         if ($this->is_logged_in()) {
@@ -70,15 +81,14 @@ class timeclock_main extends controller {
         }
 
         //Parses the HTML from the view
-        $renderPage->parse($parse, $full_page);
+        $this->model_renderPage->parse($parse, $full_page);
     }
     
     /**
      * @Purpose: Used to load a help page
      */
     public function about() {
-        $renderPage = $this->load_model('renderPage', $this->system_di->config->timeclock_subdirectories);
-        $this->logged_in = $this->load_model('loggedIn', $this->system_di->config->timeclock_subdirectories);
+        $this->load_dependencies(array('renderPage'));
         $this->login_failed();
 
         if ($this->is_logged_in()) {
@@ -95,19 +105,17 @@ class timeclock_main extends controller {
         }
 
         //Parses the HTML from the view
-        $renderPage->parse($parse, $full_page);
+        $this->model_renderPage->parse($parse, $full_page);
     }
     
     /**
      * @Purpose: Used to load the settings page
      */
     public function settings() {
-        $renderPage = $this->load_model('renderPage', $this->system_di->config->timeclock_subdirectories);
-        $this->logged_in = $this->load_model('loggedIn', $this->system_di->config->timeclock_subdirectories);
+        $this->load_dependencies(array('renderPage', 'settings'));
         $this->login_failed();
         
-        $this->settings = $this->load_model('settings', $this->system_di->config->timeclock_subdirectories);
-        $this->system_di->template->update_status = $this->settings->update_status();
+        $this->system_di->template->update_status = $this->model_settings->update_status();
         
         if ($this->is_logged_in()) {
             $this->employees();
@@ -123,7 +131,7 @@ class timeclock_main extends controller {
         }
 
         //Parses the HTML from the view
-        $renderPage->parse($parse, $full_page);
+        $this->model_renderPage->parse($parse, $full_page);
     }
 } //End timeclock_main
 

@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/15/13
- * @Date Modified: 11/21/13
+ * @Date Modified: 11/22/13
  * @Purpose: Employee controller
  * @Version: 1.0
  */
@@ -12,24 +12,34 @@
  */
 class timeclock_employee extends controller {
     /**
+     * @Purpose: Primarily used to load models based on $this->_dependencies;
+     */
+    public function load_dependencies($dependencies) {
+        foreach ($dependencies as $dependency) {
+            $name = 'model_' . $dependency;
+            $this->$name = $this->load_model($this->system_di->config->timeclock_subdirectories . '_' . $dependency);
+        }
+    }
+    
+    /**
      * @Purpose: This function is used to determin if the user is logged in or not
      */
     protected function is_logged_in() {
-        return $this->logged_in->status();
+        return $this->model_loggedIn->status();
     }
     
     /**
      * @Purpose: Used to get & return employees to the view
      */
     protected function employees($by_id=True) {
-        $this->employees = $this->load_model('employees', $this->system_di->config->timeclock_subdirectories);
+        $this->load_dependencies(array('employees'));
         if (!is_bool($by_id)) {
             die(debug_print_backtrace());
         }
         if (True === $by_id) {
-            return $this->employees->get_employees(True);
+            return $this->model_employees->get_employees(True);
         } else {
-            return $this->employees->get_employees();
+            return $this->model_employees->get_employees();
         }
     }
     
@@ -59,8 +69,7 @@ class timeclock_employee extends controller {
      */
     public function add() {
         $this->system_di->template->response = '';
-        $this->logged_in = $this->load_model('loggedIn', $this->system_di->config->timeclock_subdirectories);
-        $this->employees = $this->load_model('employees', $this->system_di->config->timeclock_subdirectories);
+        $this->load_dependencies(array('loggedIn', 'employees'));
 
         if ($this->is_logged_in()) {
             $this->system_di->template->title = 'TimeClock | Employee | Add';
@@ -76,10 +85,8 @@ class timeclock_employee extends controller {
      */
     public function edit($employee_id) {
         $this->system_di->template->response = '';
-        $this->logged_in = $this->load_model('loggedIn', $this->system_di->config->timeclock_subdirectories);
-        
-        $this->employees = $this->load_model('employees', $this->system_di->config->timeclock_subdirectories);
-        $this->system_di->template->all_employees_by_id = $this->employees->get_employees(True);
+        $this->load_dependencies(array('loggedIn', 'employees'));
+        $this->system_di->template->all_employees_by_id = $this->model_employees->get_employees(True);
         $this->system_di->template->employee_id = (int) $employee_id;
         
         if ($this->is_logged_in()) {
@@ -95,7 +102,7 @@ class timeclock_employee extends controller {
      * @Purpose: Used to remove an existing employee (employee/remove/x)
      */
     public function remove($employee_id) {
-        $this->logged_in = $this->load_model('loggedIn', $this->system_di->config->timeclock_subdirectories);
+        $this->load_dependencies(array('loggedIn'));
 
         if ($this->is_logged_in()) {
             $this->system_di->template->all_employees = $this->employees(False);
@@ -118,26 +125,25 @@ class timeclock_employee extends controller {
      * @Purpose: Used to remove an existing employee (employee/remove/x)
      */
     public function view($employee_id, $pay_period='current') {
-        $this->logged_in = $this->load_model('loggedIn', $this->system_di->config->timeclock_subdirectories);
-        $this->pay_period_model = $this->load_model('payPeriod', $this->system_di->config->timeclock_subdirectories);
+        $this->load_dependencies(array('loggedIn', 'payPeriod'));
         
         $this->system_di->template->employee_id = (int) $employee_id;
         
         if ('current' === $pay_period) {
-            $this->pay_period = $this->pay_period_model->get_pay_period();
+            $this->pay_period = $this->model_payPeriod->get_pay_period();
         } else {
-            $this->pay_period = $this->pay_period_model->get_pay_period($pay_period);
+            $this->pay_period = $this->model_payPeriod->get_pay_period($pay_period);
         }
         
         $this->system_di->template->pay_period_id = $this->pay_period[2];
         $this->system_di->template->pay_period_monday = $this->pay_period[0][0];
         $this->system_di->template->pay_period_sunday = $this->pay_period[1][0];
-        $this->system_di->template->pay_period_table = $this->pay_period_model->generate_pay_period_table($this->system_di->template->employee_id, $this->pay_period[0]);
+        $this->system_di->template->pay_period_table = $this->model_payPeriod->generate_pay_period_table($this->system_di->template->employee_id, $this->pay_period[0]);
         
-        $this->system_di->template->previous_pay_periods_table = $this->pay_period_model->generate_previous_pay_periods_table($this->system_di->template->employee_id, $this->pay_period[2]);
-        $this->system_di->template->total_hours = $this->pay_period_model->total_hours_for_pay_period($this->system_di->template->employee_id, $this->pay_period[0]);
+        $this->system_di->template->previous_pay_periods_table = $this->model_payPeriod->generate_previous_pay_periods_table($this->system_di->template->employee_id, $this->pay_period[2]);
+        $this->system_di->template->total_hours = $this->model_payPeriod->total_hours_for_pay_period($this->system_di->template->employee_id, $this->pay_period[0]);
         
-        $this->system_di->template->add_date_response = $this->pay_period_model->add_date_response();
+        $this->system_di->template->add_date_response = $this->model_payPeriod->add_date_response();
         
         if ($this->is_logged_in()) {
             $this->system_di->template->all_employees = $this->employees(False);
@@ -166,9 +172,9 @@ class timeclock_employee extends controller {
      * @Purpose: Used to load pages, including the HTML headers and footers
      */
     protected function render($page, $full_view = True) {
-        $renderPage = $this->load_model('renderPage', $this->system_di->config->timeclock_subdirectories);
+        $this->load_dependencies(array('renderPage'));
 
-        $renderPage->parse($page, $full_view);
+        $this->model_renderPage->parse($page, $full_view);
     }
 }//End timeclock_employee
 

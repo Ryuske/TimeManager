@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/15/13
- * @Date Modified: 11/21/13
+ * @Date Modified: 11/22/13
  * @Purpose: Used to pull the employees from the database and use the results in a view
  * @Version: 1.0
  */
@@ -14,7 +14,7 @@
  *      $this->employees = $this->load_model('employees');
  *      $this->system_di->template->all_employees_by_id = $this->employees->getEmployees('by_id');
  */
-class model_employees {
+class model_timeclock_employees {
     /**
      * @Purpose: Used to pull $system_di into class scope
      */
@@ -262,6 +262,6 @@ class model_employees {
 
         $this->system_di->template->employee = $return_employees;
     }
-}//End model_employees
+}//End model_timeclock_employees
 
 //End File

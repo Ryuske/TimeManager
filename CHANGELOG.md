@@ -1,3 +1,8 @@
+### 11/22/13 - Commit 2 ###
+* Updated TODO.md
+* Updated model naming convention
+* Refactored model loading to parent function and loads models via dependency array
+
 ### 11/22/13 - Commit 1 ###
 * Fixed issue when adding dates under a pay period
 * Fixed issue where if the out time was 0 the total hours would be a crazy negative number
