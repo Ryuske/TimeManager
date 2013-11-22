@@ -73,6 +73,9 @@
                     duplicate dates in-case the employee punched in and out more than 3 times. When you click <span class="bold">Add Date</span> you'll be given a calendar
                     where the only dates you can click are the ones within the pay period that you are looking at.</p>
                     
+                    <p>Also please note that all previous in/out slots for that dates must be filled before adding a new
+                    date.</p>
+                    
                 <h5>Print a Timecard</h5>
                     <p>You can view a printer friendly version of the pay period by clicking on the <span class="bold">Print</span> button to the right of the employees name in
                     the blue bar. It just gives a very basic table with the employees name, pay period you're looking at, total hours and hours worked.</p>
