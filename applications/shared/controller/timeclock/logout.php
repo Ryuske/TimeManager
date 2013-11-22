@@ -18,6 +18,7 @@ class timeclock_logout extends controller {
         foreach ($dependencies as $dependency) {
             $name = 'model_' . $dependency;
             $this->$name = $this->load_model($this->system_di->config->timeclock_subdirectories . '_' . $dependency);
+            $this->system_di->template->$name = $this->$name;
         }
     }
     

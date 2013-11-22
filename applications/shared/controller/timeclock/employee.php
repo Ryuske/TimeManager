@@ -18,6 +18,7 @@ class timeclock_employee extends controller {
         foreach ($dependencies as $dependency) {
             $name = 'model_' . $dependency;
             $this->$name = $this->load_model($this->system_di->config->timeclock_subdirectories . '_' . $dependency);
+            $this->system_di->template->$name = $this->$name;
         }
     }
     
@@ -122,10 +123,10 @@ class timeclock_employee extends controller {
     }
 
     /**
-     * @Purpose: Used to remove an existing employee (employee/remove/x)
+     * @Purpose: Used to view an existing employees time card
      */
     public function view($employee_id, $pay_period='current') {
-        $this->load_dependencies(array('loggedIn', 'payPeriod'));
+        $this->load_dependencies(array('loggedIn', 'settings', 'payPeriod'));
         
         $this->system_di->template->employee_id = (int) $employee_id;
         

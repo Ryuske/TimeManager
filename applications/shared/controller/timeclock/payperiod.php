@@ -18,6 +18,7 @@ class timeclock_payperiod extends controller {
         foreach ($dependencies as $dependency) {
             $name = 'model_' . $dependency;
             $this->$name = $this->load_model($this->system_di->config->timeclock_subdirectories . '_' . $dependency);
+            $this->system_di->template->$name = $this->$name;
         }
     }
     
@@ -64,7 +65,7 @@ class timeclock_payperiod extends controller {
         $employee = $this->system_di->db->query("SELECT * FROM `employees` WHERE `employee_uid`=:uid", array(
             ':uid' => $uid
         ));
-        $pay_period_query = $this->system_di->db->query("SELECT `time`,`operation` FROM `employee_punch` WHERE `employee_id`=:employee_id ORDER BY `employee_punch_id` DESC", array(
+        $pay_period_query = $this->system_di->db->query("SELECT `time`,`date`,`operation` FROM `employee_punch` WHERE `employee_id`=:employee_id ORDER BY `employee_punch_id` DESC", array(
             ':employee_id' => (int) $employee[0]['employee_id']
         ));
         
@@ -87,6 +88,9 @@ class timeclock_payperiod extends controller {
                 break;
             case 'last_time':
                 $response = date('g:ia', $pay_period_query[0]['time']);
+                break;
+            case 'last_date':
+                $response = $pay_period_query[0]['date'];
                 break;
             case 'total_hours':
                 $response = $this->model_payPeriod->total_hours_for_pay_period($employee[0]['employee_id'], $pay_period[0][0]);

@@ -125,7 +125,8 @@ class model_timeclock_payPeriod {
             $return_hours[$row['date']]['total_hours'] = 0;
         });
         
-        array_walk($return_hours, function($hour, $date) use(&$return_hours) {
+        $system_di = $this->system_di;
+        array_walk($return_hours, function($hour, $date) use(&$return_hours, $system_di) {
             $count = (array_key_exists('in', $hour)) ? count($hour['in']) : 0;
             
             if (!array_key_exists('in', $hour)) {
@@ -150,7 +151,25 @@ class model_timeclock_payPeriod {
 
                 //Used to find the difference of two timestamps in hours that are rounded to the nearest 15 minutes (.25 of an hour)
                 if (0 < $out) {
-                    $return_hours[$date]['total_hours'] += round((($out/60 - $in/60)/60)/0.25, 0)*0.25;
+                    switch ($system_di->template->model_settings->round_time_by) {
+                        case '1':
+                            $round_by = 0.16;
+                            $places = 0;
+                            break;
+                        case '15':
+                            $round_by = 0.25;
+                            $places = 0;
+                            break;
+                        case '30':
+                            $round_by = 0.5;
+                            $places = 0;
+                            break;
+                        default:
+                            $round_by = 1;
+                            $places = 2;
+                    }
+                    
+                    $return_hours[$date]['total_hours'] += round((($out/60 - $in/60)/60)/$round_by, $places)*$round_by;
                 }
             }
             
