@@ -9,27 +9,22 @@
 
 /**
  * @Purpose: Controller for pay periods
- * @Extends controller
  */
 class timeclock_payperiod extends controller {
     /**
      * @Purpose: This function is used to determin if the user is logged in or not
-     * @Access: Public
      */
     protected function is_logged_in() {
         return $this->logged_in->status();
-    } //End logged_in
+    }
     
     /**
      * @Purpose: Default function to be run when class is called
-     * @Access: Public
      */
-    public function index() {
-    }//End index
+    public function index() {}
     
     /**
      * @Purpose: Used to punch in and out using the RESTFUL API
-     * @Access: Public
      */
     public function tx($uid) {
         $this->pay_period = $this->load_model('payPeriod', $this->system_di->config->timeclock_subdirectories);
@@ -47,11 +42,10 @@ class timeclock_payperiod extends controller {
         }
         
         $this->system_di->template->parse($this->system_di->config->timeclock_subdirectories . '_payperiod_response');
-    } //End tx
+    }
     
     /**
      * @Purpose: Used to send data back using the RESTFUL API
-     * @Access: Public
      */
     public function rx($uid, $data, $pay_period='current') {
         $this->pay_period = $this->load_model('payPeriod', $this->system_di->config->timeclock_subdirectories);
@@ -92,10 +86,10 @@ class timeclock_payperiod extends controller {
         $this->system_di->template->response = $response;
         $this->system_di->template->parse($this->system_di->config->timeclock_subdirectories . '_payperiod_response');
         return True;
-    } //End rx
+    }
+    
     /**
      * @Purpose: Used to create a print friendly version of a pay period
-     * @Access: Public
      */
     public function print_friendly($employee_id, $pay_period) {
         $renderPage = $this->load_model('renderPage', $this->system_di->config->timeclock_subdirectories);
@@ -119,7 +113,7 @@ class timeclock_payperiod extends controller {
         }
         
         $renderPage->parse('payperiod_print');
-    } //End print_friendly
+    }
 }//End timeclock_payperiod
 
 //End File

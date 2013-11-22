@@ -1,0 +1,4 @@
+11/21/13 - Commit 1 (since starting CHANGELOG)
+    Refactored comments
+    Added settings, still need to implement the settings into the rest of the TimeClock
+    Converted README to README.md for readability on GitHub

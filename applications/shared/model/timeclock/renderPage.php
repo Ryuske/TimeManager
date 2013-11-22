@@ -19,7 +19,6 @@ class model_renderPage {
 
     /**
      * @Purpose: Loads a page, including the neccessary HTML headers and things
-     * @Access: Public
      */
     public function parse($page, $full_page=False) {
         global $system_di;
@@ -30,7 +29,7 @@ class model_renderPage {
         ($full_page) ? $system_di->template->parse($system_di->config->timeclock_subdirectories . '_includes_navbar') : '';
         $system_di->template->parse($system_di->config->timeclock_subdirectories . '_' . $page);
         $system_di->template->parse($system_di->config->timeclock_subdirectories . '_includes_htmlend');
-    } //end parse
-}//End model_renderPage
+    }
+}//End
 
 //End File

@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/18/13
- * @Date Modified: 11/20/13
+ * @Date Modified: 11/21/13
  * @Purpose: Used to complete various pay period functions
  * @Version: 1.0
  */
@@ -20,7 +20,6 @@ class model_payPeriod {
     
     /**
      * @Purpose: Creates a constructor that sets various class variables
-     * @Access: Public
      */
     public function __construct() {
         global $system_di;
@@ -32,11 +31,10 @@ class model_payPeriod {
         if (array_key_exists('add_date', $_POST)) {
             $this->add_date();
         }
-    } //End __construct
+    }
     
     /**
      * @Purpose: Used to return a pay period in date format
-     * @Access: public
      */
     public function get_pay_period($date='current') {
         if ('current' === $date) {
@@ -105,7 +103,6 @@ class model_payPeriod {
     
     /**
      * @Purpose: Used to get the hours of the requested pay period
-     * @Access: Public
      */
     public function get_hours($employee_id, $pay_period) {
         $pay_period = $this->get_pay_period($pay_period);
@@ -164,7 +161,6 @@ class model_payPeriod {
     
     /**
      * @Purpose: Used to calculate how many hours an employee has worked on a specified pay period
-     * @Access: Public
      */
     public function total_hours_for_pay_period($employee_id, $pay_period) {
         $pay_period = $this->get_pay_period($pay_period);
@@ -180,11 +176,10 @@ class model_payPeriod {
         }
         
         return $total_hours;
-    } //End total_hours_for_pay_period
+    }
     
     /**
      * @Purpose: Used to figure out if employee should punch in or out, then performs that operation
-     * @Access: Public
      */
     public function employee_punch($employee_id) {
         $employee_id = (int) $employee_id;
@@ -203,11 +198,10 @@ class model_payPeriod {
         }
         
         return $return;
-    } //End employee_punch
+    }
     
     /**
      * @Purpose: Used to add a new pay period to the database
-     * @Access: Protected
      */
     protected function add_pay_period() {
         $current_pay_period = $this->get_pay_period();
@@ -223,11 +217,10 @@ class model_payPeriod {
         ));
         
         return $check_pay_period;
-    } //End add_pay_period
+    }
     
     /**
      * @Purpose: Used to check what the last punch an employee made is (in or out)
-     * @Access: Protected
      */
     protected function check_punch($employee_id) {
         $employee_id = (int) $employee_id;
@@ -252,11 +245,10 @@ class model_payPeriod {
         }
         
         return array('last_operation' => $last_operation[0]['operation'], 'pay_period' => $check_pay_period);
-    } //End chick_punch
+    }
     
     /**
      * @Purpose: Used to punch an employee in
-     * @Access: Protected
      */
     protected function punch_in($employee_id, $pay_period_id) {
         $date_time = array('date' => date($this->_dateFormat), 'time' => time());
@@ -269,11 +261,10 @@ class model_payPeriod {
         ));
         
         return array('in', $date_time);
-    } //End punch_in
+    }
     
     /**
      * @Purpose: Used to punch an employee out
-     * @Access: Protected
      */
     protected function punch_out($employee_id, $pay_period_id) {
         $date_time = array('date' => date($this->_dateFormat), 'time' => time());
@@ -286,10 +277,10 @@ class model_payPeriod {
         ));
         
         return array('out', $date_time);
-    } //End punch_out
+    }
+    
     /**
      * @Purpose: Used to update time punches
-     * @Access: Protected
      */
     protected function update_time() {
         $pay_period = $this->get_pay_period(strtotime($_POST['date']));
@@ -330,11 +321,10 @@ class model_payPeriod {
         ));
         
         return True;
-    } //End update_time
+    }
     
     /**
      * @Purpose: Used to add a date to the timecard
-     * @Access: Protected
      */
     protected function add_date() {
         $pay_period = $this->get_pay_period($_POST['date']);
@@ -350,10 +340,10 @@ class model_payPeriod {
         } else {
             return False;
         }
-    } //End add_date
+    }
+    
     /**
      * @Purpose: Used to figure out which times should be editable, and have an onClick attribute
-     * @Access: Protected
      */
     protected function is_time_editable($hour, $times_array, $time_index, $time_operation, $date) {
         $return = '';
@@ -367,11 +357,10 @@ class model_payPeriod {
         }
         
         return $return;
-    } //End is_time_editable
+    }
     
     /**
      * @Purpose: Used to create the table that is seen in the view.
-     * @Access: Public
      */
     public function generate_pay_period_table($employee_id, $pay_period) {
         $hours = $this->get_hours($employee_id, $pay_period);
@@ -430,9 +419,9 @@ class model_payPeriod {
         
         return $return;
     } //End generate_current_pay_period_table
+    
     /**
      * @Purpose: Used to create the table that displays all the previous pay periods
-     * @Access: Public
      */
     public function generate_previous_pay_periods_table($employee_id, $selected_pay_period) {
         $pay_periods = $this->get_pay_period('all');
