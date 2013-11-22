@@ -137,6 +137,8 @@ class timeclock_employee extends controller {
         $this->system_di->template->previous_pay_periods_table = $this->pay_period_model->generate_previous_pay_periods_table($this->system_di->template->employee_id, $this->pay_period[2]);
         $this->system_di->template->total_hours = $this->pay_period_model->total_hours_for_pay_period($this->system_di->template->employee_id, $this->pay_period[0]);
         
+        $this->system_di->template->add_date_response = $this->pay_period_model->add_date_response();
+        
         if ($this->is_logged_in()) {
             $this->system_di->template->all_employees = $this->employees(False);
             $this->system_di->template->all_employees_by_id = $this->employees(True);

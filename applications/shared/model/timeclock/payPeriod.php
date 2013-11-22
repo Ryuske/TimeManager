@@ -17,6 +17,7 @@
 class model_payPeriod {
     protected $_dateFormat = 'm/d/y';
     protected $_timeFormat = 'g:ia';
+    protected $_add_date_response = '';
     
     /**
      * @Purpose: Creates a constructor that sets various class variables
@@ -144,11 +145,13 @@ class model_payPeriod {
             }
             
             for ($i=0; $i<$count; $i++) {
-                $in = strtotime(date('g:ia', $hour['in'][$i]));
-                $out = strtotime(date('g:ia', $hour['out'][$i]));
-                
+                $in = (array_key_exists('in', $hour) && array_key_exists($i, $hour['in'])) ? strtotime(date('g:ia', $hour['in'][$i])) : 0;
+                $out = (array_key_exists('out', $hour) && array_key_exists($i, $hour['out'])) ? strtotime(date('g:ia', $hour['out'][$i])) : 0;
+
                 //Used to find the difference of two timestamps in hours that are rounded to the nearest 15 minutes (.25 of an hour)
-                $return_hours[$date]['total_hours'] += round((($out/60 - $in/60)/60)/0.25, 0)*0.25;
+                if (0 < $out) {
+                    $return_hours[$date]['total_hours'] += round((($out/60 - $in/60)/60)/0.25, 0)*0.25;
+                }
             }
             
             if (!array_key_exists('total_hours', $return_hours[$date])) {
@@ -314,7 +317,7 @@ class model_payPeriod {
             
             return True;
         }
-        
+
         $update_time = $this->system_di->db->query("UPDATE `employee_punch` SET `time`=:time WHERE `employee_punch_id`=:employee_punch_id", array(
             ':time' => $time,
             ':employee_punch_id' => $time_to_update[0]['employee_punch_id']
@@ -324,19 +327,37 @@ class model_payPeriod {
     }
     
     /**
+     * @Purpose: Used to get the response of add_date() - primarily used for if add_date() has an error
+     */
+    public function add_date_response() {
+        return $this->_add_date_response;
+    }
+    /**
      * @Purpose: Used to add a date to the timecard
      */
     protected function add_date() {
         $pay_period = $this->get_pay_period($_POST['date']);
         
         if ((int) $pay_period[2] === (int) $_POST['pay_period']) {
-            $add_date = $this->system_di->db->query("INSERT INTO `employee_punch` (`employee_punch_id`, `pay_period_id`, `employee_id`, `time`, `date`, `operation`) VALUES ('', :pay_period_id, :employee_id, '', :date, 'in')", array(
+            $get_dates = $this->system_di->db->query("SELECT `date` FROM `employee_punch` WHERE `pay_period_id`=:pay_period_id AND `employee_id`=:employee_id AND `date`=:date", array(
                 ':pay_period_id' => (int) $pay_period[2],
                 ':employee_id' => (int) $_POST['employee_id'],
                 ':date' => $_POST['date']
             ));
             
-            return True;
+            //Used to determin if all the previous in/out slots have been filled before adding a new date
+            if (is_int(count($get_dates)/6)) {
+                $add_date = $this->system_di->db->query("INSERT INTO `employee_punch` (`employee_punch_id`, `pay_period_id`, `employee_id`, `time`, `date`, `operation`) VALUES ('', :pay_period_id, :employee_id, '', :date, 'in')", array(
+                    ':pay_period_id' => (int) $pay_period[2],
+                    ':employee_id' => (int) $_POST['employee_id'],
+                    ':date' => $_POST['date']
+                ));
+                
+                return True;
+            }
+            
+            $this->_add_date_response = '<script type="text/javascript">jQuery(document).ready(function () {add_date_response();});</script>';
+            return False;
         } else {
             return False;
         }

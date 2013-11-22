@@ -166,3 +166,9 @@ $date_format = 'm/d/y';
         <input type="hidden" name="add_date" value="add_date" />
     </form>
 </div>
+<div class="add_date_response">
+    <div class="add_date_response_text">
+        All previous in/out slots must be filled
+    </div>
+</div>
+{add_date_response}

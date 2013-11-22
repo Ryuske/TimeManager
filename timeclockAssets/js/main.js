@@ -50,6 +50,18 @@ jQuery(document).ready(function() {
             }
         }
     });
+    jQuery('.add_date_response').dialog({
+        resizable: false,
+        autoOpen: false,
+        width: 350,
+        title: 'Add Date Response',
+        modal: true,
+        buttons: {
+            'OK': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
     
     jQuery('.date').datepicker({
         altField: '.date_to_add',
@@ -59,7 +71,7 @@ jQuery(document).ready(function() {
         maxDate: createMaxDate(jQuery('.start_date').text())
     });
     jQuery('.date').datepicker('setDate', jQuery('.start_date').text());
-}); //End doucment.ready
+});
 
 function employeeTableClicked(action, employee_id) {
     switch (action) {
@@ -74,8 +86,8 @@ function employeeTableClicked(action, employee_id) {
             break;
         default:
             break;
-    } //End switch action
-} //End employeeTableClicked
+    }
+}
 
 function updateTime(date, time_index, time_operation) {
     var multiplier;
@@ -101,16 +113,16 @@ function updateTime(date, time_index, time_operation) {
     jQuery('.update_time_dialog input[name=time_index]').attr('value', time_index);
     jQuery('.update_time_dialog input[name=time_operation]').attr('value', time_operation);
     jQuery('.update_time_dialog').dialog('open');
-} //End updateTime
+}
 
 function loadPayPeriod(employee_id, pay_period) {
     window.location = web_root + 'employee/view/' + employee_id + '/' + pay_period;
-} //ENd loadPayPeriod
+}
 
 function addDate(pay_period) {   
     jQuery('.add_date_dialog input[name=pay_period]').attr('value', pay_period);
     jQuery('.add_date_dialog').dialog('open');
-} //End addDate
+}
 
 /**
  * createMinDate & createMaxDate are both used by the jQuery UI datepicker
@@ -123,7 +135,7 @@ function createMinDate(date) {
     }
     
     return new Date(date[2], date[0] - 1, date[1]);
-} //End createMinDate
+}
 
 function createMaxDate(date) {
     date = date.split('/');
@@ -134,4 +146,9 @@ function createMaxDate(date) {
     }
     
     return new Date(date[2], date[0] - 1, date[1]);
-} //End createMaxDate
+}
+
+function add_date_response(response) {
+    jQuery('.add_date_response_text').text = response;
+    jQuery('.add_date_response').dialog('open');
+}
