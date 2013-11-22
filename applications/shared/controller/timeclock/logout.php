@@ -9,20 +9,17 @@
 
 /**
  * @Purpose: Logout Controller
- * @Extends controller
  */
 class timeclock_logout extends controller {
     /**
      * @Purpose: This function is used to determin if the user is logged in or not
-     * @Access: Public
      */
     protected function is_logged_in() {
         return $this->logged_in->status();
-    } //End logged_in
+    }
 
     /**
      * @Purpose: Default function to be run when class is called
-     * @Access: Public
      */
     public function index() {
         $renderPage = $this->load_model('renderPage', $this->system_di->config->timeclock_subdirectories);
@@ -39,7 +36,7 @@ class timeclock_logout extends controller {
 
         //Parses the HTML from the view
         $renderPage->parse($parse, $full_page);
-    }//End index
-}//End timeclock_logout
+    }
+}
 
 //End File

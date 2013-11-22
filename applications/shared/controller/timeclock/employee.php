@@ -9,20 +9,17 @@
 
 /**
  * @Purpose: Employee Controller
- * @Extends controller
  */
 class timeclock_employee extends controller {
     /**
      * @Purpose: This function is used to determin if the user is logged in or not
-     * @Access: Public
      */
     protected function is_logged_in() {
         return $this->logged_in->status();
-    } //End logged_in
+    }
     
     /**
      * @Purpose: Used to get & return employees to the view
-     * @Access: Protected
      */
     protected function employees($by_id=True) {
         $this->employees = $this->load_model('employees', $this->system_di->config->timeclock_subdirectories);
@@ -34,11 +31,10 @@ class timeclock_employee extends controller {
         } else {
             return $this->employees->get_employees();
         }
-    } //End employees
+    }
     
     /**
      * @Purpose: Used to make echo'ing out the values in the view a little "prettier"
-     * @Access: Public
      */
     public static function writeout($employee_id=NULL, $employee_value='id', $sort_by = 'order') {
         global $system_di;
@@ -49,19 +45,17 @@ class timeclock_employee extends controller {
         } else {
             echo $system_di->template->employee['employee_' . $employee_value];
         }
-    } //End employee
+    }
 
     /**
      * @Purpose: Default function to be run when class is called
-     * @Access: Public
      */
     public function index() {
         $this->load_home();
-    }//End index
+    }
 
     /**
      * @Purpose: Function that is run when employee/add is accessed
-     * @Access: Public
      */
     public function add() {
         $this->system_di->template->response = '';
@@ -75,11 +69,10 @@ class timeclock_employee extends controller {
         }
 
         $this->render('employee_add');
-    } //End add
+    }
     
     /**
      * @Purpose: Used for editing existing employees (employee/edit/x)
-     * @Access: Public
      */
     public function edit($employee_id) {
         $this->system_di->template->response = '';
@@ -96,11 +89,10 @@ class timeclock_employee extends controller {
         }
 
         $this->render('employee_edit');
-    } //End edit
+    }
     
     /**
      * @Purpose: Used to remove an existing employee (employee/remove/x)
-     * @Access: Public
      */
     public function remove($employee_id) {
         $this->logged_in = $this->load_model('loggedIn', $this->system_di->config->timeclock_subdirectories);
@@ -120,11 +112,10 @@ class timeclock_employee extends controller {
 
         //Parses the HTML from the view
         $this->render($parse, $full_page);
-    } //End remove
+    }
 
     /**
      * @Purpose: Used to remove an existing employee (employee/remove/x)
-     * @Access: Public
      */
     public function view($employee_id, $pay_period='current') {
         $this->logged_in = $this->load_model('loggedIn', $this->system_di->config->timeclock_subdirectories);
@@ -160,15 +151,14 @@ class timeclock_employee extends controller {
 
         //Parses the HTML from the view
         $this->render($parse, $full_page);
-    } //End view
+    }
     
     /**
      * @Purpose: Function used to return you to the home controller if there is a problem
-     * @Access: Protected
      */
     protected function load_home() {
         header('Location: ' . $this->system_di->config->timeclock_root);
-    } //End load_home
+    }
 
     /**
      * @Purpose: Used to load pages, including the HTML headers and footers
@@ -177,7 +167,7 @@ class timeclock_employee extends controller {
         $renderPage = $this->load_model('renderPage', $this->system_di->config->timeclock_subdirectories);
 
         $renderPage->parse($page, $full_view);
-    } //End render
+    }
 }//End timeclock_employee
 
 //End File

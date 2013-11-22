@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/15/13
- * @Date Modified: 11/20/13
+ * @Date Modified: 11/21/13
  * @Purpose: Used to pull the employees from the database and use the results in a view
  * @Version: 1.0
  */
@@ -17,7 +17,6 @@
 class model_employees {
     /**
      * @Purpose: Used to pull $system_di into class scope
-     * @Access: Public
      */
     public function __construct() {
         global $system_di;
@@ -34,11 +33,10 @@ class model_employees {
         if (array_key_exists('remove_employee', $_POST)) {
             $this->remove_employee();
         }
-    } //End __construct
+    }
 
     /**
      * @Purpose: Used to add an employee to the database
-     * @Access: Protected
      */
     protected function add_employee() {
         $error = '';
@@ -116,7 +114,6 @@ class model_employees {
 
     /**
      * @Purpose: Used to edit an employees database records
-     * @Protected
      */
     protected function edit_employee() {
         $id = (int) $_POST['id'];
@@ -216,7 +213,6 @@ class model_employees {
     
     /**
      * @Purpose: User to remove an employee from the database
-     * @Access: Protected
      */
     protected function remove_employee() {
         $id = (int) $_POST['employee_id'];
@@ -232,11 +228,10 @@ class model_employees {
         }
         
         header('Location: ' . $this->system_di->config->timeclock_root);
-    } //End remove_employee
+    }
     
     /**
      * @Purpose: Used by this constructor to return employees
-     * @Access: Public
      */
     public function get_employees($by_id = False) {
         $result = $this->system_di->db->query("SELECT * FROM `employees` ORDER BY `employee_lastname`, `employee_firstname`");
@@ -251,11 +246,10 @@ class model_employees {
         }
         
         return $result;
-    } //end get_employees
+    }
 
     /**
      * @Purpose: Used to return employees in a view-friendly manner
-     * @Access: Public
      */
     public function get_employees_for_view() {
         global $system_di;
@@ -267,7 +261,7 @@ class model_employees {
         }); //End array_walk $employees
 
         $this->system_di->template->employee = $return_employees;
-    } //End get_employees_for_view
+    }
 }//End model_employees
 
 //End File
