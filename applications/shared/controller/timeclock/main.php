@@ -18,6 +18,7 @@ class timeclock_main extends controller {
         foreach ($dependencies as $dependency) {
             $name = 'model_' . $dependency;
             $this->$name = $this->load_model($this->system_di->config->timeclock_subdirectories . '_' . $dependency);
+            $this->system_di->template->$name = $this->$name;
         }
     }
     
@@ -51,7 +52,7 @@ class timeclock_main extends controller {
 
         return True;
     }
-
+    
     /**
      * @Purpose: Used to make echo'ing out the values in the view a little "prettier"
      */
@@ -64,11 +65,12 @@ class timeclock_main extends controller {
      * @Purpose: Default function to be run when class is called
      */
     public function index() {
-        $this->load_dependencies(array('renderPage'));
+        $this->load_dependencies(array('renderPage', 'settings'));
         $this->login_failed();
 
         if ($this->is_logged_in()) {
             $this->employees();
+            $this->system_di->template->list_employees_as = $this->model_settings->list_employees_as;
 
             $this->system_di->template->title = 'TimeClock | Home';
             $this->system_di->template->home_active = 'class="active"';
@@ -119,6 +121,12 @@ class timeclock_main extends controller {
         
         if ($this->is_logged_in()) {
             $this->employees();
+            
+            $this->system_di->template->pay_period_start = $this->model_settings->pay_period_start;
+            $this->system_di->template->pay_period_end = $this->model_settings->pay_period_end;
+            $this->system_di->template->round_time_by = $this->model_settings->round_time_by;
+            $this->system_di->template->sort_employees_by = $this->model_settings->sort_employees_by;
+            $this->system_di->template->list_employees_as = $this->model_settings->list_employees_as;
 
             $this->system_di->template->title = 'TimeClock | Settings';
             $this->system_di->template->settings_active = 'class="active"';

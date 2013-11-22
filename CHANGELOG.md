@@ -1,3 +1,10 @@
+### 11/22/13 - COmmit 3 ###
+* Added last_date to API
+* Integrated settings into everything else
+* Changed load_dependencies to also add them to $this->system_di->template
+* Changed employee listings to work off $this->system_di->template instead of passing variables through functions
+* Decided not to make variable pay period start and end days
+
 ### 11/22/13 - Commit 2 ###
 * Updated TODO.md
 * Updated model naming convention

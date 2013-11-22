@@ -38,10 +38,13 @@
                     <tbody>
                         <?php
                         for ($i=0; $i<count($this->system_di->template->employee); $i++) {
-                            
+                            $employee_name = ('first_last' === $this->system_di->template->list_employees_as)
+                                ? $this->system_di->template->employee[$i]['employee_firstname'] . ', ' . $this->system_di->template->employee[$i]['employee_lastname']
+                                : $this->system_di->template->employee[$i]['employee_lastname'] . ', ' . $this->system_di->template->employee[$i]['employee_firstname']
+                            ;
                             ?>
                             <tr>
-                            <td onclick="employeeTableClicked('view', '<?php timeclock_main::writeout($i, 'id'); ?>')"><?php timeclock_main::writeout($i, 'lastname'); ?>, <?php timeclock_main::writeout($i, 'firstname'); ?></td>
+                            <td onclick="employeeTableClicked('view', '<?php timeclock_main::writeout($i, 'id'); ?>')"><?php echo $employee_name; ?></td>
                             <td onclick="employeeTableClicked('view', '<?php timeclock_main::writeout($i, 'id'); ?>')"><?php timeclock_main::writeout($i, 'uid'); ?></td>
                             <td onclick="employeeTableClicked('view', '<?php timeclock_main::writeout($i, 'id'); ?>')"><?php timeclock_main::writeout($i, 'username'); ?></td>
                                 <td>

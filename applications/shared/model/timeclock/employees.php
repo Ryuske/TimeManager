@@ -234,7 +234,18 @@ class model_timeclock_employees {
      * @Purpose: Used by this constructor to return employees
      */
     public function get_employees($by_id = False) {
-        $result = $this->system_di->db->query("SELECT * FROM `employees` ORDER BY `employee_lastname`, `employee_firstname`");
+        switch ($this->system_di->template->model_settings->sort_employees_by) {
+            case 'first_name':
+                $sort_employees_by = '`employee_firstname`, `employee_lastname`';
+                break;
+            case 'uid':
+                $sort_employees_by = '`employee_uid`';
+                break;
+            default:
+                $sort_employees_by = '`employee_lastname`, `employee_firstname`';
+        }
+        
+        $result = $this->system_di->db->query("SELECT * FROM `employees` ORDER BY $sort_employees_by");
         $employees = array();
         
         if (True === $by_id) {

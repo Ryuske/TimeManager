@@ -72,14 +72,11 @@ class model_timeclock_settings {
      * @Purpose: Loads a page, including the neccessary HTML headers and things
      */
     public function update_settings() {
-        $valid_days = array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
         $valid_round_times = array('none', '1', '15', '30');
         $valid_sort_by = array('first_name', 'last_name', 'uid');
         $valid_list_as = array('last_first', 'first_last');
         
-        $this->__set('pay_period_start', (array_key_exists('pay_period_start', $_POST) && (in_array($_POST['pay_period_start'], $valid_days)) ? $_POST['pay_period_start'] : 'Monday'));
-        $this->__set('pay_period_end', ((array_key_exists('pay_period_end', $_POST) && in_array($_POST['pay_period_end'], $valid_days)) ? $_POST['pay_period_end'] : 'Sunday'));
-        $this->__set('round_time_by', ((array_key_exists('round_time_by', $_POST) && array_key_exists($_POST['round_times_by'], $valid_round_times)) ? $_POST['round_time_by'] : 'none'));
+        $this->__set('round_time_by', ((array_key_exists('round_time_by', $_POST) && in_array($_POST['round_time_by'], $valid_round_times)) ? $_POST['round_time_by'] : 'none'));
         $this->__set('sort_employees_by', ((array_key_exists('sort_employees_by', $_POST) && in_array($_POST['sort_employees_by'], $valid_sort_by)) ? $_POST['sort_employees_by'] : 'first_name'));
         $this->__set('list_employees_as', ((array_key_exists('list_employees_as', $_POST) && in_array($_POST['list_employees_as'], $valid_list_as)) ? $_POST['list_employees_as'] : 'last_first'));
     
