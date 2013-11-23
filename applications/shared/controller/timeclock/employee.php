@@ -86,7 +86,7 @@ class timeclock_employee extends controller {
      */
     public function edit($employee_id) {
         $this->system_di->template->response = '';
-        $this->load_dependencies(array('loggedIn', 'employees'));
+        $this->load_dependencies(array('loggedIn', 'employees', 'settings'));
         $this->system_di->template->all_employees_by_id = $this->model_employees->get_employees(True);
         $this->system_di->template->employee_id = (int) $employee_id;
         
@@ -103,7 +103,7 @@ class timeclock_employee extends controller {
      * @Purpose: Used to remove an existing employee (employee/remove/x)
      */
     public function remove($employee_id) {
-        $this->load_dependencies(array('loggedIn'));
+        $this->load_dependencies(array('loggedIn', 'settings'));
 
         if ($this->is_logged_in()) {
             $this->system_di->template->all_employees = $this->employees(False);

@@ -31,6 +31,9 @@ http://example.com/timeclock
     http://example.com/timeclock/payperiod/tx/[uid]/last_time
         This will return the last time the employee punched in or out. Format: 5:00pm, 12:00am, etc
         
+    http://example.com/timeclock/payperiod/tx/[uid]/last_date
+        This will return the last date the employee punched in or out. Format: mm/dd/yy
+        
     http://example.com/timeclock/payperiod/tx/[uid]/total_hours/<pay period>
         This will return the total hours an employee worked for the given pay period. If no pay period
         is given it will return the current pay period. The response is in hours (i.e. 17.25 hours)

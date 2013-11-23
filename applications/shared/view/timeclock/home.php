@@ -67,6 +67,17 @@
                         </tr>
                     </tfoot>
                 </table>
+                <div class="row">
+                    <div class="col-sm-3 col-sm-offset-9">
+                        <ul class="pagination">
+                            <li class="disabled"><a href="#">&laquo;</a></li>
+                            <li class="active"><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3 ...</a></li>
+                            <li><a href="#">&raquo;</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

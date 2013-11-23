@@ -109,6 +109,9 @@
                 <p><span class="italic">http://example.com/timeclock/payperiod/tx/[uid]/last_time</span><br />
                     <span class="extra_indent">This will return the last time the employee punched in or out. Format: <span class="bold">5:00pm, 12:00am, etc</span></span></p>
                     
+                <p><span class="italic">http://example.com/timeclock/payperiod/tx/[uid]/last_date</span><br />
+                    <span class="extra_indent">This will return the last date the employee punched in or out. Format: <span class="bold">mm/dd/yy</span></span></p>
+                    
                 <p><span class="italic">http://example.com/timeclock/payperiod/tx/[uid]/total_hours/[pay period]</span><br />
                     <span class="extra_indent">This will return the total hours an employee worked for the given pay period. If no pay period</span>
                     <span class="extra_indent">is given it will return the current pay period. The response is in hours (i.e. <span class="bold">17.25 hours</span>)</span>

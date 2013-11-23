@@ -1,4 +1,9 @@
-### 11/22/13 - COmmit 3 ###
+### 11/22/13 - Commit 4 ###
+* Updated README and About with information about last date
+* Fixed an infinite loop in editing a profile when generating a random UID
+* Started working on pagination
+
+### 11/22/13 - Commit 3 ###
 * Added last_date to API
 * Integrated settings into everything else
 * Changed load_dependencies to also add them to $this->system_di->template
