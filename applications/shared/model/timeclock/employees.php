@@ -149,7 +149,6 @@ class model_timeclock_employees {
                 $error .= '<p>If you pick a username, you must enter a password.</p>';
             }
         }
-        
         if (isset($_POST['generate_uid']) && '' === $_POST['uid']) {
             do {
                 $uid = substr(md5(rand()), 0, 8);
@@ -162,7 +161,8 @@ class model_timeclock_employees {
                 $query = $this->system_di->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_uid`=:uid", array(
                     ':uid' => $uid
                 ));
-            } while (empty($query));
+                
+            } while (!empty($query));
         } else {
             $uid = $_POST['uid'];
             
@@ -233,7 +233,7 @@ class model_timeclock_employees {
     /**
      * @Purpose: Used by this constructor to return employees
      */
-    public function get_employees($by_id = False) {
+    public function get_employees($by_id = False, $paginate = True) {
         switch ($this->system_di->template->model_settings->sort_employees_by) {
             case 'first_name':
                 $sort_employees_by = '`employee_firstname`, `employee_lastname`';
@@ -245,7 +245,17 @@ class model_timeclock_employees {
                 $sort_employees_by = '`employee_lastname`, `employee_firstname`';
         }
         
-        $result = $this->system_di->db->query("SELECT * FROM `employees` ORDER BY $sort_employees_by");
+        if (True === $paginate) {
+            $start = (int) $this->system_di->template->page_id * 10;
+            $end = $start+10;
+            $limit = 'LIMIT ' . $start . ',' . $end;
+            
+            //$this->generate_pagination();
+        } else {
+            $limit = '';
+        }
+        
+        $result = $this->system_di->db->query("SELECT * FROM `employees` ORDER BY $sort_employees_by $limit");
         $employees = array();
         
         if (True === $by_id) {
@@ -262,9 +272,9 @@ class model_timeclock_employees {
     /**
      * @Purpose: Used to return employees in a view-friendly manner
      */
-    public function get_employees_for_view() {
+    public function get_employees_for_view($paginate = True) {
         global $system_di;
-        $employees = $this->get_employees();
+        $employees = $this->get_employees(False, $paginate);
         $return_employees = array();
 
         array_walk($employees, function($value) use(&$return_employees) {

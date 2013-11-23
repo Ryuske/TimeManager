@@ -64,11 +64,12 @@ class timeclock_main extends controller {
     /**
      * @Purpose: Default function to be run when class is called
      */
-    public function index() {
+    public function index($page_id = 0) {
         $this->load_dependencies(array('renderPage', 'settings'));
         $this->login_failed();
 
         if ($this->is_logged_in()) {
+            $this->system_di->template->page_id = (int) $page_id;
             $this->employees();
             $this->system_di->template->list_employees_as = $this->model_settings->list_employees_as;
 
