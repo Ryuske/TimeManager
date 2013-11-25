@@ -4,4 +4,5 @@
 * Simplify installation
 * Export database to SQL file for installation
 * Write better usage descriptions for models
-* Finish pagination for employees on home page. framework doesn't support $page_id in the URL
+* Add strtolower() to string-based parameters
+* Update README/About to explain the Paginate By setting

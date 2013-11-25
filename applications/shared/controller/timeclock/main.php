@@ -64,14 +64,16 @@ class timeclock_main extends controller {
     /**
      * @Purpose: Default function to be run when class is called
      */
-    public function index($page_id = 0) {
+    public function index($page_id=1) {
         $this->load_dependencies(array('renderPage', 'settings'));
         $this->login_failed();
 
         if ($this->is_logged_in()) {
-            $this->system_di->template->page_id = (int) $page_id;
+            $this->system_di->template->page_id = (1 > $page_id) ? 1 : (int) $page_id;
+            $this->system_di->template->paginate_by = $this->model_settings->paginate_by;
             $this->employees();
             $this->system_di->template->list_employees_as = $this->model_settings->list_employees_as;
+            $this->system_di->template->pagination = $this->model_renderPage->generate_pagination('main', 'employees', (int) $page_id);
 
             $this->system_di->template->title = 'TimeClock | Home';
             $this->system_di->template->home_active = 'class="active"';
@@ -121,11 +123,10 @@ class timeclock_main extends controller {
         $this->system_di->template->update_status = $this->model_settings->update_status();
         
         if ($this->is_logged_in()) {
-            $this->employees();
-            
             $this->system_di->template->pay_period_start = $this->model_settings->pay_period_start;
             $this->system_di->template->pay_period_end = $this->model_settings->pay_period_end;
             $this->system_di->template->round_time_by = $this->model_settings->round_time_by;
+            $this->system_di->template->paginate_by = (NULL !== $this->model_settings->paginate_by) ? $this->model_settings->paginate_by : 10;
             $this->system_di->template->sort_employees_by = $this->model_settings->sort_employees_by;
             $this->system_di->template->list_employees_as = $this->model_settings->list_employees_as;
 

@@ -246,11 +246,9 @@ class model_timeclock_employees {
         }
         
         if (True === $paginate) {
-            $start = (int) $this->system_di->template->page_id * 10;
-            $end = $start+10;
+            $start = ((1 >= $this->system_di->template->page_id)) ? 0 : (int) ($this->system_di->template->page_id-1) * $this->system_di->template->paginate_by;
+            $end = $this->system_di->template->paginate_by;
             $limit = 'LIMIT ' . $start . ',' . $end;
-            
-            //$this->generate_pagination();
         } else {
             $limit = '';
         }
