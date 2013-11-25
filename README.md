@@ -90,8 +90,8 @@ top and fill out the basic information.
         3 times. When you click Add Date you'll be given a calendar where the only dates you can click
         are the ones within the pay period that you are looking at.
         
-        Also please note that all previous in/out slots for that dates must be filled before adding a new
-        date.
+        Also please note that all previous in/out slots for that dates must be filled before adding a
+        new date.
         
 ### Print a Timecard ###
         You can view a printer friendly version of the pay period by clicking on the Print button to the

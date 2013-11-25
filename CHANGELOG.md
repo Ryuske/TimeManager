@@ -1,3 +1,9 @@
+### 11/25/13 - Commit 1 ###
+* Updated README format
+* Paginated employees on home page
+* Added setting to paginate by, any number works, 0 disabled pagination
+* Updated framework - check framework changelog of details
+
 ### 11/22/13 - Commit 4 ###
 * Updated README and About with information about last date
 * Fixed an infinite loop in editing a profile when generating a random UID

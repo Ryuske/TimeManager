@@ -33,6 +33,10 @@
                     </select>
                 </div>
                 <div class="group">
+                    <label>Items Per Page (i.e. employees per page)</label>
+                    <input class="form-control" type="text" name="paginate_by" value="<?php echo (int) $this->system_di->template->paginate_by; ?>" />
+                </div>
+                <div class="group">
                     <label>Sort Employees By</label>
                     <select class="form-control" name="sort_employees_by">
                         <option value="last_name" <?php echo ('last_name' === $this->system_di->template->sort_employees_by) ? 'selected="selected"' : ''; ?>>Last Name, First Name</option>
