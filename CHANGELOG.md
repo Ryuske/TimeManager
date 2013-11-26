@@ -1,3 +1,8 @@
+### 11/26/13 - Commit 2 ###
+* Changed controller/employee.php to used renderPage within each method like the rest of the controllers
+* Updated some comments
+* Added pagination to previous pay periods
+
 ### 11/26/13 - Commit 1 ###
 * Fixed issues with getting existing pay period & adding new ones
 * Added information about settings to README.me and About page

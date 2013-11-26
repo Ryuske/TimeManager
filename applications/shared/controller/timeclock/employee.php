@@ -70,15 +70,16 @@ class timeclock_employee extends controller {
      */
     public function add() {
         $this->system_di->template->response = '';
-        $this->load_dependencies(array('loggedIn', 'employees'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees'));
 
         if ($this->is_logged_in()) {
             $this->system_di->template->title = 'TimeClock | Employee | Add';
+            $parse = 'employee_add';
         } else {
             $this->load_home();
         }
 
-        $this->render('employee_add');
+        $this->model_renderPage->parse($parse, True);
     }
     
     /**
@@ -86,24 +87,25 @@ class timeclock_employee extends controller {
      */
     public function edit($employee_id) {
         $this->system_di->template->response = '';
-        $this->load_dependencies(array('loggedIn', 'employees', 'settings'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'settings'));
         $this->system_di->template->all_employees_by_id = $this->model_employees->get_employees(True);
         $this->system_di->template->employee_id = (int) $employee_id;
         
         if ($this->is_logged_in()) {
             $this->system_di->template->title = 'TimeClock | Employee | Edit';
+            $parse = 'employee_edit';
         } else {
             $this->load_home();
         }
 
-        $this->render('employee_edit');
+        $this->model_renderPage->parse($parse, True);
     }
     
     /**
      * @Purpose: Used to remove an existing employee (employee/remove/x)
      */
     public function remove($employee_id) {
-        $this->load_dependencies(array('loggedIn', 'settings'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings'));
 
         if ($this->is_logged_in()) {
             $this->system_di->template->all_employees = $this->employees(False);
@@ -113,21 +115,21 @@ class timeclock_employee extends controller {
             $this->system_di->template->title = 'TimeClock | Employee | Remove';
             $this->system_di->template->home_active = 'class="active"';
             $parse = 'employee_remove';
-            $full_page = True;
         } else {
             $this->load_home();
         }
 
         //Parses the HTML from the view
-        $this->render($parse, $full_page);
+        $this->model_renderPage->parse($parse, True);
     }
 
     /**
      * @Purpose: Used to view an existing employees time card
      */
-    public function view($employee_id, $pay_period='current') {
-        $this->load_dependencies(array('loggedIn', 'settings', 'payPeriod'));
-        
+    public function view($employee_id, $pay_period='current', $page_id = 1) {
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'payPeriod'));
+        $this->system_di->template->page_id = (int) $page_id;
+        $this->system_di->template->paginate_by = $this->model_settings->paginate_by;
         $this->system_di->template->employee_id = (int) $employee_id;
         
         if ('current' === $pay_period) {
@@ -149,17 +151,17 @@ class timeclock_employee extends controller {
         if ($this->is_logged_in()) {
             $this->system_di->template->all_employees = $this->employees(False);
             $this->system_di->template->all_employees_by_id = $this->employees(True);
+            $this->system_di->template->pagination = $this->model_renderPage->generate_pagination('employee/view/' . (int) $employee_id . '/' . $pay_period, 'payperiods', (int) $page_id);
 
             $this->system_di->template->title = 'TimeClock | Employee | View';
             $this->system_di->template->home_active = 'class="active"';
             $parse = 'employee_view';
-            $full_page = True;
         } else {
             $this->load_home();
         }
 
         //Parses the HTML from the view
-        $this->render($parse, $full_page);
+        $this->model_renderPage->parse($parse, True);
     }
     
     /**
@@ -167,15 +169,6 @@ class timeclock_employee extends controller {
      */
     protected function load_home() {
         header('Location: ' . $this->system_di->config->timeclock_root);
-    }
-
-    /**
-     * @Purpose: Used to load pages, including the HTML headers and footers
-     */
-    protected function render($page, $full_view = True) {
-        $this->load_dependencies(array('renderPage'));
-
-        $this->model_renderPage->parse($page, $full_view);
     }
 }//End timeclock_employee
 

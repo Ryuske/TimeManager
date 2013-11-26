@@ -52,11 +52,12 @@ class model_timeclock_renderPage {
                 break;
             case 'payperiods':
                 $query_string = 'FROM `pay_periods`';
+                $system_di->template->paginate_by *= 4;
                 break;
             default:
                 return false;
         }
-        $query = $system_di->db->query("SELECT * {$query_string}");
+        $query = $system_di->db->query("SELECT * $query_string");
         $last_page = (int) ceil((count($query) / $system_di->template->paginate_by));
         
         $system_di->template->previous = (1 === $current_page) ? '<li class="disabled"><a href="#">&laquo;</a></li>' : '<li><a href="' . $page . ($current_page-1) . '">&laquo;</a></li>';
@@ -88,7 +89,7 @@ class model_timeclock_renderPage {
         }
         
         return $system_di->template->parse($system_di->config->timeclock_subdirectories . '_pagination', true);
-    }
+    } //End generate_pagination
 }
 
 //End File

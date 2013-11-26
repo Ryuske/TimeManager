@@ -37,7 +37,7 @@ class model_timeclock_payPeriod {
     /**
      * @Purpose: Used to return a pay period in date format
      */
-    public function get_pay_period($date='current') {
+    public function get_pay_period($date='current', $paginate=False) {
         if ('current' === $date) {
             $current_date = getdate();
             $monday = getdate(strtotime('last Monday'));
@@ -62,7 +62,17 @@ class model_timeclock_payPeriod {
                 return array($monday, $sunday, $pay_period_id[0]['pay_period_id']);
             }
         } elseif ('all' === $date) {
-            $pay_periods = $this->system_di->db->query("SELECT * FROM `pay_periods` ORDER BY `pay_period_monday` DESC");
+            if (True === $paginate) {
+                $start = ((1 >= $this->system_di->template->page_id)) ? 0 : (int) ($this->system_di->template->page_id-1) * ($this->system_di->template->paginate_by * 4);
+                $end = $this->system_di->template->paginate_by * 4;
+                $limit = 'LIMIT ' . $start . ',' . $end;
+            } else {
+                $limit = '';
+            }
+            
+            var_dump($limit);
+
+            $pay_periods = $this->system_di->db->query("SELECT * FROM `pay_periods` ORDER BY `pay_period_monday` DESC $limit");
             
             return $pay_periods;
         } else {
@@ -473,7 +483,7 @@ class model_timeclock_payPeriod {
      * @Purpose: Used to create the table that displays all the previous pay periods
      */
     public function generate_previous_pay_periods_table($employee_id, $selected_pay_period) {
-        $pay_periods = $this->get_pay_period('all');
+        $pay_periods = $this->get_pay_period('all', True);
         $employees_pay_periods = $this->system_di->db->query("SELECT `pay_period_id` FROM `employee_punch` WHERE `employee_id`=:employee_id", array(
             ':employee_id' => (int) $employee_id
         ));
