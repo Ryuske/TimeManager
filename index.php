@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/14/13
- * @Date Modified: 11/14/13
+ * @Date Modified: 11/26/13
  * @Purpose: Front Controller
  * @Version: 1.0
  *
@@ -19,6 +19,8 @@ define('__PROJECT_ENVIRONMENT', 'dev');
 
 /**
  * Define the base path to the framework
+ * Should look something like /var/www/framework (i.e. the framework *SHOULD NOT* be in a web accessible directory)
+ * This is the only file that should be web accessible (aside from assets, like js/css/images)
  */
 define('__BASE_PATH', DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'www' . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'kenyon.sexypenguins.com' . DIRECTORY_SEPARATOR . 'tnbtimeclock' . DIRECTORY_SEPARATOR);
 

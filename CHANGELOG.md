@@ -1,3 +1,6 @@
+### 11/26/13 - Commit 6 ###
+* Made part of the installation easier to follow
+
 ### 11/26/11 - Commit 5 ###
 * Fixed issue with .htaccess where timeclock.sql was being read instead of index.php?route=$1
 * Corrected renderPage USAGE comments
