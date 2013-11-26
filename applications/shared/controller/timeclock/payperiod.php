@@ -108,7 +108,7 @@ class timeclock_payperiod extends controller {
      * @Purpose: Used to create a print friendly version of a pay period
      */
     public function print_friendly($employee_id, $pay_period) {
-        $this->load_dependencies(array('renderPage', 'payPeriod'));
+        $this->load_dependencies(array('renderPage', 'payPeriod', 'settings'));
         $pay_period = $this->model_payPeriod->get_pay_period($pay_period);
         
         $employee = $this->system_di->db->query("SELECT `employee_firstname`,`employee_lastname` FROM `employees` WHERE `employee_id`=:employee_id", array(

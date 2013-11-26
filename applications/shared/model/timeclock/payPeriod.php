@@ -81,7 +81,7 @@ class model_timeclock_payPeriod {
      * @Purpose: Used to return a pay period in date format
      */
     public function get_pay_period($date='current', $paginate=False) {
-        $date = strtolower($date);
+        $date = (is_string($date)) ? strtolower($date) : $date;
         
         if ('current' === $date) {
             $current_date = getdate();
@@ -114,8 +114,6 @@ class model_timeclock_payPeriod {
             } else {
                 $limit = '';
             }
-            
-            var_dump($limit);
 
             $pay_periods = $this->system_di->db->query("SELECT * FROM `pay_periods` ORDER BY `pay_period_monday` DESC $limit");
             
@@ -294,6 +292,15 @@ class model_timeclock_payPeriod {
             $sunday = $current_date;
         }
         
+        $check_pay_period = $this->system_di->db->query("SELECT `pay_period_id` FROM `pay_periods` WHERE `pay_period_monday`=:monday AND `pay_period_sunday`=:sunday", array(
+            ':monday' => (int) $monday[0],
+            ':sunday' => (int) $sunday[0]
+        ));
+        
+        if (!empty($check_pay_period)) {
+            return $check_pay_period;
+        }
+        
         $add_pay_period = $this->system_di->db->query("INSERT INTO `pay_periods` (`pay_period_id`, `pay_period_monday`, `pay_period_sunday`) VALUES ('', :monday, :sunday)", array(
             ':monday' => (int) $monday[0],
             ':sunday' => (int) $sunday[0]
@@ -453,10 +460,9 @@ class model_timeclock_payPeriod {
      */
     protected function is_time_editable($hour, $times_array, $time_index, $time_operation, $date) {
         $return = '';
-
         if (array_key_exists($time_index, $hour[$time_operation]) && 0 != $hour[$time_operation][$time_index]) {
             $return = '<td onclick="updateTime(\'' . $date . '\', ' . $time_index . ', \'' . $time_operation . '\')">' . date($this->_timeFormat, $hour[$time_operation][$time_index]) . '</td>';
-        } elseif (array_key_exists(($time_index - 1), $hour[$time_operation]) || 0 === $time_index) { //Check if previous times are in
+        } elseif (array_key_exists(($time_index - 1), $hour[$time_operation]) &&  0 != $hour[$time_operation][$time_index-1] || 0 === $time_index) { //Check if previous times are in
             $return = '<td onclick="updateTime(\'' . $date . '\', ' . $time_index . ', \'' . $time_operation . '\')"></td>';
         } else {
             $return = '<td></td>';

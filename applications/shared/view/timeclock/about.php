@@ -27,7 +27,7 @@
         the development it was abstracted using a RESTFUL API and can be used by anything that can make a web
         call.</p>
         
-        <p>TimeClock was developed by <a href="https://plus.google.com/+KenyonHaliwell" target="_blank">Kenyon Haliwell</a> and can be downloaded at <a href="https://github.com/Ryuske" target="_blank">GitHub</a>.</p>
+        <p>TimeClock was developed by <a href="https://plus.google.com/+KenyonHaliwell" target="_blank">Kenyon Haliwell</a> and can be downloaded at <a href="https://github.com/Ryuske/TimeClock" target="_blank">GitHub</a>.</p>
 
     <h2>How to Use</h2>
         <div class="indent">
