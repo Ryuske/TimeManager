@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/15/13
- * @Date Modified: 11/22/13
+ * @Date Modified: 11/26/13
  * @Purpose: Employee controller
  * @Version: 1.0
  */
@@ -49,6 +49,9 @@ class timeclock_employee extends controller {
      */
     public static function writeout($employee_id=NULL, $employee_value='id', $sort_by = 'order') {
         global $system_di;
+        $employee_value = strtolower($employee_value);
+        $sort_by = strtolower($sort_by);
+        
         if (NULL !== $employee_id && 'order' === $sort_by) {
             echo $system_di->template->all_employees[$employee_id]['employee_' . $employee_value];
         } elseif (NULL !== $employee_id && 'by_id' === $sort_by) {

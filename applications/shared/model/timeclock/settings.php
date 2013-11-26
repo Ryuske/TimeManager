@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/21/13
- * @Date Modified: 11/22/13
+ * @Date Modified: 11/26/13
  * @Purpose: Used to get and set settings
  * @Version: 1.0
  */
@@ -11,7 +11,7 @@
  * USAGE:
  *  To use the model:
  *      Within your controller, use:
- *      $this->settings = $this->load_model('settings', <config path for timeclock>);
+ *      $this->settings = $this->load_model('timeclock_settings');
  *
  *      $this->settings->something = 'koala';
  *      echo $this->settings->something; //Returns 'koala'

@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/13/13
- * @Date Modified: 11/22/13
+ * @Date Modified: 11/26/13
  * @Purpose: Default controller for a website
  * @Version: 1.0
  */
@@ -58,6 +58,8 @@ class timeclock_main extends controller {
      */
     public static function writeout($employee=NULL, $employee_value=NULL) {
         global $system_di;
+        $employee_value = strtolower($employee_value);
+        
         echo $system_di->template->employee[$employee]['employee_' . $employee_value];
     }
 
