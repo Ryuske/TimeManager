@@ -66,6 +66,16 @@ top and fill out the basic information.
     You can remove an employee by clicking on the trash can to the right of their name. You'll be
     presented with a confirmation box with their name and confirm and cancel buttons.
     
+## Settings ##
+    There are four different options that you can current edit. Round Time By, Items Per Page,
+    Sort Employees By and List Employees As. Here is a break down of the settings:
+    
+    Round Time By: Used to determin how accurately you want to round hours.
+    Items Per Page: Determins how many employees or rows of pay periods you wish to view at once.
+    0 disables paging all together.
+    Sort Employees By: Defines how to sort employees on the home page
+    List Employees By: Defines how to display the employees name on the home page.
+    
 ## Viewing a Pay Period ##
     You can view an employees' times by clicking on their name on the home page. The first pay
     period you will see is the current pay period. Below the current pay period table is a list of

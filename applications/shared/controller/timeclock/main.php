@@ -97,8 +97,6 @@ class timeclock_main extends controller {
         $this->login_failed();
 
         if ($this->is_logged_in()) {
-            $this->employees();
-
             $this->system_di->template->title = 'TimeClock | About';
             $this->system_di->template->about_active = 'class="active"';
             $parse = 'about';

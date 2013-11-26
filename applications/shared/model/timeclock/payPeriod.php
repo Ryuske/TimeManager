@@ -56,12 +56,13 @@ class model_timeclock_payPeriod {
             ));
             
             if (empty($pay_period_id)) {
-                return False;
+                $pay_period_id = $this->add_pay_period();
+                return array($monday, $sunday, $pay_period_id[0]['pay_period_id']);
             } else {
                 return array($monday, $sunday, $pay_period_id[0]['pay_period_id']);
             }
         } elseif ('all' === $date) {
-            $pay_periods = $this->system_di->db->query("SELECT * FROM `pay_periods`");
+            $pay_periods = $this->system_di->db->query("SELECT * FROM `pay_periods` ORDER BY `pay_period_monday` DESC");
             
             return $pay_periods;
         } else {
@@ -93,7 +94,8 @@ class model_timeclock_payPeriod {
             ));
             
             if (empty($pay_period_id)) {
-                return False;
+                $pay_period_id = $this->add_pay_period();
+                return array($monday, $sunday, $pay_period_id[0]['pay_period_id']);
             } else {
                 return array($monday, $sunday, $pay_period_id[0]['pay_period_id']);
             }
@@ -226,16 +228,25 @@ class model_timeclock_payPeriod {
      * @Purpose: Used to add a new pay period to the database
      */
     protected function add_pay_period() {
-        $current_pay_period = $this->get_pay_period();
+        $current_date = getdate();
+        $monday = getdate(strtotime('last Monday'));
+        $sunday = getdate(strtotime('next Sunday'));
+    
+        if ($current_date['weekday'] === 'Monday') {
+            $monday = $current_date;
+        }
+        if ($current_date['weekday'] === 'Sunday') {
+            $sunday = $current_date;
+        }
         
-        $add_pay_period = $this->system_di->db->query("INSERT INTO `pay_periods` (`pay_period_id`, `pay_period_monday`, `pay_period_friday`) VALUES ('', :monday, :friday)", array(
-            ':monday' => $current_pay_period[0],
-            ':friday' => $current_pay_period[1]
+        $add_pay_period = $this->system_di->db->query("INSERT INTO `pay_periods` (`pay_period_id`, `pay_period_monday`, `pay_period_sunday`) VALUES ('', :monday, :sunday)", array(
+            ':monday' => (int) $monday[0],
+            ':sunday' => (int) $sunday[0]
         ));
         
-        $check_pay_period = $this->system_di->db->query("SELECT `pay_period_id` FROM `pay_periods` WHERE `pay_period_monday`=:monday AND `pay_period_friday`=:friday", array(
-            ':monday' => $current_pay_period[0],
-            ':friday' => $current_pay_period[1]
+        $check_pay_period = $this->system_di->db->query("SELECT `pay_period_id` FROM `pay_periods` WHERE `pay_period_monday`=:monday AND `pay_period_sunday`=:sunday", array(
+            ':monday' => (int) $monday[0],
+            ':sunday' => (int) $sunday[0]
         ));
         
         return $check_pay_period;
@@ -452,8 +463,6 @@ class model_timeclock_payPeriod {
                     
                     $hour['total_hours'] = 'Continuation of ' . $row['in']['date'];
                 }
-                
-                //die(var_dump($return));
             }
         }
         

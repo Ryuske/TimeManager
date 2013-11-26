@@ -1,3 +1,8 @@
+### 11/26/13 - Commit 1 ###
+* Fixed issues with getting existing pay period & adding new ones
+* Added information about settings to README.me and About page
+* Decided to page previous pay periods by rows. So 10 rows is 40 pay periods
+
 ### 11/25/13 - Commit 1 ###
 * Updated README format
 * Paginated employees on home page
