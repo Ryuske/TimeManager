@@ -112,14 +112,14 @@ top and fill out the basic information.
     Please refer to the API on how to punch an employee in and out.
 
 # Installation #
-To install TimeClock, you will have to download https://github.com/Ryuske/PHP-Framework which is a framework that was also developed by
-Kenyon Haliwell. Refer to the installation instructions of the framework for what goes where. However, the directory struture of TimeClock
-is the same as the framework. So it's just copy & paste.
+To install TimeClock, you will have to download https://github.com/Ryuske/PHP-Framework which is a framework
+that was also developed by Kenyon Haliwell. Refer to the installation instructions of the framework for what
+goes where. However, the directory struture of TimeClock is the same as the framework. So it's just copy & paste.
 
-Once you have all the files installed. you're going to have to import timeclock.sql into a database and update the file in /configuration/
-to use your MySQL information. For more information on how to do this, please refer to the frameworks README. It will explain how the
-configuration files work.
+After you have install the framework and the files, you're gonna have to go to <framework_root>/configuration
+and update either shared.php or yoursite.com.php and update the MySQL Database information. Make sure you also
+import timeclock.sql into your database.
 
-After you have imported the database, you'll have to manually add a user to the employees table. The password will have to be a MD5 hash.
-
-*** Please note that simplifying the installation is on the TODO list ***
+Now just go to your browser, and navigate to yoursite.com/timeclock/install and enter the information and click
+Install. Once it finishes it'll take you over to the login screen and just login and you're ready to use your
+new timeclock!

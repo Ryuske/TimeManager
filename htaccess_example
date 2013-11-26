@@ -1,4 +1,5 @@
 #Make sure AllowOverride in your Apache config is set to All
+Options -MultiViews
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 	RewriteBase /

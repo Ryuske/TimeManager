@@ -3,7 +3,7 @@
  * @Author: Kenyon Haliwell
  * @URL: http://khdev.net/
  * @Date Created: 2/21/11
- * @Date Modified: 2/22/11
+ * @Date Modified: 2/26/14
  * @Purpose: Used to display user defined errors. By default it will display a 404 error.
  * @Version: 1.0
  */
@@ -20,8 +20,7 @@ class userErrors extends controller
      */
     public function index()
     {
-        debug_print_backtrace();
-        echo '404 Error';
+        $this->system_di->template->parse('404');
     }//End index
 }//End errors
 

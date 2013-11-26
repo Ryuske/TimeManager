@@ -13,10 +13,10 @@
  *      Within your controller, use:
  *      $renderPage = $this->load_model('renderPage');
  *      $renderPage->parse('main', True);
- *          This would load timeclock main, and it would include the HTML header/footers which contains the navbar
+ *          This would load timeclock main, and it would include the navbar
  *
  *      $renderPage->parse('login', False);
- *          This would load timeclock login, without the HTML headers and footers so that it is a little more basic page
+ *          This would load timeclock login, without the navbar
  *
  *      $employees_pagination = $renderPage->generate_pagination('main', 'employees', 1);
  *          Parameter 1 is the page that prefixes the links (i.e. main/1 main/2 etc)

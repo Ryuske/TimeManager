@@ -143,6 +143,27 @@ class timeclock_main extends controller {
         //Parses the HTML from the view
         $this->model_renderPage->parse($parse, $full_page);
     }
+    /**
+     * @Purpose: Used for the initial installation of TimeClock
+     */
+    public function install() {
+        $this->load_dependencies(array('renderPage', 'install', 'settings'));
+        $this->login_failed();
+        $this->system_di->template->title = 'TimeClock | Installation';
+        $this->system_di->template->round_time_by = $this->model_settings->round_time_by;
+        $this->system_di->template->paginate_by = (NULL !== $this->model_settings->paginate_by) ? $this->model_settings->paginate_by : 10;
+        $this->system_di->template->sort_employees_by = $this->model_settings->sort_employees_by;
+        $this->system_di->template->list_employees_as = $this->model_settings->list_employees_as;
+        $parse = 'install_main';
+        
+        $employee = $this->system_di->db->query("SELECT `employee_id` FROM `employees` LIMIT 0,1");
+        if (!empty($employee)) {
+            $this->system_di->template->title = 'TimeClock | Sign In';
+            $parse = 'login';
+        }
+
+        $this->model_renderPage->parse($parse, False);
+    }
 } //End timeclock_main
 
 //End File

@@ -1,3 +1,8 @@
+### 11/26/11 - Commit 5 ###
+* Fixed issue with .htaccess where timeclock.sql was being read instead of index.php?route=$1
+* Corrected renderPage USAGE comments
+* Simplified installation & updated README.md to reflect the changes
+
 ### 11/26/13 - Commit 4  ###
 * Updated README.md and About GitHub links to go to the repo instead of my account
 * Fixed slight issue with payPeriod model; $date = strtolower($date); would error when a date was entered instead of current or all
