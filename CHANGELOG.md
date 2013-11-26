@@ -1,3 +1,11 @@
+### 11/26/13 - Commit 4  ###
+* Updated README.md and About GitHub links to go to the repo instead of my account
+* Fixed slight issue with payPeriod model; $date = strtolower($date); would error when a date was entered instead of current or all
+* Added a check to model_timeclock_payPeriod->add_pay_period() so that it won't add multiple pay periods that are the same
+* Forgot to add settings to payperiod->printer_friendly() which caused rounding hours to fail
+* Fixed Issue in model_timeclock_payPeriod->is_time_editable() where the 2nd 'in' would be editable even if the first wasn't set
+* Exported the database, timeclock.sql
+
 ### 11/26/13 - Commit 3 ###
 * Added strtolower() to string based parameters
 * Updated USAGE examples on models. Hopefully they're a little easier to understand now.

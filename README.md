@@ -5,7 +5,7 @@ The original idea was that it would be used with an RFID scanner for punching in
 the development it was abstracted using a RESTFUL API and can be used by anything that can make a web
 call.
 
-TimeClock was developed by [Kenyon Haliwell](https://google.com/+KenyonHaliwell) and can be downloaded at https://github.com/Ryuske.
+TimeClock was developed by [Kenyon Haliwell](https://google.com/+KenyonHaliwell) and can be downloaded at https://github.com/Ryuske/TimeClock.
 
 # API #
 The API is very simple, and for our examples we are going to assume that TimeClock was installed at
