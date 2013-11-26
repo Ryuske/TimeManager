@@ -52,6 +52,33 @@
                 <p>You can remove an employee by clicking on the <span class="bold">trash can</span> to the right of their name. You'll be presented with a confirmation box
                 with their name and <span class="italic">confirm and cancel</span> buttons.</p>
                 
+            <h4>Settings</h4>
+                <p>There are four different options that you can current edit. Round Time By, Items Per Page,
+                Sort Employees By and List Employees As. Here is a break down of the settings:</p>
+                <p>
+                    <table class="table">
+                        <tr>
+                            <td><span class="bold">Round Time By:</span></td>
+                            <td>Used to determin how accurately you want to round hours.</td>
+                        </tr>
+                        <tr>
+                            <td><span class="bold">Items Per Page:</span></td>
+                            <td>
+                                Determins how many employees or rows of pay periods you wish to view at once.
+                                0 disables paging all together.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="bold">Sort Employees By:</span></td>
+                            <td>Defines how to sort employees on the home page</td>
+                        </tr>
+                        <tr>
+                            <td><span class="bold">List Employees By:</span></td>
+                            <td>Defines how to display the employees name on the home page.</td>
+                        </tr>
+                    </table>
+                </p>
+                
             <h4>Viewing a Pay Period</h4>
                 <p>You can view an employees' times by <span class="bold">clicking on their name</span> on the home page. The <span class="italic">first pay period you will see
                 is the current pay period</span>. Below the current pay period table is a list of all the pay periods that the system is aware of. Any pay period that is

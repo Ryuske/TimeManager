@@ -233,7 +233,7 @@ class model_timeclock_employees {
     /**
      * @Purpose: Used by this constructor to return employees
      */
-    public function get_employees($by_id = False, $paginate = True) {
+    public function get_employees($by_id = False, $paginate = False) {
         switch ($this->system_di->template->model_settings->sort_employees_by) {
             case 'first_name':
                 $sort_employees_by = '`employee_firstname`, `employee_lastname`';

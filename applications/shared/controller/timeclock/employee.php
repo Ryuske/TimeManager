@@ -38,9 +38,9 @@ class timeclock_employee extends controller {
             die(debug_print_backtrace());
         }
         if (True === $by_id) {
-            return $this->model_employees->get_employees(True);
+            return $this->model_employees->get_employees(True, False);
         } else {
-            return $this->model_employees->get_employees();
+            return $this->model_employees->get_employees(False, False);
         }
     }
     
