@@ -132,15 +132,16 @@ $date_format = 'm/d/y';
                                             </tr>
                                         </tfoot>
                                     </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                                </div> <!-- END: col-sm-3 -->
+                                {pagination}
+                            </div> <!-- END: row -->
+                        </div> <!-- END: panel-body -->
+                    </div> <!-- END: panel panel-success -->
+                </div> <!-- END: col-sm-12 -->
+            </div> <!-- END: row -->
+        </div> <!-- END: well -->
+    </div> <!-- END: col-sm-12 -->
+</div> <!-- END: row -->
 <div class="update_time_dialog">
     <form class="update_time_form" method="post" action="">
         <div class="dialog_text">
