@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/13/13
- * @Date Modified: 11/22/13
+ * @Date Modified: 11/26/13
  * @Purpose: Various functions that apply to logged in users (or not logged in)
  * @Version: 1.0
  */
@@ -11,7 +11,17 @@
  * USAGE:
  *  To use the model:
  *      Within your controller, use:
- *      $loggedIn = $this->load_model('loggedIn');
+ *      $loggedIn = $this->load_model('loggedIn'); //Brings the model into scope & also tries to log a user in
+ *
+ *      $this->system_di->template->login_error = $loggedIn->login_error();
+ *          Allows you to return the login error to the view
+ *          
+ *      $loggedIn->status()
+ *          Returns True or False depending on if you're logged in. Usually used within an if statement.
+ *          
+ *      $loggedIn->logout()
+ *          Logs a user out 
+ *
  */
 class model_timeclock_loggedIn {
     private static $_user;

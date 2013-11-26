@@ -1,3 +1,7 @@
+### 11/26/13 - Commit 3 ###
+* Added strtolower() to string based parameters
+* Updated USAGE examples on models. Hopefully they're a little easier to understand now.
+
 ### 11/26/13 - Commit 2 ###
 * Changed controller/employee.php to used renderPage within each method like the rest of the controllers
 * Updated some comments

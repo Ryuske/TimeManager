@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/15/13
- * @Date Modified: 11/22/13
+ * @Date Modified: 11/26/13
  * @Purpose: Used to pull the employees from the database and use the results in a view
  * @Version: 1.0
  */
@@ -11,8 +11,27 @@
  * USAGE:
  *  To use the model:
  *      Within your controller, use:
+ *      --- EXAMPLE 1 ---
  *      $this->employees = $this->load_model('employees');
- *      $this->system_di->template->all_employees_by_id = $this->employees->getEmployees('by_id');
+ *      $this->system_di->template->all_employees_by_id = $this->employees->get_employees(True, False);
+ *          Sorts employees by ID without factoring in pagination;
+ *          Parameter 1 (True) is sort by id (true/false)
+ *          Parameter 2 (False) is paginate (true/false)
+ *
+ *      --- EXAMPLE 2 ---
+ *      $this->employees = $this->load_model('employees');
+ *      $renderPage = $this->load_model('timeclock_renderPage');
+ *      $this->employees->get_employees_for_view(True);
+ *      $this->system_di->template->paginate = $renderPage->generate_pagination('main', 'employees', (int) $page_id);
+ *          get_employees() will return $this->system_di->template->employee with an array of all the employees
+ *          If parameter 1 is True, pagination will be factored in and only a protion of the employees will be returned
+ *          $this->system_di->template->paginate holds the generated links 1...2...3 depending on the page you're on
+ *              Parameter 1 is the page, so the links will be /main/1, /main/2, etc
+ *              Parameter 2 is if you want to paginate employees, or payperiods
+ *              Parameter 3 is the current page you're on
+ *          
+ *          
+ *
  */
 class model_timeclock_employees {
     /**
