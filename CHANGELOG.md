@@ -1,3 +1,6 @@
+### 11/26/13 - Commit 7 ###
+* Added previous pay periods to the total_hours API
+
 ### 11/26/13 - Commit 6 ###
 * Made part of the installation easier to follow
 

@@ -61,7 +61,7 @@ class timeclock_payperiod extends controller {
      * @Purpose: Used to send data back using the RESTFUL API
      */
     public function rx($uid, $data, $pay_period='current') {
-        $this->load_dependencies(array('payPeriod'));
+        $this->load_dependencies(array('payPeriod', 'settings'));
         $employee = $this->system_di->db->query("SELECT * FROM `employees` WHERE `employee_uid`=:uid", array(
             ':uid' => $uid
         ));
@@ -69,7 +69,7 @@ class timeclock_payperiod extends controller {
             ':employee_id' => (int) $employee[0]['employee_id']
         ));
         
-        $pay_period = $this->model_payPeriod->get_pay_period();
+        $pay_period = $this->model_payPeriod->get_pay_period($pay_period);
         $response = 'Error';
         
         if (empty($employee)) {
