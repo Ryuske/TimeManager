@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/15/13
- * @Date Modified: 11/22/13
+ * @Date Modified: 11/27/13
  * @Purpose: Logout controller
  * @Version: 1.0
  */
@@ -17,8 +17,8 @@ class timeclock_logout extends controller {
     public function load_dependencies($dependencies) {
         foreach ($dependencies as $dependency) {
             $name = 'model_' . $dependency;
-            $this->$name = $this->load_model($this->system_di->config->timeclock_subdirectories . '_' . $dependency);
-            $this->system_di->template->$name = $this->$name;
+            $this->$name = $this->load_model($this->sys->config->timeclock_subdirectories . '_' . $dependency);
+            $this->sys->template->$name = $this->$name;
         }
     }
     
@@ -34,13 +34,13 @@ class timeclock_logout extends controller {
      */
     public function index() {
         $this->load_dependencies(array('renderPage', 'loggedIn'));
-        $this->system_di->template->login_failed = '';
+        $this->sys->template->login_failed = '';
 
         if ($this->is_logged_in()) {
             $this->model_loggedIn->logout();
         }
 
-        $this->system_di->template->title = 'TimeClock | Sign In';
+        $this->sys->template->title = 'TimeClock | Sign In';
         $parse = 'login';
         $full_page = False;
 

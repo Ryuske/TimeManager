@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/15/13
- * @Date Modified: 11/26/13
+ * @Date Modified: 11/27/13
  * @Purpose: Used to pull the employees from the database and use the results in a view
  * @Version: 1.0
  */
@@ -13,7 +13,7 @@
  *      Within your controller, use:
  *      --- EXAMPLE 1 ---
  *      $this->employees = $this->load_model('employees');
- *      $this->system_di->template->all_employees_by_id = $this->employees->get_employees(True, False);
+ *      $this->sys->template->all_employees_by_id = $this->employees->get_employees(True, False);
  *          Sorts employees by ID without factoring in pagination;
  *          Parameter 1 (True) is sort by id (true/false)
  *          Parameter 2 (False) is paginate (true/false)
@@ -22,10 +22,10 @@
  *      $this->employees = $this->load_model('employees');
  *      $renderPage = $this->load_model('timeclock_renderPage');
  *      $this->employees->get_employees_for_view(True);
- *      $this->system_di->template->paginate = $renderPage->generate_pagination('main', 'employees', (int) $page_id);
- *          get_employees() will return $this->system_di->template->employee with an array of all the employees
+ *      $this->sys->template->paginate = $renderPage->generate_pagination('main', 'employees', (int) $page_id);
+ *          get_employees() will return $this->sys->template->employee with an array of all the employees
  *          If parameter 1 is True, pagination will be factored in and only a protion of the employees will be returned
- *          $this->system_di->template->paginate holds the generated links 1...2...3 depending on the page you're on
+ *          $this->sys->template->paginate holds the generated links 1...2...3 depending on the page you're on
  *              Parameter 1 is the page, so the links will be /main/1, /main/2, etc
  *              Parameter 2 is if you want to paginate employees, or payperiods
  *              Parameter 3 is the current page you're on
@@ -35,11 +35,11 @@
  */
 class model_timeclock_employees {
     /**
-     * @Purpose: Used to pull $system_di into class scope
+     * @Purpose: Used to pull $sys into class scope
      */
     public function __construct() {
-        global $system_di;
-        $this->system_di = &$system_di;
+        global $sys;
+        $this->sys = &$sys;
 
         if (array_key_exists('add_employee', $_POST)) {
             $this->add_employee();
@@ -82,14 +82,14 @@ class model_timeclock_employees {
                 }
                 $uid = implode(' ', $uid);
             
-                $query = $this->system_di->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_uid`=:uid", array(
+                $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_uid`=:uid", array(
                     ':uid' => $uid
                 ));
             } while (!empty($query));
         } else {
             $uid = $_POST['uid'];
             
-            $query = $this->system_di->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_uid`=:uid", array(
+            $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_uid`=:uid", array(
                     ':uid' => $uid
                 ));
             
@@ -99,7 +99,7 @@ class model_timeclock_employees {
         }
 
         if ('' !== $_POST['username']) {
-            $query = $this->system_di->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_username`=:username", array(
+            $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_username`=:username", array(
                     ':username' => $_POST['username']
                 ));
                 
@@ -113,7 +113,7 @@ class model_timeclock_employees {
         }
 
         if ($error === '') {
-            $query = $this->system_di->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', :uid, :firstname, :lastname, :username, :password)", array(
+            $query = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', :uid, :firstname, :lastname, :username, :password)", array(
                     ':uid' => $uid,
                     ':firstname' => $_POST['firstname'],
                     ':lastname' => $_POST['lastname'],
@@ -124,10 +124,10 @@ class model_timeclock_employees {
 
 
         if ($error !== '') {
-            $this->system_di->template->response = '<div class="form_failed">' . $error . '</div>';
+            $this->sys->template->response = '<div class="form_failed">' . $error . '</div>';
         } else {
-            $this->system_di->template->response = '<div class="form_success">Employee Added Successfully</div>';
-            $this->system_di->template->meta = array('1', $this->system_di->config->timeclock_root . 'main');
+            $this->sys->template->response = '<div class="form_success">Employee Added Successfully</div>';
+            $this->sys->template->meta = array('1', $this->sys->config->timeclock_root . 'main');
         }
     } //End add_employee
 
@@ -138,12 +138,12 @@ class model_timeclock_employees {
         $id = (int) $_POST['id'];
         $password = '';
         
-        $query = $this->system_di->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_id`=:id", array(
+        $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_id`=:id", array(
                 ':id' => $id                                                                                                                    
             ));
         
         if (empty($query)) {
-            $this->system_di->template->response = '<div class="form_failed">That employee doesn\'t exist.</div>';
+            $this->sys->template->response = '<div class="form_failed">That employee doesn\'t exist.</div>';
             return False;
         }
         
@@ -159,7 +159,7 @@ class model_timeclock_employees {
             $error .= '<p>You either need to enter a UID or check \'Pick a UID For Me\'.</p>';
         }
         if ('' !== $_POST['username'] && $_POST['password'] === '') {
-            $query = $this->system_di->db->query("SELECT `employee_password` FROM `employees` WHERE `employee_username`=:username", array(
+            $query = $this->sys->db->query("SELECT `employee_password` FROM `employees` WHERE `employee_username`=:username", array(
                     ':username' => $_POST['username']
                 ));
             
@@ -177,7 +177,7 @@ class model_timeclock_employees {
                 }
                 $uid = implode(' ', $uid);
             
-                $query = $this->system_di->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_uid`=:uid", array(
+                $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_uid`=:uid", array(
                     ':uid' => $uid
                 ));
                 
@@ -185,7 +185,7 @@ class model_timeclock_employees {
         } else {
             $uid = $_POST['uid'];
             
-            $query = $this->system_di->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_uid`=:uid", array(
+            $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_uid`=:uid", array(
                     ':uid' => $uid
             ));
             
@@ -195,7 +195,7 @@ class model_timeclock_employees {
         }
 
         if ('' !== $_POST['username']) {
-            $query = $this->system_di->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_username`=:username", array(
+            $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_username`=:username", array(
                     ':username' => $_POST['username']
                 ));
                 
@@ -211,7 +211,7 @@ class model_timeclock_employees {
         }
 
         if ($error === '') {
-            $query = $this->system_di->db->query("UPDATE `employees` SET `employee_uid`=:uid, `employee_firstname`=:firstname, `employee_lastname`=:lastname, `employee_username`=:username, `employee_password`=:password WHERE `employee_id`=:id", array(
+            $query = $this->sys->db->query("UPDATE `employees` SET `employee_uid`=:uid, `employee_firstname`=:firstname, `employee_lastname`=:lastname, `employee_username`=:username, `employee_password`=:password WHERE `employee_id`=:id", array(
                     ':id' => $id,
                     ':uid' => $uid,
                     ':firstname' => $_POST['firstname'],
@@ -223,10 +223,10 @@ class model_timeclock_employees {
 
 
         if ($error !== '') {
-            $this->system_di->template->response = '<div class="form_failed">' . $error . '</div>';
+            $this->sys->template->response = '<div class="form_failed">' . $error . '</div>';
         } else {
-            $this->system_di->template->response = '<div class="form_success">Employee Updated Successfully</div>';
-            $this->system_di->template->meta = array('1', $this->system_di->config->timeclock_root . 'main');
+            $this->sys->template->response = '<div class="form_success">Employee Updated Successfully</div>';
+            $this->sys->template->meta = array('1', $this->sys->config->timeclock_root . 'main');
         }
     } //End edit_employee
     
@@ -236,24 +236,24 @@ class model_timeclock_employees {
     protected function remove_employee() {
         $id = (int) $_POST['employee_id'];
         
-        $query = $this->system_di->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_id`=:id", array(
+        $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_id`=:id", array(
                 ':id' => $id                                                                                                                    
             ));
         
         if (!empty($query)) {
-            $query = $this->system_di->db->query("DELETE FROM `employees` WHERE `employee_id`=:id", array(
+            $query = $this->sys->db->query("DELETE FROM `employees` WHERE `employee_id`=:id", array(
                     ':id' => $id                                           
                 ));
         }
         
-        header('Location: ' . $this->system_di->config->timeclock_root);
+        header('Location: ' . $this->sys->config->timeclock_root);
     }
     
     /**
      * @Purpose: Used by this constructor to return employees
      */
     public function get_employees($by_id = False, $paginate = False) {
-        switch ($this->system_di->template->model_settings->sort_employees_by) {
+        switch ($this->sys->template->model_settings->sort_employees_by) {
             case 'first_name':
                 $sort_employees_by = '`employee_firstname`, `employee_lastname`';
                 break;
@@ -265,14 +265,14 @@ class model_timeclock_employees {
         }
         
         if (True === $paginate) {
-            $start = ((1 >= $this->system_di->template->page_id)) ? 0 : (int) ($this->system_di->template->page_id-1) * $this->system_di->template->paginate_by;
-            $end = $this->system_di->template->paginate_by;
+            $start = ((1 >= $this->sys->template->page_id)) ? 0 : (int) ($this->sys->template->page_id-1) * $this->sys->template->paginate_by;
+            $end = $this->sys->template->paginate_by;
             $limit = 'LIMIT ' . $start . ',' . $end;
         } else {
             $limit = '';
         }
         
-        $result = $this->system_di->db->query("SELECT * FROM `employees` ORDER BY $sort_employees_by $limit");
+        $result = $this->sys->db->query("SELECT * FROM `employees` ORDER BY $sort_employees_by $limit");
         $employees = array();
         
         if (True === $by_id) {
@@ -290,7 +290,7 @@ class model_timeclock_employees {
      * @Purpose: Used to return employees in a view-friendly manner
      */
     public function get_employees_for_view($paginate = True) {
-        global $system_di;
+        global $sys;
         $employees = $this->get_employees(False, $paginate);
         $return_employees = array();
 
@@ -298,7 +298,7 @@ class model_timeclock_employees {
             $return_employees[] = $value;
         }); //End array_walk $employees
 
-        $this->system_di->template->employee = $return_employees;
+        $this->sys->template->employee = $return_employees;
     }
 }//End model_timeclock_employees
 

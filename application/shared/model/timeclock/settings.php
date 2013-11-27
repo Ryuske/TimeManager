@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/21/13
- * @Date Modified: 11/26/13
+ * @Date Modified: 11/27/13
  * @Purpose: Used to get and set settings
  * @Version: 1.0
  */
@@ -24,8 +24,8 @@ class model_timeclock_settings {
      * @Purpose: For initalizing the settings from the database
      */
     public function __construct() {
-        global $system_di;
-        $settings = $system_di->db->query("SELECT `setting_name`, `setting_value` FROM `settings`");
+        global $sys;
+        $settings = $sys->db->query("SELECT `setting_name`, `setting_value` FROM `settings`");
         
         foreach ($settings as $setting) {
             $this->_settings[$setting['setting_name']] = $setting['setting_value'];
@@ -40,21 +40,21 @@ class model_timeclock_settings {
      * @Purpose: Used to set a setting in an object-like manner
      */
     public function __set($key, $value) {
-        global $system_di;
+        global $sys;
         
         if (array_key_exists($key, $this->_settings)) {
-            $system_di->db->query("UPDATE `settings` SET `setting_value`=:value WHERE `setting_name`=:key", array(
+            $sys->db->query("UPDATE `settings` SET `setting_value`=:value WHERE `setting_name`=:key", array(
                 ':key' => $key,
                 ':value' => $value
             ));
         } else {
-            $system_di->db->query("INSERT INTO `settings` (`setting_id`, `setting_name`, `setting_value`) VALUES ('', :key, :value)", array(
+            $sys->db->query("INSERT INTO `settings` (`setting_id`, `setting_name`, `setting_value`) VALUES ('', :key, :value)", array(
                 ':key' => $key,
                 ':value' => $value
             ));
         }
         
-        $setting = $system_di->db->query("SELECT `setting_name`, `setting_value` FROM `settings` WHERE `setting_name`=:key", array(
+        $setting = $sys->db->query("SELECT `setting_name`, `setting_value` FROM `settings` WHERE `setting_name`=:key", array(
             ':key' => $key
         ));
         

@@ -19,29 +19,29 @@
                 <div class="group">
                     <label>Round Time By</label>
                     <select class="form-control" name="round_time_by">
-                        <option value="none" <?php echo ('none' === $this->system_di->template->round_time_by) ? 'selected="selected"' : ''; ?>>None</option>
-                        <option value="1" <?php echo ('1' === $this->system_di->template->round_time_by) ? 'selected="selected"' : ''; ?>>1 Minute</option>
-                        <option value="15" <?php echo ('15' === $this->system_di->template->round_time_by) ? 'selected="selected"' : ''; ?>>15 Minutes</option>
-                        <option value="30" <?php echo ('30' === $this->system_di->template->round_time_by) ? 'selected="selected"' : ''; ?>>30 Minutes</option>
+                        <option value="none" <?php echo ('none' === $this->sys->template->round_time_by) ? 'selected="selected"' : ''; ?>>None</option>
+                        <option value="1" <?php echo ('1' === $this->sys->template->round_time_by) ? 'selected="selected"' : ''; ?>>1 Minute</option>
+                        <option value="15" <?php echo ('15' === $this->sys->template->round_time_by) ? 'selected="selected"' : ''; ?>>15 Minutes</option>
+                        <option value="30" <?php echo ('30' === $this->sys->template->round_time_by) ? 'selected="selected"' : ''; ?>>30 Minutes</option>
                     </select>
                 </div>
                 <div class="group">
                     <label>Items Per Page (i.e. employees per page)</label>
-                    <input class="form-control" type="text" name="paginate_by" value="<?php echo (int) $this->system_di->template->paginate_by; ?>" />
+                    <input class="form-control" type="text" name="paginate_by" value="<?php echo (int) $this->sys->template->paginate_by; ?>" />
                 </div>
                 <div class="group">
                     <label>Sort Employees By</label>
                     <select class="form-control" name="sort_employees_by">
-                        <option value="last_name" <?php echo ('last_name' === $this->system_di->template->sort_employees_by) ? 'selected="selected"' : ''; ?>>Last Name, First Name</option>
-                        <option value="first_name" <?php echo ('first_name' === $this->system_di->template->sort_employees_by) ? 'selected="selected"' : ''; ?>>First Name, Last Name</option>
-                        <option value="uid" <?php echo ('uid' === $this->system_di->template->sort_employees_by) ? 'selected="selected"' : ''; ?>>UID</option>
+                        <option value="last_name" <?php echo ('last_name' === $this->sys->template->sort_employees_by) ? 'selected="selected"' : ''; ?>>Last Name, First Name</option>
+                        <option value="first_name" <?php echo ('first_name' === $this->sys->template->sort_employees_by) ? 'selected="selected"' : ''; ?>>First Name, Last Name</option>
+                        <option value="uid" <?php echo ('uid' === $this->sys->template->sort_employees_by) ? 'selected="selected"' : ''; ?>>UID</option>
                     </select>
                 </div>
                 <div class="group">
                     <label>List Employees As</label>
                     <select class="form-control" name="list_employees_as">
-                        <option value="last_first" <?php echo ('last_first' === $this->system_di->template->list_employees_by) ? 'selected="selected"' : ''; ?>>Last Name, First Name</option>
-                        <option value="first_last"<?php echo ('first_last' === $this->system_di->template->list_employees_by) ? 'selected="selected"' : ''; ?>>First Name, Last Name</option>
+                        <option value="last_first" <?php echo ('last_first' === $this->sys->template->list_employees_by) ? 'selected="selected"' : ''; ?>>Last Name, First Name</option>
+                        <option value="first_last"<?php echo ('first_last' === $this->sys->template->list_employees_by) ? 'selected="selected"' : ''; ?>>First Name, Last Name</option>
                     </select>
                 </div>
                 <input type="hidden" name="update_settings" value="update_settings" />
