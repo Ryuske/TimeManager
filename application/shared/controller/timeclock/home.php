@@ -2,15 +2,15 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/13/13
- * @Date Modified: 11/26/13
- * @Purpose: Default controller for a website
+ * @Date Modified: 11/27/13
+ * @Purpose: Default controller for TimeClock
  * @Version: 1.0
  */
 
 /**
  * @Purpose: Default controller - used for top level pages (home, about, settings, etc)
  */
-class timeclock_main extends controller {
+class timeclock_home extends controller {
     /**
      * @Purpose: Primarily used to load models based on $this->_dependencies;
      */
@@ -164,6 +164,6 @@ class timeclock_main extends controller {
 
         $this->model_renderPage->parse($parse, False);
     }
-} //End timeclock_main
+} //End timeclock_home
 
 //End File

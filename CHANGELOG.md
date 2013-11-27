@@ -1,3 +1,6 @@
+### 11/27/13 - Commit 1 ###
+* Updated TimeClock to be compatible with new version of framework
+
 ### 11/26/13 - Commit 7 ###
 * Added previous pay periods to the total_hours API
 
