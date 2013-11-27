@@ -17,8 +17,8 @@ class timeclock_home extends controller {
     public function load_dependencies($dependencies) {
         foreach ($dependencies as $dependency) {
             $name = 'model_' . $dependency;
-            $this->$name = $this->load_model($this->system_di->config->timeclock_subdirectories . '_' . $dependency);
-            $this->system_di->template->$name = $this->$name;
+            $this->$name = $this->load_model($this->sys->config->timeclock_subdirectories . '_' . $dependency);
+            $this->sys->template->$name = $this->$name;
         }
     }
     
@@ -36,11 +36,11 @@ class timeclock_home extends controller {
         $this->load_dependencies(array('loggedIn'));
         
         if ($this->model_loggedIn->login_error()) {
-            $this->system_di->template->login_failed = '<div class="form_failed">Incorrect Username or Password</div>';
+            $this->sys->template->login_failed = '<div class="form_failed">Incorrect Username or Password</div>';
             return True;
         }
 
-        $this->system_di->template->login_failed = '';
+        $this->sys->template->login_failed = '';
     }
 
     /**
@@ -57,10 +57,10 @@ class timeclock_home extends controller {
      * @Purpose: Used to make echo'ing out the values in the view a little "prettier"
      */
     public static function writeout($employee=NULL, $employee_value=NULL) {
-        global $system_di;
+        global $sys;
         $employee_value = strtolower($employee_value);
         
-        echo $system_di->template->employee[$employee]['employee_' . $employee_value];
+        echo $sys->template->employee[$employee]['employee_' . $employee_value];
     }
 
     /**
@@ -71,18 +71,18 @@ class timeclock_home extends controller {
         $this->login_failed();
 
         if ($this->is_logged_in()) {
-            $this->system_di->template->page_id = (1 > $page_id) ? 1 : (int) $page_id;
-            $this->system_di->template->paginate_by = $this->model_settings->paginate_by;
+            $this->sys->template->page_id = (1 > $page_id) ? 1 : (int) $page_id;
+            $this->sys->template->paginate_by = $this->model_settings->paginate_by;
             $this->employees();
-            $this->system_di->template->list_employees_as = $this->model_settings->list_employees_as;
-            $this->system_di->template->pagination = $this->model_renderPage->generate_pagination('main', 'employees', (int) $page_id);
+            $this->sys->template->list_employees_as = $this->model_settings->list_employees_as;
+            $this->sys->template->pagination = $this->model_renderPage->generate_pagination('main', 'employees', (int) $page_id);
 
-            $this->system_di->template->title = 'TimeClock | Home';
-            $this->system_di->template->home_active = 'class="active"';
+            $this->sys->template->title = 'TimeClock | Home';
+            $this->sys->template->home_active = 'class="active"';
             $parse = 'home';
             $full_page = True;
         } else {
-            $this->system_di->template->title = 'TimeClock | Sign In';
+            $this->sys->template->title = 'TimeClock | Sign In';
             $parse = 'login';
             $full_page = False;
         }
@@ -99,12 +99,12 @@ class timeclock_home extends controller {
         $this->login_failed();
 
         if ($this->is_logged_in()) {
-            $this->system_di->template->title = 'TimeClock | About';
-            $this->system_di->template->about_active = 'class="active"';
+            $this->sys->template->title = 'TimeClock | About';
+            $this->sys->template->about_active = 'class="active"';
             $parse = 'about';
             $full_page = True;
         } else {
-            $this->system_di->template->title = 'TimeClock | Sign In';
+            $this->sys->template->title = 'TimeClock | Sign In';
             $parse = 'login';
             $full_page = False;
         }
@@ -120,22 +120,22 @@ class timeclock_home extends controller {
         $this->load_dependencies(array('renderPage', 'settings'));
         $this->login_failed();
         
-        $this->system_di->template->update_status = $this->model_settings->update_status();
+        $this->sys->template->update_status = $this->model_settings->update_status();
         
         if ($this->is_logged_in()) {
-            $this->system_di->template->pay_period_start = $this->model_settings->pay_period_start;
-            $this->system_di->template->pay_period_end = $this->model_settings->pay_period_end;
-            $this->system_di->template->round_time_by = $this->model_settings->round_time_by;
-            $this->system_di->template->paginate_by = (NULL !== $this->model_settings->paginate_by) ? $this->model_settings->paginate_by : 10;
-            $this->system_di->template->sort_employees_by = $this->model_settings->sort_employees_by;
-            $this->system_di->template->list_employees_as = $this->model_settings->list_employees_as;
+            $this->sys->template->pay_period_start = $this->model_settings->pay_period_start;
+            $this->sys->template->pay_period_end = $this->model_settings->pay_period_end;
+            $this->sys->template->round_time_by = $this->model_settings->round_time_by;
+            $this->sys->template->paginate_by = (NULL !== $this->model_settings->paginate_by) ? $this->model_settings->paginate_by : 10;
+            $this->sys->template->sort_employees_by = $this->model_settings->sort_employees_by;
+            $this->sys->template->list_employees_as = $this->model_settings->list_employees_as;
 
-            $this->system_di->template->title = 'TimeClock | Settings';
-            $this->system_di->template->settings_active = 'class="active"';
+            $this->sys->template->title = 'TimeClock | Settings';
+            $this->sys->template->settings_active = 'class="active"';
             $parse = 'settings';
             $full_page = True;
         } else {
-            $this->system_di->template->title = 'TimeClock | Sign In';
+            $this->sys->template->title = 'TimeClock | Sign In';
             $parse = 'login';
             $full_page = False;
         }
@@ -149,16 +149,16 @@ class timeclock_home extends controller {
     public function install() {
         $this->load_dependencies(array('renderPage', 'install', 'settings'));
         $this->login_failed();
-        $this->system_di->template->title = 'TimeClock | Installation';
-        $this->system_di->template->round_time_by = $this->model_settings->round_time_by;
-        $this->system_di->template->paginate_by = (NULL !== $this->model_settings->paginate_by) ? $this->model_settings->paginate_by : 10;
-        $this->system_di->template->sort_employees_by = $this->model_settings->sort_employees_by;
-        $this->system_di->template->list_employees_as = $this->model_settings->list_employees_as;
+        $this->sys->template->title = 'TimeClock | Installation';
+        $this->sys->template->round_time_by = $this->model_settings->round_time_by;
+        $this->sys->template->paginate_by = (NULL !== $this->model_settings->paginate_by) ? $this->model_settings->paginate_by : 10;
+        $this->sys->template->sort_employees_by = $this->model_settings->sort_employees_by;
+        $this->sys->template->list_employees_as = $this->model_settings->list_employees_as;
         $parse = 'install_main';
         
-        $employee = $this->system_di->db->query("SELECT `employee_id` FROM `employees` LIMIT 0,1");
+        $employee = $this->sys->db->query("SELECT `employee_id` FROM `employees` LIMIT 0,1");
         if (!empty($employee)) {
-            $this->system_di->template->title = 'TimeClock | Sign In';
+            $this->sys->template->title = 'TimeClock | Sign In';
             $parse = 'login';
         }
 

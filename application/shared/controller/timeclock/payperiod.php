@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/13/13
- * @Date Modified: 11/26/13
+ * @Date Modified: 11/27/13
  * @Purpose: Controller for pay periods
  * @Version: 1.0
  */
@@ -17,8 +17,8 @@ class timeclock_payperiod extends controller {
     public function load_dependencies($dependencies) {
         foreach ($dependencies as $dependency) {
             $name = 'model_' . $dependency;
-            $this->$name = $this->load_model($this->system_di->config->timeclock_subdirectories . '_' . $dependency);
-            $this->system_di->template->$name = $this->$name;
+            $this->$name = $this->load_model($this->sys->config->timeclock_subdirectories . '_' . $dependency);
+            $this->sys->template->$name = $this->$name;
         }
     }
     
@@ -42,19 +42,19 @@ class timeclock_payperiod extends controller {
     public function tx($uid) {
         $this->load_dependencies(array('payPeriod'));
         
-        $employee = $this->system_di->db->query("SELECT * FROM `employees` WHERE `employee_uid`=:uid", array(
+        $employee = $this->sys->db->query("SELECT * FROM `employees` WHERE `employee_uid`=:uid", array(
             ':uid' => $uid
         ));
         
         $response = $this->model_payPeriod->employee_punch($employee[0]['employee_id']);
         
         if ('Error' == $response) {
-            $this->system_di->template->response = $response;
+            $this->sys->template->response = $response;
         } else {
-            $this->system_di->template->response = $employee[0]['employee_firstname'] . ', ' . $response[0] . ', ' . $response[1]['date'] . ', ' . $response[1]['time'];
+            $this->sys->template->response = $employee[0]['employee_firstname'] . ', ' . $response[0] . ', ' . $response[1]['date'] . ', ' . $response[1]['time'];
         }
         
-        $this->system_di->template->parse($this->system_di->config->timeclock_subdirectories . '_payperiod_response');
+        $this->sys->template->parse($this->sys->config->timeclock_subdirectories . '_payperiod_response');
     }
     
     /**
@@ -62,10 +62,10 @@ class timeclock_payperiod extends controller {
      */
     public function rx($uid, $data, $pay_period='current') {
         $this->load_dependencies(array('payPeriod', 'settings'));
-        $employee = $this->system_di->db->query("SELECT * FROM `employees` WHERE `employee_uid`=:uid", array(
+        $employee = $this->sys->db->query("SELECT * FROM `employees` WHERE `employee_uid`=:uid", array(
             ':uid' => $uid
         ));
-        $pay_period_query = $this->system_di->db->query("SELECT `time`,`date`,`operation` FROM `employee_punch` WHERE `employee_id`=:employee_id ORDER BY `employee_punch_id` DESC", array(
+        $pay_period_query = $this->sys->db->query("SELECT `time`,`date`,`operation` FROM `employee_punch` WHERE `employee_id`=:employee_id ORDER BY `employee_punch_id` DESC", array(
             ':employee_id' => (int) $employee[0]['employee_id']
         ));
         
@@ -73,8 +73,8 @@ class timeclock_payperiod extends controller {
         $response = 'Error';
         
         if (empty($employee)) {
-            $this->system_di->template->response = $response;
-            $this->system_di->template->parse($this->system_di->config->timeclock_subdirectories . '_payperiod_response');
+            $this->sys->template->response = $response;
+            $this->sys->template->parse($this->sys->config->timeclock_subdirectories . '_payperiod_response');
             
             return False;
         }
@@ -99,8 +99,8 @@ class timeclock_payperiod extends controller {
                 $response = NULL;
         }
         
-        $this->system_di->template->response = $response;
-        $this->system_di->template->parse($this->system_di->config->timeclock_subdirectories . '_payperiod_response');
+        $this->sys->template->response = $response;
+        $this->sys->template->parse($this->sys->config->timeclock_subdirectories . '_payperiod_response');
         return True;
     }
     
@@ -111,19 +111,19 @@ class timeclock_payperiod extends controller {
         $this->load_dependencies(array('renderPage', 'payPeriod', 'settings'));
         $pay_period = $this->model_payPeriod->get_pay_period($pay_period);
         
-        $employee = $this->system_di->db->query("SELECT `employee_firstname`,`employee_lastname` FROM `employees` WHERE `employee_id`=:employee_id", array(
+        $employee = $this->sys->db->query("SELECT `employee_firstname`,`employee_lastname` FROM `employees` WHERE `employee_id`=:employee_id", array(
             ':employee_id' => (int) $employee_id
         ));
         
         if ($this->is_logged_in()) {
-            $this->system_di->template->title = 'TimeClock | Printer Friendly Timecard';
-            $this->system_di->template->pay_period_table = $this->model_payPeriod->generate_pay_period_table($employee_id, $pay_period[0][0]);
-            $this->system_di->template->name = $employee[0]['employee_firstname'] . ' ' . $employee[0]['employee_lastname'];
-            $this->system_di->template->monday = date('m/d/y', $pay_period[0][0]);
-            $this->system_di->template->sunday = date('m/d/y', $pay_period[1][0]);
-            $this->system_di->template->total_hours = $this->model_payPeriod->total_hours_for_pay_period($employee_id, $pay_period[0][0]);
+            $this->sys->template->title = 'TimeClock | Printer Friendly Timecard';
+            $this->sys->template->pay_period_table = $this->model_payPeriod->generate_pay_period_table($employee_id, $pay_period[0][0]);
+            $this->sys->template->name = $employee[0]['employee_firstname'] . ' ' . $employee[0]['employee_lastname'];
+            $this->sys->template->monday = date('m/d/y', $pay_period[0][0]);
+            $this->sys->template->sunday = date('m/d/y', $pay_period[1][0]);
+            $this->sys->template->total_hours = $this->model_payPeriod->total_hours_for_pay_period($employee_id, $pay_period[0][0]);
         } else {
-            header('Location: ' . $this->system_di->config->timeclock_root);
+            header('Location: ' . $this->sys->config->timeclock_root);
         }
         
         $this->model_renderPage->parse('payperiod_print');

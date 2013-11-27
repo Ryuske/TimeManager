@@ -1,4 +1,4 @@
-### 11/27/13 - Commit 1 ###
+### 11/27/13 - Commit 1-2 ###
 * Updated TimeClock to be compatible with new version of framework
 
 ### 11/26/13 - Commit 7 ###

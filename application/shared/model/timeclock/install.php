@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/26/13
- * @Date Modified: 11/26/13
+ * @Date Modified: 11/27/13
  * @Purpose: Various functions that apply to installing timeclock
  * @Version: 1.0
  */
@@ -11,12 +11,12 @@ class model_timeclock_install {
      * @Purpose: Creates a constructor that sets various class variables
      */
     public function __construct() {
-        global $system_di;
-        $this->system_di = $system_di;
-        $system_di->template->install_error = '';
+        global $sys;
+        $this->sys = $sys;
+        $sys->template->install_error = '';
         
         if (array_key_exists('install', $_POST)) {
-             $system_di->template->install_error = $this->check_inputs();
+             $sys->template->install_error = $this->check_inputs();
             return True;
         }
         return False;
@@ -53,14 +53,14 @@ class model_timeclock_install {
      * @Purpose: Adds the first user (admin user)
      */
     protected function add_admin() {
-        $add_user = $this->system_di->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', '', :firstname, :lastname, :username, :password)", array(
+        $add_user = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', '', :firstname, :lastname, :username, :password)", array(
             ':firstname' => $_POST['firstname'],
             ':lastname' => $_POST['lastname'],
             ':username' => $_POST['username'],
             ':password' => md5($_POST['password'])
         ));
         
-        header('Location: ' . $this->system_di->config->timeclock_root . 'index');
+        header('Location: ' . $this->sys->config->timeclock_root . 'index');
     }
 }//End model_timeclock_loggedIn
 

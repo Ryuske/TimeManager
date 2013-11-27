@@ -37,7 +37,7 @@
                     </thead>
                     <tbody>
                         <?php
-                        for ($i=0; $i<count($this->system_di->template->all_employees); $i++) {
+                        for ($i=0; $i<count($this->sys->template->all_employees); $i++) {
                             ?>
                             <tr>
                             <td onclick="employeeTableClicked('view', '<?php timeclock_employee::writeout($i, 'id'); ?>')"><?php timeclock_employee::writeout($i, 'lastname'); ?>, <?php timeclock_employee::writeout($i, 'firstname'); ?></td>
@@ -70,11 +70,11 @@
 <div class="remove_employee_dialog">
     <div class="dialog_text">
         Are you sure you want to remove<br />
-        <span class="bold"><?php timeclock_employee::writeout($this->system_di->template->employee_id, 'firstname', 'by_id'); ?> <?php timeclock_employee::writeout($this->system_di->template->employee_id, 'lastname', 'by_id'); ?></span>?
+        <span class="bold"><?php timeclock_employee::writeout($this->sys->template->employee_id, 'firstname', 'by_id'); ?> <?php timeclock_employee::writeout($this->sys->template->employee_id, 'lastname', 'by_id'); ?></span>?
     </div>
 
     <form class="remove_employee_form" method="post" action="">
-        <input type="hidden" name="employee_id" value="<?php timeclock_employee::writeout($this->system_di->template->employee_id, 'id', 'by_id'); ?>" />
+        <input type="hidden" name="employee_id" value="<?php timeclock_employee::writeout($this->sys->template->employee_id, 'id', 'by_id'); ?>" />
         <input type="hidden" name="remove_employee" value="remove" />
     </form>
 </div>

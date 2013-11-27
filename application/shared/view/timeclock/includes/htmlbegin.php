@@ -3,8 +3,8 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <?php
-        if (is_array($this->system_di->template->meta)) {
-            echo '<meta http-equiv="refresh" content="' . $this->system_di->template->meta[0] . ';URL=' . $this->system_di->template->meta[1] . '" />';
+        if (is_array($this->sys->template->meta)) {
+            echo '<meta http-equiv="refresh" content="' . $this->sys->template->meta[0] . ';URL=' . $this->sys->template->meta[1] . '" />';
         }
         ?>
 

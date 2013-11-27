@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/18/13
- * @Date Modified: 11/26/13
+ * @Date Modified: 11/27/13
  * @Purpose: Used to complete various pay period functions
  * @Version: 1.0
  */
@@ -66,8 +66,8 @@ class model_timeclock_payPeriod {
      * @Purpose: Creates a constructor that sets various class variables
      */
     public function __construct() {
-        global $system_di;
-        $this->system_di = $system_di;
+        global $sys;
+        $this->sys = $sys;
         
         if (array_key_exists('update_time', $_POST)) {
             $this->update_time();
@@ -95,7 +95,7 @@ class model_timeclock_payPeriod {
                 $sunday = $current_date;
             }
             
-            $pay_period_id = $this->system_di->db->query("SELECT `pay_period_id` FROM `pay_periods` WHERE `pay_period_monday`=:monday AND `pay_period_sunday`=:sunday", array(
+            $pay_period_id = $this->sys->db->query("SELECT `pay_period_id` FROM `pay_periods` WHERE `pay_period_monday`=:monday AND `pay_period_sunday`=:sunday", array(
                 ':monday' => (int) $monday[0],
                 ':sunday' => (int) $sunday[0]
             ));
@@ -108,14 +108,14 @@ class model_timeclock_payPeriod {
             }
         } elseif ('all' === $date) {
             if (True === $paginate) {
-                $start = ((1 >= $this->system_di->template->page_id)) ? 0 : (int) ($this->system_di->template->page_id-1) * ($this->system_di->template->paginate_by * 4);
-                $end = $this->system_di->template->paginate_by * 4;
+                $start = ((1 >= $this->sys->template->page_id)) ? 0 : (int) ($this->sys->template->page_id-1) * ($this->sys->template->paginate_by * 4);
+                $end = $this->sys->template->paginate_by * 4;
                 $limit = 'LIMIT ' . $start . ',' . $end;
             } else {
                 $limit = '';
             }
 
-            $pay_periods = $this->system_di->db->query("SELECT * FROM `pay_periods` ORDER BY `pay_period_monday` DESC $limit");
+            $pay_periods = $this->sys->db->query("SELECT * FROM `pay_periods` ORDER BY `pay_period_monday` DESC $limit");
             
             return $pay_periods;
         } else {
@@ -141,7 +141,7 @@ class model_timeclock_payPeriod {
                 $sunday = $given_date;
             }
             
-            $pay_period_id = $this->system_di->db->query("SELECT `pay_period_id` FROM `pay_periods` WHERE `pay_period_monday`=:monday AND `pay_period_sunday`=:sunday", array(
+            $pay_period_id = $this->sys->db->query("SELECT `pay_period_id` FROM `pay_periods` WHERE `pay_period_monday`=:monday AND `pay_period_sunday`=:sunday", array(
                 ':monday' => (int) $monday[0],
                 ':sunday' => (int) $sunday[0]
             ));
@@ -163,7 +163,7 @@ class model_timeclock_payPeriod {
     public function get_hours($employee_id, $pay_period) {
         $pay_period = $this->get_pay_period($pay_period);
         
-        $hours = $this->system_di->db->query("SELECT `date`, `time`, `operation` FROM `employee_punch` WHERE `pay_period_id`=:pay_period_id AND `employee_id`=:employee_id ORDER BY `date`, `employee_punch_id` ASC", array(
+        $hours = $this->sys->db->query("SELECT `date`, `time`, `operation` FROM `employee_punch` WHERE `pay_period_id`=:pay_period_id AND `employee_id`=:employee_id ORDER BY `date`, `employee_punch_id` ASC", array(
             ':pay_period_id' => $pay_period[2],
             ':employee_id' => (int) $employee_id
         ));
@@ -180,8 +180,8 @@ class model_timeclock_payPeriod {
             $return_hours[$row['date']]['total_hours'] = 0;
         });
         
-        $system_di = $this->system_di;
-        array_walk($return_hours, function($hour, $date) use(&$return_hours, $system_di) {
+        $sys = $this->sys;
+        array_walk($return_hours, function($hour, $date) use(&$return_hours, $sys) {
             $count = (array_key_exists('in', $hour)) ? count($hour['in']) : 0;
             
             if (!array_key_exists('in', $hour)) {
@@ -206,7 +206,7 @@ class model_timeclock_payPeriod {
 
                 //Used to find the difference of two timestamps in hours that are rounded to the nearest 15 minutes (.25 of an hour)
                 if (0 < $out) {
-                    switch ($system_di->template->model_settings->round_time_by) {
+                    switch ($sys->template->model_settings->round_time_by) {
                         case '1':
                             $round_by = 0.16;
                             $places = 0;
@@ -292,7 +292,7 @@ class model_timeclock_payPeriod {
             $sunday = $current_date;
         }
         
-        $check_pay_period = $this->system_di->db->query("SELECT `pay_period_id` FROM `pay_periods` WHERE `pay_period_monday`=:monday AND `pay_period_sunday`=:sunday", array(
+        $check_pay_period = $this->sys->db->query("SELECT `pay_period_id` FROM `pay_periods` WHERE `pay_period_monday`=:monday AND `pay_period_sunday`=:sunday", array(
             ':monday' => (int) $monday[0],
             ':sunday' => (int) $sunday[0]
         ));
@@ -301,12 +301,12 @@ class model_timeclock_payPeriod {
             return $check_pay_period;
         }
         
-        $add_pay_period = $this->system_di->db->query("INSERT INTO `pay_periods` (`pay_period_id`, `pay_period_monday`, `pay_period_sunday`) VALUES ('', :monday, :sunday)", array(
+        $add_pay_period = $this->sys->db->query("INSERT INTO `pay_periods` (`pay_period_id`, `pay_period_monday`, `pay_period_sunday`) VALUES ('', :monday, :sunday)", array(
             ':monday' => (int) $monday[0],
             ':sunday' => (int) $sunday[0]
         ));
         
-        $check_pay_period = $this->system_di->db->query("SELECT `pay_period_id` FROM `pay_periods` WHERE `pay_period_monday`=:monday AND `pay_period_sunday`=:sunday", array(
+        $check_pay_period = $this->sys->db->query("SELECT `pay_period_id` FROM `pay_periods` WHERE `pay_period_monday`=:monday AND `pay_period_sunday`=:sunday", array(
             ':monday' => (int) $monday[0],
             ':sunday' => (int) $sunday[0]
         ));
@@ -321,7 +321,7 @@ class model_timeclock_payPeriod {
         $employee_id = (int) $employee_id;
         $current_pay_period = $this->get_pay_period();
         
-        $check_pay_period = $this->system_di->db->query("SELECT `pay_period_id` FROM `pay_periods` WHERE `pay_period_monday`=:monday AND `pay_period_sunday`=:sunday", array(
+        $check_pay_period = $this->sys->db->query("SELECT `pay_period_id` FROM `pay_periods` WHERE `pay_period_monday`=:monday AND `pay_period_sunday`=:sunday", array(
             ':monday' => $current_pay_period[0][0],
             ':sunday' => $current_pay_period[1][0]
         ));
@@ -330,7 +330,7 @@ class model_timeclock_payPeriod {
             $check_pay_period = $this->add_pay_period();
         }
         
-        $last_operation = $this->system_di->db->query("SELECT `operation` FROM `employee_punch` WHERE `employee_id`=:id AND `pay_period_id`=:pay_period_id ORDER BY `employee_punch_id` DESC LIMIT 0,1", array(
+        $last_operation = $this->sys->db->query("SELECT `operation` FROM `employee_punch` WHERE `employee_id`=:id AND `pay_period_id`=:pay_period_id ORDER BY `employee_punch_id` DESC LIMIT 0,1", array(
             ':id' => (int) $employee_id,
             ':pay_period_id' => (int) $check_pay_period[0]['pay_period_id']
         ));
@@ -348,7 +348,7 @@ class model_timeclock_payPeriod {
     protected function punch_in($employee_id, $pay_period_id) {
         $date_time = array('date' => date($this->_dateFormat), 'time' => time());
         
-        $punch_in = $this->system_di->db->query("INSERT INTO `employee_punch` (`pay_period_id`, `employee_id`, `time`, `date`, `operation`) VALUES (:pay_period_id, :employee_id, :time, :date, 'in')", array(
+        $punch_in = $this->sys->db->query("INSERT INTO `employee_punch` (`pay_period_id`, `employee_id`, `time`, `date`, `operation`) VALUES (:pay_period_id, :employee_id, :time, :date, 'in')", array(
             ':pay_period_id' => (int) $pay_period_id,
             ':employee_id' => (int) $employee_id,
             ':time' => $date_time['time'],
@@ -364,7 +364,7 @@ class model_timeclock_payPeriod {
     protected function punch_out($employee_id, $pay_period_id) {
         $date_time = array('date' => date($this->_dateFormat), 'time' => time());
         
-        $punch_out = $this->system_di->db->query("INSERT INTO `employee_punch` (`pay_period_id`, `employee_id`, `time`, `date`, `operation`) VALUES (:pay_period_id, :employee_id, :time, :date, 'out')", array(
+        $punch_out = $this->sys->db->query("INSERT INTO `employee_punch` (`pay_period_id`, `employee_id`, `time`, `date`, `operation`) VALUES (:pay_period_id, :employee_id, :time, :date, 'out')", array(
             ':pay_period_id' => (int) $pay_period_id,
             ':employee_id' => (int) $employee_id,
             ':time' => $date_time['time'],
@@ -383,7 +383,7 @@ class model_timeclock_payPeriod {
         $time_index = (int) $_POST['time_index'];
         $time = strtotime($_POST['time']);
         
-        $time_to_update = $this->system_di->db->query("SELECT `employee_punch_id` FROM `employee_punch` WHERE `pay_period_id`=:pay_period_id AND `employee_id`=:employee_id AND `date`=:date AND `operation`=:operation ORDER BY `employee_punch_id` LIMIT $time_index,1", array(
+        $time_to_update = $this->sys->db->query("SELECT `employee_punch_id` FROM `employee_punch` WHERE `pay_period_id`=:pay_period_id AND `employee_id`=:employee_id AND `date`=:date AND `operation`=:operation ORDER BY `employee_punch_id` LIMIT $time_index,1", array(
             ':pay_period_id' => (int) $pay_period[2],
             ':employee_id' => (int) $_POST['employee_id'],
             ':date' => $_POST['date'],
@@ -391,7 +391,7 @@ class model_timeclock_payPeriod {
         ));
         
         if (empty($time_to_update)) {
-            $add_time = $this->system_di->db->query("INSERT INTO `employee_punch` (`employee_punch_id`, `pay_period_id`, `employee_id`, `time`, `date`, `operation`) VALUES ('', :pay_period_id, :employee_id, :time, :date, :operation)", array(
+            $add_time = $this->sys->db->query("INSERT INTO `employee_punch` (`employee_punch_id`, `pay_period_id`, `employee_id`, `time`, `date`, `operation`) VALUES ('', :pay_period_id, :employee_id, :time, :date, :operation)", array(
                 ':pay_period_id' => $pay_period[2],
                 ':employee_id' => (int) $_POST['employee_id'],
                 ':time' => $time,
@@ -403,14 +403,14 @@ class model_timeclock_payPeriod {
         }
         
         if (empty($time)) {
-            $remove_time = $this->system_di->db->query("DELETE FROM `employee_punch` WHERE `employee_punch_id`=:employee_punch_id", array(
+            $remove_time = $this->sys->db->query("DELETE FROM `employee_punch` WHERE `employee_punch_id`=:employee_punch_id", array(
                 ':employee_punch_id' => (int) $time_to_update[0]['employee_punch_id']
             ));
             
             return True;
         }
 
-        $update_time = $this->system_di->db->query("UPDATE `employee_punch` SET `time`=:time WHERE `employee_punch_id`=:employee_punch_id", array(
+        $update_time = $this->sys->db->query("UPDATE `employee_punch` SET `time`=:time WHERE `employee_punch_id`=:employee_punch_id", array(
             ':time' => $time,
             ':employee_punch_id' => $time_to_update[0]['employee_punch_id']
         ));
@@ -431,7 +431,7 @@ class model_timeclock_payPeriod {
         $pay_period = $this->get_pay_period($_POST['date']);
         
         if ((int) $pay_period[2] === (int) $_POST['pay_period']) {
-            $get_dates = $this->system_di->db->query("SELECT `date` FROM `employee_punch` WHERE `pay_period_id`=:pay_period_id AND `employee_id`=:employee_id AND `date`=:date", array(
+            $get_dates = $this->sys->db->query("SELECT `date` FROM `employee_punch` WHERE `pay_period_id`=:pay_period_id AND `employee_id`=:employee_id AND `date`=:date", array(
                 ':pay_period_id' => (int) $pay_period[2],
                 ':employee_id' => (int) $_POST['employee_id'],
                 ':date' => $_POST['date']
@@ -439,7 +439,7 @@ class model_timeclock_payPeriod {
             
             //Used to determin if all the previous in/out slots have been filled before adding a new date
             if (is_int(count($get_dates)/6)) {
-                $add_date = $this->system_di->db->query("INSERT INTO `employee_punch` (`employee_punch_id`, `pay_period_id`, `employee_id`, `time`, `date`, `operation`) VALUES ('', :pay_period_id, :employee_id, '', :date, 'in')", array(
+                $add_date = $this->sys->db->query("INSERT INTO `employee_punch` (`employee_punch_id`, `pay_period_id`, `employee_id`, `time`, `date`, `operation`) VALUES ('', :pay_period_id, :employee_id, '', :date, 'in')", array(
                     ':pay_period_id' => (int) $pay_period[2],
                     ':employee_id' => (int) $_POST['employee_id'],
                     ':date' => $_POST['date']
@@ -535,7 +535,7 @@ class model_timeclock_payPeriod {
      */
     public function generate_previous_pay_periods_table($employee_id, $selected_pay_period) {
         $pay_periods = $this->get_pay_period('all', True);
-        $employees_pay_periods = $this->system_di->db->query("SELECT `pay_period_id` FROM `employee_punch` WHERE `employee_id`=:employee_id", array(
+        $employees_pay_periods = $this->sys->db->query("SELECT `pay_period_id` FROM `employee_punch` WHERE `employee_id`=:employee_id", array(
             ':employee_id' => (int) $employee_id
         ));
         
