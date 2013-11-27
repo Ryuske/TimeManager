@@ -38,9 +38,8 @@ http://example.com/timeclock
         This will return the total hours an employee worked for the given pay period. If no pay period
         is given it will return the current pay period. The response is in hours (i.e. 17.25 hours)
         
-        Pay Period: This can be given in almost any format, however a date within that pay period
-        works best.
-        Example: 11/18/13 - would return the pay period 11/18/13-11/24/13
+        Pay Period: Has to be given in the format yyyy-mm-dd (or any format compatible with http://us2.php.net/strtotime)
+        Example: 2013-11-19 - would return the pay period 11/18/13-11/24/13
         
 # Explaination of Backend #
 Once you login the first page you're presented with is the full list of employees. To add a new

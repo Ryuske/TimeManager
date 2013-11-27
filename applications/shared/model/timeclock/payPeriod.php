@@ -130,7 +130,7 @@ class model_timeclock_payPeriod {
             } else {
                 $given_date = getdate($date);
             }
-            
+
             $monday = getdate(strtotime('last Monday', $given_date[0]));
             $sunday = getdate(strtotime('next Sunday', $given_date[0]));
             

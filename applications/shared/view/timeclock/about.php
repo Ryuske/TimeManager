@@ -143,8 +143,8 @@
                     <span class="extra_indent">This will return the total hours an employee worked for the given pay period. If no pay period</span>
                     <span class="extra_indent">is given it will return the current pay period. The response is in hours (i.e. <span class="bold">17.25 hours</span>)</span>
                     
-                    <p class="p_indent">Pay Period: This can be given in almost any format, however a date within that pay period works best.<br />
-                        <span class="double_indent">Example: <span class="italic">11/18/13</span> - would return the pay period <span class="bold">11/18/13-11/24/13</span></span></p>
+                    <p class="p_indent">Pay Period: Has to be given in the format <span class="bold">yyyy-mm-dd</span> (or any format compatible with <a href="http://us2.php.net/strtotime" target="_blank">PHP's strtotime()</a>)
+                        <span class="double_indent">Example: <span class="italic">2013-11-19</span> - would return the pay period <span class="bold">11/18/13-11/24/13</span></span></p>
                 </p>
         </div>
 </div>
