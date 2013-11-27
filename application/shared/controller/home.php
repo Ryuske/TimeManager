@@ -12,7 +12,7 @@
  * @Purpose: Default controller for a website
  * @Extends controller
  */
-class main extends controller
+class home extends controller
 {
     /**
      * @Purpose: Default function to be run when class is called
@@ -30,6 +30,6 @@ class main extends controller
         //Parses the HTML from the view
         $this->system_di->template->parse('main');
     }//End index
-}//End main
+}//End home
 
 //End File

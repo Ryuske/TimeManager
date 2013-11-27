@@ -2,11 +2,11 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/14/13
- * @Date Modified: 11/26/13
+ * @Date Modified: 11/27/13
  * @Purpose: Front Controller
  * @Version: 1.0
  *
- * Front controller for example.com
+ * Front controller for TimeClock
  */
 
 /**
@@ -43,7 +43,7 @@ define('__PLUGINS_PATH', __BASE_PATH . 'plugins' . DIRECTORY_SEPARATOR);
 /**
  * Define the path to the applications directory
  */
-define('__APPLICATIONS_PATH', __BASE_PATH . 'applications' . DIRECTORY_SEPARATOR);
+define('__APPLICATIONS_PATH', __BASE_PATH . 'application' . DIRECTORY_SEPARATOR);
 
 /**
  * Define the site path
