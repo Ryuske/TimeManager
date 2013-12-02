@@ -1,3 +1,6 @@
+### 12/2/13 - Commit 3 ###
+* Updating .gitignore
+
 ### 12/2/13 - Commit 2 ###
 * Updated file datestamps
 * Removed unnessecary methods
