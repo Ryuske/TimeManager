@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/13/13
- * @Date Modified: 11/27/13
+ * @Date Modified: 12/2/13
  * @Purpose: Default controller for TimeClock
  * @Version: 1.0
  */
@@ -51,16 +51,6 @@ class timeclock_home extends controller {
         $this->model_employees->get_employees_for_view();
 
         return True;
-    }
-    
-    /**
-     * @Purpose: Used to make echo'ing out the values in the view a little "prettier"
-     */
-    public static function writeout($employee=NULL, $employee_value=NULL) {
-        global $sys;
-        $employee_value = strtolower($employee_value);
-        
-        echo $sys->template->employee[$employee]['employee_' . $employee_value];
     }
 
     /**

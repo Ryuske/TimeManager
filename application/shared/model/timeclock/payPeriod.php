@@ -286,10 +286,10 @@ class model_timeclock_payPeriod {
         $sunday = getdate(strtotime('next Sunday'));
     
         if ($current_date['weekday'] === 'Monday') {
-            $monday = $current_date;
+            $monday = getdate(strtotime('Today'));
         }
         if ($current_date['weekday'] === 'Sunday') {
-            $sunday = $current_date;
+            $sunday = getdate(strtotime('Today'));;
         }
         
         $check_pay_period = $this->sys->db->query("SELECT `pay_period_id` FROM `pay_periods` WHERE `pay_period_monday`=:monday AND `pay_period_sunday`=:sunday", array(

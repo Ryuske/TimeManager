@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/15/13
- * @Date Modified: 11/27/13
+ * @Date Modified: 12/2/13
  * @Purpose: Employee controller
  * @Version: 1.0
  */
@@ -28,38 +28,6 @@ class timeclock_employee extends controller {
     protected function is_logged_in() {
         return $this->model_loggedIn->status();
     }
-    
-    /**
-     * @Purpose: Used to get & return employees to the view
-     */
-    /*protected function employees($by_id=True) {
-        $this->load_dependencies(array('employees'));
-        if (!is_bool($by_id)) {
-            die(debug_print_backtrace());
-        }
-        if (True === $by_id) {
-            return $this->model_employees->get_employees(True, False);
-        } else {
-            return $this->model_employees->get_employees(False, False);
-        }
-    }*/
-    
-    /**
-     * @Purpose: Used to make echo'ing out the values in the view a little "prettier"
-     */
-    /*public static function writeout($employee_id=NULL, $employee_value='id', $sort_by = 'order') {
-        global $sys;
-        $employee_value = strtolower($employee_value);
-        $sort_by = strtolower($sort_by);
-        
-        if (NULL !== $employee_id && 'order' === $sort_by) {
-            echo $sys->template->all_employees[$employee_id]['employee_' . $employee_value];
-        } elseif (NULL !== $employee_id && 'by_id' === $sort_by) {
-            echo $sys->template->all_employees_by_id[$employee_id]['employee_' . $employee_value];
-        } else {
-            echo $sys->template->employee['employee_' . $employee_value];
-        }
-    }*/
 
     /**
      * @Purpose: Default function to be run when class is called
