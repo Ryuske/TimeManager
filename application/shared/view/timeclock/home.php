@@ -37,20 +37,20 @@
                     </thead>
                     <tbody>
                         <?php
-                        for ($i=0; $i<count($this->sys->template->employee); $i++) {
+                        for ($i=0; $i<count($this->sys->template->employees); $i++) {
                             $employee_name = ('first_last' === $this->sys->template->list_employees_as)
-                                ? $this->sys->template->employee[$i]['employee_firstname'] . ', ' . $this->sys->template->employee[$i]['employee_lastname']
-                                : $this->sys->template->employee[$i]['employee_lastname'] . ', ' . $this->sys->template->employee[$i]['employee_firstname']
+                                ? $this->sys->template->employees[$i]['employee_firstname'] . ', ' . $this->sys->template->employees[$i]['employee_lastname']
+                                : $this->sys->template->employees[$i]['employee_lastname'] . ', ' . $this->sys->template->employees[$i]['employee_firstname']
                             ;
                             ?>
                             <tr>
-                            <td onclick="employeeTableClicked('view', '<?php timeclock_home::writeout($i, 'id'); ?>')"><?php echo $employee_name; ?></td>
-                            <td onclick="employeeTableClicked('view', '<?php timeclock_home::writeout($i, 'id'); ?>')"><?php timeclock_home::writeout($i, 'uid'); ?></td>
-                            <td onclick="employeeTableClicked('view', '<?php timeclock_home::writeout($i, 'id'); ?>')"><?php timeclock_home::writeout($i, 'username'); ?></td>
+                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['employee_id']}')"><?php echo $employee_name; ?></td>
+                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['employee_id']}')">{employees[<?php echo $i; ?>]['employee_uid']}</td>
+                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['employee_id']}')">{employees[<?php echo $i; ?>]['employee_username']}</td>
                                 <td>
                                     <ul class="icons">
-                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil" onclick="employeeTableClicked('edit', '<?php timeclock_home::writeout($i, 'id'); ?>')"></span></li>
-                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash" onclick="employeeTableClicked('trash', '<?php timeclock_home::writeout($i, 'id'); ?>')"></span></li>
+                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil" onclick="employeeTableClicked('edit', '{employees[<?php echo $i; ?>]['employee_id']}')"></span></li>
+                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash" onclick="employeeTableClicked('trash', '{employees[<?php echo $i; ?>]['employee_id']}')"></span></li>
                                     </ul>
                                 </td>
                             </tr>

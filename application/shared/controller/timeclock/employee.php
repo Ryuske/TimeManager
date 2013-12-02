@@ -32,7 +32,7 @@ class timeclock_employee extends controller {
     /**
      * @Purpose: Used to get & return employees to the view
      */
-    protected function employees($by_id=True) {
+    /*protected function employees($by_id=True) {
         $this->load_dependencies(array('employees'));
         if (!is_bool($by_id)) {
             die(debug_print_backtrace());
@@ -42,12 +42,12 @@ class timeclock_employee extends controller {
         } else {
             return $this->model_employees->get_employees(False, False);
         }
-    }
+    }*/
     
     /**
      * @Purpose: Used to make echo'ing out the values in the view a little "prettier"
      */
-    public static function writeout($employee_id=NULL, $employee_value='id', $sort_by = 'order') {
+    /*public static function writeout($employee_id=NULL, $employee_value='id', $sort_by = 'order') {
         global $sys;
         $employee_value = strtolower($employee_value);
         $sort_by = strtolower($sort_by);
@@ -59,7 +59,7 @@ class timeclock_employee extends controller {
         } else {
             echo $sys->template->employee['employee_' . $employee_value];
         }
-    }
+    }*/
 
     /**
      * @Purpose: Default function to be run when class is called
@@ -91,7 +91,7 @@ class timeclock_employee extends controller {
     public function edit($employee_id) {
         $this->sys->template->response = '';
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'settings'));
-        $this->sys->template->all_employees_by_id = $this->model_employees->get_employees(True);
+        $this->sys->template->employees_by_id = $this->model_employees->get_employees(True);
         $this->sys->template->employee_id = (int) $employee_id;
         
         if ($this->is_logged_in()) {
@@ -108,11 +108,11 @@ class timeclock_employee extends controller {
      * @Purpose: Used to remove an existing employee (employee/remove/x)
      */
     public function remove($employee_id) {
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'settings'));
 
         if ($this->is_logged_in()) {
-            $this->sys->template->all_employees = $this->employees(False);
-            $this->sys->template->all_employees_by_id = $this->employees(True);
+            $this->sys->template->employees = $this->model_employees->get_employees(False);
+            $this->sys->template->employees_by_id = $this->model_employees->get_employees(True);
             $this->sys->template->employee_id = (int) $employee_id;
 
             $this->sys->template->title = 'TimeClock | Employee | Remove';
@@ -130,7 +130,7 @@ class timeclock_employee extends controller {
      * @Purpose: Used to view an existing employees time card
      */
     public function view($employee_id, $pay_period='current', $page_id = 1) {
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'payPeriod'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'settings', 'payPeriod'));
         $this->sys->template->page_id = (int) $page_id;
         $this->sys->template->paginate_by = $this->model_settings->paginate_by;
         $this->sys->template->employee_id = (int) $employee_id;
@@ -152,8 +152,7 @@ class timeclock_employee extends controller {
         $this->sys->template->add_date_response = $this->model_payPeriod->add_date_response();
         
         if ($this->is_logged_in()) {
-            $this->sys->template->all_employees = $this->employees(False);
-            $this->sys->template->all_employees_by_id = $this->employees(True);
+            $this->sys->template->employees_by_id = $this->model_employees->get_employees(True);
             $this->sys->template->pagination = $this->model_renderPage->generate_pagination('employee/view/' . (int) $employee_id . '/' . $pay_period, 'payperiods', (int) $page_id);
 
             $this->sys->template->title = 'TimeClock | Employee | View';
