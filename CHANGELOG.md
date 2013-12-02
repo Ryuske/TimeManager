@@ -1,3 +1,8 @@
+### 12/2/13 - Commit 2 ###
+* Updated file datestamps
+* Removed unnessecary methods
+* Fixed issues with adding pay periods
+
 ### 12/2/13 - Commit 1 ###
 * Changed views to use token arrays instead of class::writeout()
 
