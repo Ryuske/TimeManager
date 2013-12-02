@@ -135,7 +135,7 @@ class model_timeclock_employees {
      * @Purpose: Used to edit an employees database records
      */
     protected function edit_employee() {
-        $id = (int) $_POST['id'];
+        $id = (int) $_POST['employee_id'];
         $password = '';
         
         $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_id`=:id", array(
@@ -273,17 +273,23 @@ class model_timeclock_employees {
         }
         
         $result = $this->sys->db->query("SELECT * FROM `employees` ORDER BY $sort_employees_by $limit");
+        $return = array();
+        foreach ($result as $employee_key=>$employee_value) {
+            foreach ($employee_value as $key=>$value) {
+                $return[$employee_key][str_replace('employee_', '', $key)] = $value;
+            }
+        }
         $employees = array();
         
         if (True === $by_id) {
-            array_walk($result, function($employee) use(&$employees) {
-                $employees[$employee['employee_id']] = $employee;
+            array_walk($return, function($employee) use(&$employees) {
+                $employees[$employee['id']] = $employee;
             });
         
             return $employees;
         }
         
-        return $result;
+        return $return;
     }
 
     /**

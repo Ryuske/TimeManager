@@ -65,11 +65,12 @@ jQuery(document).ready(function() {
     
     jQuery('.date').datepicker({
         altField: '.date_to_add',
-        altFormat: 'm/d/y',
         gotoCurrent: true,
         minDate: createMinDate(jQuery('.start_date').text()),
         maxDate: createMaxDate(jQuery('.start_date').text())
     });
+    jQuery('.date').datepicker('option', 'dateFormat', 'mm/dd/y');
+    jQuery('.date').datepicker('option', 'altFormat', 'mm/dd/y');
     jQuery('.date').datepicker('setDate', jQuery('.start_date').text());
 });
 
