@@ -47,8 +47,8 @@
                 <div class="group">
                     <label>List Employees As</label>
                     <select class="form-control" name="list_employees_as">
-                        <option value="last_first" <?php echo ('last_first' === $this->sys->template->list_employees_by) ? 'selected="selected"' : ''; ?>>Last Name, First Name</option>
-                        <option value="first_last"<?php echo ('first_last' === $this->sys->template->list_employees_by) ? 'selected="selected"' : ''; ?>>First Name, Last Name</option>
+                        <option value="last_first" <?php echo ('last_first' === $this->sys->template->list_employees_as) ? 'selected="selected"' : ''; ?>>Last Name, First Name</option>
+                        <option value="first_last"<?php echo ('first_last' === $this->sys->template->list_employees_as) ? 'selected="selected"' : ''; ?>>First Name, Last Name</option>
                     </select>
                 </div>
                 {update_status}

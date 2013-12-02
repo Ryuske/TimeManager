@@ -429,7 +429,7 @@ class model_timeclock_payPeriod {
      */
     protected function add_date() {
         $pay_period = $this->get_pay_period($_POST['date']);
-        
+
         if ((int) $pay_period[2] === (int) $_POST['pay_period']) {
             $get_dates = $this->sys->db->query("SELECT `date` FROM `employee_punch` WHERE `pay_period_id`=:pay_period_id AND `employee_id`=:employee_id AND `date`=:date", array(
                 ':pay_period_id' => (int) $pay_period[2],

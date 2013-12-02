@@ -1,3 +1,8 @@
+### 12/2/13 - Commit 4 ###
+* Refactored employees array to be id, firstname, etc instead of employee_id, employee_firstname, etc
+* Fixed problem with settings form with options not pre-loading properly
+* Fixed issue with adding date where you could end up with two dates (12/2/13 and 12/02/13).
+
 ### 12/2/13 - Commit 3 ###
 * Updating .gitignore
 

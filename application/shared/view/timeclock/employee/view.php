@@ -13,14 +13,14 @@ $date_format = 'm/d/y';
                 <div class="panel-heading">
                     <h3 class="panel-title row">
                         <div class="title col-sm-5">
-                            {employees_by_id[<?php echo $this->sys->template->employee_id ?>]['employee_firstname']}
-                            {employees_by_id[<?php echo $this->sys->template->employee_id ?>]['employee_lastname']}
+                            {employees_by_id[<?php echo $this->sys->template->employee_id ?>]['firstname']}
+                            {employees_by_id[<?php echo $this->sys->template->employee_id ?>]['lastname']}
                             (<?php echo date($date_format, $this->sys->template->pay_period_monday); ?> -
                             <?php echo date($date_format, $this->sys->template->pay_period_sunday); ?>) -
                             <?php echo (float) $this->sys->template->total_hours; ?> hours
                         </div>
                         <div class="col-sm-1 col-sm-offset-6">
-                            <a href="{timeclock_root}payperiod/print_friendly/{employees_by_id[<?php echo $this->sys->template->employee_id ?>]['employee_id']}/{pay_period_monday}" target="_blank" class="btn btn-primary btn-sm" role="button">Print</a>
+                            <a href="{timeclock_root}payperiod/print_friendly/{employees_by_id[<?php echo $this->sys->template->employee_id ?>]['id']}/{pay_period_monday}" target="_blank" class="btn btn-primary btn-sm" role="button">Print</a>
                         </div>
                     </h3>
                 </div>
@@ -148,7 +148,7 @@ $date_format = 'm/d/y';
             <div class="bold dialog_title"></div>
             <input class="dialog_input" type="text" name="time" value="3:00pm" />
         </div>
-        <input type="hidden" name="employee_id" value="{employees_by_id[<?php echo $this->sys->template->employee_id ?>]['employee_id']}" />
+        <input type="hidden" name="employee_id" value="{employees_by_id[<?php echo $this->sys->template->employee_id ?>]['id']}" />
         <input type="hidden" name="date" />
         <input type="hidden" name="time_index" />
         <input type="hidden" name="time_operation" />
@@ -162,7 +162,7 @@ $date_format = 'm/d/y';
             <div class="hide start_date"><?php echo date('m/d/Y', $this->sys->template->pay_period_monday); ?></div>
             <input class="date_to_add" type="hidden" name="date" />
         </div>
-        <input type="hidden" name="employee_id" value="{employees_by_id[<?php echo $this->sys->template->employee_id ?>]['employee_id']}" />
+        <input type="hidden" name="employee_id" value="{employees_by_id[<?php echo $this->sys->template->employee_id ?>]['id']}" />
         <input type="hidden" name="pay_period" />
         <input type="hidden" name="add_date" value="add_date" />
     </form>

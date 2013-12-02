@@ -38,19 +38,19 @@
                     <tbody>
                         <?php
                         for ($i=0; $i<count($this->sys->template->employees); $i++) {
-                            $employee_name = ('first_last' === $this->sys->template->list_employees_as)
-                                ? $this->sys->template->employees[$i]['employee_firstname'] . ', ' . $this->sys->template->employees[$i]['employee_lastname']
-                                : $this->sys->template->employees[$i]['employee_lastname'] . ', ' . $this->sys->template->employees[$i]['employee_firstname']
+                            $name = ('first_last' === $this->sys->template->list_employees_as)
+                                ? $this->sys->template->employees[$i]['firstname'] . ', ' . $this->sys->template->employees[$i]['lastname']
+                                : $this->sys->template->employees[$i]['lastname'] . ', ' . $this->sys->template->employees[$i]['firstname']
                             ;
                             ?>
                             <tr>
-                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['employee_id']}')"><?php echo $employee_name; ?></td>
-                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['employee_id']}')">{employees[<?php echo $i; ?>]['employee_uid']}</td>
-                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['employee_id']}')">{employees[<?php echo $i; ?>]['employee_username']}</td>
+                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')"><?php echo $name; ?></td>
+                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['uid']}</td>
+                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['username']}</td>
                                 <td>
                                     <ul class="icons">
-                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil" onclick="employeeTableClicked('edit', '{employees[<?php echo $i; ?>]['employee_id']}')"></span></li>
-                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash" onclick="employeeTableClicked('trash', '{employees[<?php echo $i; ?>]['employee_id']}')"></span></li>
+                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil" onclick="employeeTableClicked('edit', '{employees[<?php echo $i; ?>]['id']}')"></span></li>
+                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash" onclick="employeeTableClicked('trash', '{employees[<?php echo $i; ?>]['id']}')"></span></li>
                                     </ul>
                                 </td>
                             </tr>
