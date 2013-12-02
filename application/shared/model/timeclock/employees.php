@@ -296,9 +296,9 @@ class model_timeclock_employees {
 
         array_walk($employees, function($value) use(&$return_employees) {
             $return_employees[] = $value;
-        }); //End array_walk $employees
+        });
 
-        $this->sys->template->employee = $return_employees;
+        $this->sys->template->employees = $return_employees;
     }
 }//End model_timeclock_employees
 

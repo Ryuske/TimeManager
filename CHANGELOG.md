@@ -1,3 +1,6 @@
+### 12/2/13 - Commit 1 ###
+* Changed views to use token arrays instead of class::writeout()
+
 ### 11/27/13 - Commit 1-2 ###
 * Updated TimeClock to be compatible with new version of framework
 
