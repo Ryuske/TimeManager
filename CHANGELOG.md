@@ -1,3 +1,6 @@
+### 12/2/13 - Commit 5 ###
+* Fixed issue with adding date where the correct default date wasn't being selected
+
 ### 12/2/13 - Commit 4 ###
 * Refactored employees array to be id, firstname, etc instead of employee_id, employee_firstname, etc
 * Fixed problem with settings form with options not pre-loading properly
