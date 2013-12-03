@@ -20,7 +20,7 @@ class userErrors extends controller
      */
     public function index()
     {
-        $this->system_di->template->parse('404');
+        $this->sys->template->parse('404');
     }//End index
 }//End errors
 

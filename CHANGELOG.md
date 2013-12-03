@@ -1,3 +1,6 @@
+### 12/3/13 - Commit 1 ###
+* Forgot to update application/shared/controller/home.php & userErrors.php to use $this->sys instead of $this->system_di
+
 ### 12/2/13 - Commit 5 ###
 * Fixed issue with adding date where the correct default date wasn't being selected
 
