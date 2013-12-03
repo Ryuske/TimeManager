@@ -42,10 +42,9 @@ class model_timeclock_renderPage {
         $sys->template->timeclock_root = $sys->config->timeclock_root;
         $sys->template->timeclock_assets = $sys->config->timeclock_assets;
         
-        $sys->template->parse($sys->config->timeclock_subdirectories . '_includes_htmlbegin');
-        ($full_page) ? $sys->template->parse($sys->config->timeclock_subdirectories . '_includes_navbar') : '';
-        $sys->template->parse($sys->config->timeclock_subdirectories . '_' . $page);
-        $sys->template->parse($sys->config->timeclock_subdirectories . '_includes_htmlend');
+        $sys->template->page = $sys->template->parse($sys->config->timeclock_subdirectories . '_' . $page, true);
+        $sys->template->navbar = ($full_page) ? $sys->template->parse($sys->config->timeclock_subdirectories . '_includes_navbar', true) : '';
+        $sys->template->parse($sys->config->timeclock_subdirectories . '_includes_htmlwrapper');
     }
     
     /**

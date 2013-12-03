@@ -1,3 +1,8 @@
+### 12/3/13 - Commit 2 ###
+* Updated login page forms action
+* Updated file datestamps
+* Refactored rendering pages into the way I actually intended the framework to be used
+
 ### 12/3/13 - Commit 1 ###
 * Forgot to update application/shared/controller/home.php & userErrors.php to use $this->sys instead of $this->system_di
 
