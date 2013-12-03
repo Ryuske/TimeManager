@@ -24,3 +24,8 @@
 </head>
 <body>
     <div class="container">
+        {navbar}
+        {page}
+    </div>
+    </body>
+</html>
