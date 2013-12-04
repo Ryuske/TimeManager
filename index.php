@@ -71,7 +71,6 @@ require_once 'functions.php';
  */
 $sys = dependencyInjection::initialize();
 
-
 /**
  * Initialize site configuration
  */
