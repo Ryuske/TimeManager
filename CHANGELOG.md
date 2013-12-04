@@ -1,3 +1,6 @@
+### 12/3/13 - Commit 3 ###
+* Added a brainstorm section to TODO.md
+
 ### 12/3/13 - Commit 2 ###
 * Updated login page forms action
 * Updated file datestamps
