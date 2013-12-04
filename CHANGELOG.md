@@ -1,3 +1,6 @@
+### 12/4/13 - Commit 1 ###
+* Updated index.php to support framework revisions
+
 ### 12/3/13 - Commit 3 ###
 * Added a brainstorm section to TODO.md
 

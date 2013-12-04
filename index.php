@@ -2,9 +2,9 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/14/13
- * @Date Modified: 11/27/13
+ * @Date Modified: 12/4/13
  * @Purpose: Front Controller
- * @Version: 1.0
+ * @Version: 2.5
  *
  * Front controller for TimeClock
  */
@@ -69,13 +69,12 @@ require_once 'functions.php';
 /**
  * Initialize dependencyInjection
  */
-$sys = dependencyInjection::initialize();
+$sys = new dependencyInjection();
 
 /**
  * Initialize site configuration
  */
-configuration::set_file($_SERVER['HTTP_HOST']);
-$sys->config = configuration::initialize();
+$sys->config = new configuration($_SERVER['HTTP_HOST']);
 
 /**
  * Initialize error handling
