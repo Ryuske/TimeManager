@@ -103,7 +103,7 @@ class model_timeclock_employees {
                     ':username' => $_POST['username']
                 ));
                 
-            if (empty($query)) {
+            if (!empty($query)) {
                 $error .= '<p>That username is already in use.</p>';
             }
             
