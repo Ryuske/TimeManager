@@ -1,3 +1,6 @@
+### 12/5/13 ###
+* Got rid of TODO.md in place of GitHub Issues
+
 ### 12/5/13 - Commit 2 ###
 * Realized that I had to .gitignore timeclockAssets because there is a config value at the top of main.js
 
