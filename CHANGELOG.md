@@ -1,3 +1,7 @@
+### 12/5/13 - Commit 1 ###
+* Fixed issue when adding an employee that all usernames would say "username already exists"
+* Began moving payPeriod.php into multiple files
+
 ### 12/4/13 - Commit 1 ###
 * Updated index.php to support framework revisions
 

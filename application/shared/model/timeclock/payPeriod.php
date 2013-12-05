@@ -597,3 +597,5 @@ class model_timeclock_payPeriod {
         return $return_tables;
     } //End generate_previous_pay_period_table
 } //End model_timeclock_payPeriod
+
+//End file
