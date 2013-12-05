@@ -6,3 +6,6 @@ system
 system/*
 
 .htaccess
+
+timeclockAssets
+timeclockAssets/*
