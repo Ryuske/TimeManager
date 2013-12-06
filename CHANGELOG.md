@@ -1,3 +1,6 @@
+### 12/6/13 - Commit 1 ###
+* https://github.com/Ryuske/TimeClock/issues/4 <-- Fixed issue #4
+
 ### 12/5/13 - Commit 4 ###
 * Broke payPeriods.php out into traits
 
