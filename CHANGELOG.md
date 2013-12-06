@@ -1,4 +1,7 @@
-### 12/5/13 ###
+### 12/5/13 - Commit 4 ###
+* Broke payPeriods.php out into traits
+
+### 12/5/13 - Commit 3 ###
 * Got rid of TODO.md in place of GitHub Issues
 
 ### 12/5/13 - Commit 2 ###
