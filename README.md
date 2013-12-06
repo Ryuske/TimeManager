@@ -115,9 +115,8 @@ To install TimeClock, you will have to download https://github.com/Ryuske/PHP-Fr
 that was also developed by Kenyon Haliwell. Refer to the installation instructions of the framework for what
 goes where. However, the directory struture of TimeClock is the same as the framework. So it's just copy & paste.
 
-After you have install the framework and the files, you're gonna have to go to <framework_root>/configuration
-and update either shared.php or yoursite.com.php and update the MySQL Database information. Make sure you also
-import timeclock.sql into your database.
+After you have installed the framework and the files, you're gonna have to go to <framework_root>/configuration
+and update either shared.php or yoursite.com.php and update the MySQL Database information.
 
 Now just go to your browser, and navigate to yoursite.com/timeclock/install and enter the information and click
 Install. Once it finishes it'll take you over to the login screen and just login and you're ready to use your
