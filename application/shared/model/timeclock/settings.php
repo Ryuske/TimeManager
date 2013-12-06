@@ -26,6 +26,7 @@ class model_timeclock_settings {
     public function __construct() {
         global $sys;
         $settings = $sys->db->query("SELECT `setting_name`, `setting_value` FROM `settings`");
+        $settings = (false === $settings) ? array() : $settings;
         
         foreach ($settings as $setting) {
             $this->_settings[$setting['setting_name']] = $setting['setting_value'];
@@ -48,7 +49,7 @@ class model_timeclock_settings {
                 ':value' => $value
             ));
         } else {
-            $sys->db->query("INSERT INTO `settings` (`setting_id`, `setting_name`, `setting_value`) VALUES ('', :key, :value)", array(
+            $sys->db->query("INSERT INTO `settings` (`setting_id`, `setting_name`, `setting_value`) VALUES (NULL, :key, :value)", array(
                 ':key' => $key,
                 ':value' => $value
             ));
