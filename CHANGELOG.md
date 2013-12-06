@@ -1,3 +1,6 @@
+### 12/6/13 - Commit 2 ###
+* https://github.com/Ryuske/TimeClock/issues/6 <-- Integrated issue #6
+
 ### 12/6/13 - Commit 1 ###
 * https://github.com/Ryuske/TimeClock/issues/4 <-- Fixed issue #4
 

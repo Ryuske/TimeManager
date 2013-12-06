@@ -42,10 +42,9 @@ class model_timeclock_install {
         }
         
         if ('' !== $error) {
-            return False;
+            return $error;
         } else {
-            $this->add_admin();
-            return True;
+            return $this->add_admin();
         }
     }
 
@@ -53,6 +52,15 @@ class model_timeclock_install {
      * @Purpose: Adds the first user (admin user)
      */
     protected function add_admin() {
+        $sql_file = __BASE_PATH . 'timeclock.sql';
+
+        if (is_readable($sql_file)) {
+            $sql_file = file_get_contents($sql_file);
+            $this->sys->db->query($sql_file);
+        } else {
+            return 'Could not read \'' . $sql_file . '\' for importing the database.';
+        }
+        
         $add_user = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', '', :firstname, :lastname, :username, :password)", array(
             ':firstname' => $_POST['firstname'],
             ':lastname' => $_POST['lastname'],
@@ -60,7 +68,7 @@ class model_timeclock_install {
             ':password' => md5($_POST['password'])
         ));
         
-        header('Location: ' . $this->sys->config->timeclock_root . 'index');
+        return True;
     }
 }//End model_timeclock_loggedIn
 

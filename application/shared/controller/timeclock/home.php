@@ -57,10 +57,15 @@ class timeclock_home extends controller {
      * @Purpose: Default function to be run when class is called
      */
     public function index($page_id=1) {
+        $table = $this->sys->db->query("SELECT `employee_id` FROM `employees` LIMIT 0,1");
+        if (false === $table) {
+            $this->install();
+            return true;
+        }
+        
         $this->load_dependencies(array('renderPage', 'settings'));
         $this->login_failed();
 
-        $employee = $this->sys->db->query("SELECT `employee_id` FROM `employees` LIMIT 0,1");
         if ($this->is_logged_in()) {
             $this->sys->template->page_id = (1 > $page_id) ? 1 : (int) $page_id;
             $this->sys->template->paginate_by = $this->model_settings->paginate_by;
@@ -72,9 +77,6 @@ class timeclock_home extends controller {
             $this->sys->template->home_active = 'class="active"';
             $parse = 'home';
             $full_page = True;
-        } elseif (empty($employee)) {
-            $this->install();
-            return true;
         } else {
             $this->sys->template->title = 'TimeClock | Sign In';
             $parse = 'login';
