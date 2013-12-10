@@ -155,7 +155,15 @@
     }
     
     protected function remove() {
+        $params = array(':id' => $_POST['job_id']);
         
+        $check_job = $this->sys->db->query("SELECT `job_id` FROM `jobs` WHERE `job_id`=:id", $params);
+        
+        if (!empty($check_job)) {
+            $this->sys->db->query("DELETE FROM `jobs` WHERE `job_id`=:id", $params);
+        }
+        
+        header('Location: ' . $this->sys->config->timeclock_root . 'jobs');
     }
     
     public function get_jobs($job_id='all') {
@@ -173,11 +181,12 @@
             }
         } else {
             $jobs = $this->sys->db->query("SELECT * FROM `jobs`");
-            $clients = $this->sys->db->query("SELECT * FROM `clients`");
+        }
         
-            foreach ($clients as $client) {
-                $jobs['client'][$client['client_id']] = $client['client_name'];
-            }
+        $clients = $this->sys->db->query("SELECT * FROM `clients`");
+        
+        foreach ($clients as $client) {
+            $jobs['clients'][$client['client_id']] = $client['client_name'];
         }
         
         return $jobs;

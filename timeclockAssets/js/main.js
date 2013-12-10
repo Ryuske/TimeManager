@@ -114,6 +114,21 @@ jQuery(document).ready(function() {
             }
         }
     });
+    jQuery('.remove_job_dialog').dialog({
+        resizable: false,
+        autoOpen: true,
+        height: 200,
+        title: 'Remove Job',
+        modal: true,
+        buttons: {
+            'Remove Job': function() {
+                jQuery('.remove_job_form').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
     
     jQuery('.date').datepicker({
         altField: '.date_to_add',

@@ -1,3 +1,7 @@
+### 12/10/13 - Commit 2 ###
+* As per Issue #5 you can now remove jobs
+* Fixed some paths to links
+
 ### 12/10/13 - Commit 1 ###
 * As per Issue #5 you can now edit jobs
 * Removing jobs are about 1/2 done

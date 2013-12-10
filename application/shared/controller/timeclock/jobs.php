@@ -114,7 +114,7 @@ class timeclock_jobs extends controller {
             $this->sys->template->title = 'TimeClock | Jobs';
             $this->sys->template->jobs_active = 'class="active"';
             $this->sys->template->jobs = $this->model_jobs->get_jobs();
-            var_dump($this->sys->template->jobs['client']);
+            $this->sys->template->job = $this->model_jobs->get_jobs((int) $job_id);
             
             $parse = 'jobs_remove';
             $full_page = True;
