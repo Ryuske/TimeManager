@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/15/13
- * @Date Modified: 12/2/13
+ * @Date Modified: 12/10/13
  * @Purpose: Employee controller
  * @Version: 1.0
  */
@@ -79,9 +79,12 @@ class timeclock_employee extends controller {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'settings'));
 
         if ($this->is_logged_in()) {
+            $this->sys->template->page_id = 1;
+            $this->sys->template->paginate_by = $this->model_settings->paginate_by;
             $this->sys->template->employees = $this->model_employees->get_employees(False);
             $this->sys->template->employees_by_id = $this->model_employees->get_employees(True);
             $this->sys->template->employee_id = (int) $employee_id;
+            $this->sys->template->pagination = $this->model_renderPage->generate_pagination('main', 'employees', 1);
 
             $this->sys->template->title = 'TimeClock | Employee | Remove';
             $this->sys->template->home_active = 'class="active"';

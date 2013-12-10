@@ -175,3 +175,15 @@ form .group {
     vertical-align: sub;
     cursor: pointer;
 }
+
+.jobs .not_started {
+    color: #a43939;
+}
+
+.jobs .wip {
+    color: #00F;
+}
+
+.jobs .completed {
+    color: #0C680C;
+}

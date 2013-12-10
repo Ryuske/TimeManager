@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 12/09/13
- * @Date Modified: 12/09/13
+ * @Date Modified: 12/10/13
  * @Purpose: Controller for Jobs/Job Tracking
  * @Version: 1.0
  */
@@ -41,12 +41,14 @@ class timeclock_jobs extends controller {
     }
     
     public function index() {
-        $this->load_dependencies(array('loggedIn', 'renderPage'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'jobs'));
         $this->login_failed();
 
         if ($this->is_logged_in()) {
             $this->sys->template->title = 'TimeClock | Jobs';
             $this->sys->template->jobs_active = 'class="active"';
+            $this->sys->template->jobs = $this->model_jobs->get_jobs();
+            
             $parse = 'jobs_home';
             $full_page = True;
         } else {
@@ -75,6 +77,51 @@ class timeclock_jobs extends controller {
             $full_page = True;
         } else {
             $this->load_home();
+        }
+
+        //Parses the HTML from the view
+        $this->model_renderPage->parse($parse, $full_page);
+    }
+    
+    public function edit($job_id) {
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'clients', 'jobs'));
+
+        if (!isset($this->sys->template->response)) {
+            $this->sys->template->response = '';
+        }
+
+        if ($this->is_logged_in()) {
+            $this->sys->template->title = 'TimeClock | Jobs';
+            $this->sys->template->jobs_active = 'class="active"';
+            $this->sys->template->clients = $this->model_clients->get_clients();
+            $this->sys->template->job = $this->model_jobs->get_jobs((int) $job_id);
+            
+            $parse = (false !== $this->sys->template->job) ? 'jobs_edit' : 'jobs_home';
+            $full_page = True;
+        } else {
+            $this->load_home();
+        }
+
+        //Parses the HTML from the view
+        $this->model_renderPage->parse($parse, $full_page);
+    }
+    
+    public function remove($job_id) {
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'jobs'));
+        $this->login_failed();
+
+        if ($this->is_logged_in()) {
+            $this->sys->template->title = 'TimeClock | Jobs';
+            $this->sys->template->jobs_active = 'class="active"';
+            $this->sys->template->jobs = $this->model_jobs->get_jobs();
+            var_dump($this->sys->template->jobs['client']);
+            
+            $parse = 'jobs_remove';
+            $full_page = True;
+        } else {
+            $this->sys->template->title = 'TimeClock | Sign In';
+            $parse = 'login';
+            $full_page = False;
         }
 
         //Parses the HTML from the view

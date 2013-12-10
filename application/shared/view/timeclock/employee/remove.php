@@ -63,6 +63,7 @@
                         </tr>
                     </tfoot>
                 </table>
+                {pagination}
             </div> <!-- END: panel-body -->
         </div> <!-- END: panel -->
     </div> <!-- END: col-sm-12 -->
