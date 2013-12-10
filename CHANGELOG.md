@@ -1,3 +1,6 @@
+### 12/10/13 - Commit 3 ###
+* https://github.com/Ryuske/TimeClock/issues/7 <-- updated model/timeclock/employees.php method naming conventions
+
 ### 12/10/13 - Commit 2 ###
 * As per Issue #5 you can now remove jobs
 * Fixed some paths to links
