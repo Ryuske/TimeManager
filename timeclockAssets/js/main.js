@@ -102,7 +102,7 @@ jQuery(document).ready(function() {
     jQuery('.client_remove_dialog').dialog({
         resizable: false,
         autoOpen: false,
-        height: 175,
+        height: 200,
         title: 'Remove Client',
         modal: true,
         buttons: {
@@ -135,6 +135,22 @@ function employeeTableClicked(action, employee_id) {
             break;
         case 'trash':
             window.location = web_root + 'employee/remove/' + employee_id;
+            break;
+        default:
+            break;
+    }
+}
+
+function jobTableClicked(action, job_id) {
+    switch (action) {
+        case 'view':
+            window.location = web_root + 'jobs/view/' + job_id;
+            break;
+        case 'edit':
+            window.location = web_root + 'jobs/edit/' + job_id;
+            break;
+        case 'trash':
+            window.location = web_root + 'jobs/remove/' + job_id;
             break;
         default:
             break;

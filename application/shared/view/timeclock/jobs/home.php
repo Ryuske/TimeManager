@@ -26,7 +26,7 @@
                 <h3 class="panel-title">Employees</h3>
             </div>
             <div class="panel-body">
-                <table class="table table-striped">
+                <table class="table table-striped jobs">
                     <thead>
                         <tr>
                             <th>Job ID</th>
@@ -38,26 +38,38 @@
                     </thead>
                     <tbody>
                         <?php
-                        /*for ($i=0; $i<count($this->sys->template->employees); $i++) {
-                            $name = ('first_last' === $this->sys->template->list_employees_as)
-                                ? $this->sys->template->employees[$i]['firstname'] . ', ' . $this->sys->template->employees[$i]['lastname']
-                                : $this->sys->template->employees[$i]['lastname'] . ', ' . $this->sys->template->employees[$i]['firstname']
-                            ;
+                        for ($i=0; $i<(count($this->sys->template->jobs)-1); $i++) {
+                            $client = $this->sys->template->jobs['client'][$this->sys->template->jobs[$i]['client']];
+                            $status = array('', '');
+                            switch ($this->sys->template->jobs[$i]['status']) {
+                                case 'na':
+                                    $status = array('jobs not_started', 'Not Started');
+                                    break;
+                                case 'wip':
+                                    $status = array('jobs wip', 'In Progress');
+                                    break;
+                                case 'c':
+                                    $status = array('jobs completed', 'Completed');
+                                    break;
+                                default:
+                                    //Do nothing
+                            }
                             ?>
                             <tr>
-                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')"><?php echo $name; ?></td>
-                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['uid']}</td>
-                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['username']}</td>
+                            <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_id']}')">{jobs[<?php echo $i; ?>]['job_uid']}</td>
+                            <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_id']}')"><?php echo $client; ?></td>
+                            <td onclick="jobClicked('view', '{jobs[<?php echo $i; ?>]['job_id']}')">{jobs[<?php echo $i; ?>]['job_name']}</td>
+                            <td onclick="jobClicked('view', '{jobs[<?php echo $i; ?>]['job_id']}')"><div class="<?php echo $status[0]; ?>"><?php echo $status[1]; ?></div></td>
                                 <td>
                                     <ul class="icons">
-                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil" onclick="employeeTableClicked('edit', '{employees[<?php echo $i; ?>]['id']}')"></span></li>
-                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash" onclick="employeeTableClicked('trash', '{employees[<?php echo $i; ?>]['id']}')"></span></li>
+                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil" onclick="jobTableClicked('edit', '{jobs[<?php echo $i; ?>]['job_id']}')"></span></li>
+                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash" onclick="jobTableClicked('trash', '{jobs[<?php echo $i; ?>]['job_id']}')"></span></li>
                                     </ul>
                                 </td>
                             </tr>
                             <?php
-                        //}
-                        */?>
+                        }
+                        ?>
                     </tbody>
                     <tfoot>
                         <tr>
