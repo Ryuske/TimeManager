@@ -31,6 +31,7 @@
                         <tr>
                             <th>Employee Name</th>
                             <th>Employee UID</th>
+                            <th>Employee Category</th>
                             <th>Employee Username</th>
                             <th>Manage</th>
                         </tr>
@@ -46,6 +47,7 @@
                             <tr>
                             <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')"><?php echo $name; ?></td>
                             <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['uid']}</td>
+                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['category_name']}</td>
                             <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['username']}</td>
                                 <td>
                                     <ul class="icons">
@@ -62,6 +64,7 @@
                         <tr>
                             <th>Employee Name</th>
                             <th>Employee UID</th>
+                            <th>Employee Category</th>
                             <th>Employee Username</th>
                             <th>Manage</th>
                         </tr>

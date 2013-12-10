@@ -66,16 +66,19 @@ class model_timeclock_renderPage {
         
         switch ($type) {
             case 'employees':
-                $query_string = 'FROM `employees`';
+                $table = 'employees';
+                break;
+            case 'jobs':
+                $table = 'jobs';
                 break;
             case 'payperiods':
-                $query_string = 'FROM `pay_periods`';
+                $table = 'pay_periods';
                 $sys->template->paginate_by *= 4;
                 break;
             default:
                 return false;
         }
-        $query = $sys->db->query("SELECT * $query_string");
+        $query = $sys->db->query("SELECT * FROM `$table`");
         $last_page = (int) ceil((count($query) / $sys->template->paginate_by));
         
         $sys->template->previous = (1 === $current_page) ? '<li class="disabled"><a href="#">&laquo;</a></li>' : '<li><a href="' . $page . ($current_page-1) . '">&laquo;</a></li>';

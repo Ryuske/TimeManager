@@ -11,22 +11,22 @@
                     <input class="form-control" name="lastname" type="text" placeholder="Employees' Last Name" required="required" />
                 </div>
                 <div class="group">
-                <label>
-                    Category &raquo;
-                    <span class="ui-icon ui-icon-plus form_label_icon" onclick="category_operations('add')"></span>
-                    <span class="ui-icon ui-icon-pencil form_label_icon" onclick="category_operations('edit')"></span>
-                    <span class="ui-icon ui-icon-trash form_label_icon" onclick="category_operations('remove')"></span>
-                </label>
-                <select class="form-control" name="category">
-                    <?php
-                    for ($i=0; $i<count($this->sys->template->categories); $i++) {
-                        ?>
-                        <option value="{categories[<?php echo $i; ?>]['category_id']}">{categories[<?php echo $i; ?>]['category_name']}</option>
+                    <label>
+                        Category &raquo;
+                        <span class="ui-icon ui-icon-plus form_label_icon" onclick="category_operations('add')"></span>
+                        <span class="ui-icon ui-icon-pencil form_label_icon" onclick="category_operations('edit')"></span>
+                        <span class="ui-icon ui-icon-trash form_label_icon" onclick="category_operations('remove')"></span>
+                    </label>
+                    <select class="form-control" name="category">
                         <?php
-                    }
-                    ?>
-                </select>
-            </div>
+                        for ($i=0; $i<count($this->sys->template->categories); $i++) {
+                            ?>
+                            <option value="{categories[<?php echo $i; ?>]['category_id']}">{categories[<?php echo $i; ?>]['category_name']}</option>
+                            <?php
+                        }
+                        ?>
+                    </select>
+                </div>
                 <hr />
                 <input class="form-control" name="uid" type="text" placeholder="Employees' Badge UID" />
                 <label class="checkbox">
@@ -48,7 +48,7 @@
     </div>
     <form class="add_category_form" method="post" action="">
         <div class="dialog_input">
-            <input type="text" name="category_name" placeholder="categories' Name" />
+            <input type="text" name="category_name" placeholder="Categories' Name" />
         </div>
         <input type="hidden" name="add_category" value="add_category" />
     </form>
