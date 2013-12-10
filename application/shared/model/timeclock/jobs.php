@@ -23,6 +23,12 @@
         }
     }
     
+    /**
+     * Database Modification - Add/Edit/Remove
+     */
+    /**
+     * @Purpose: Used to add jobs to the database
+     */
     protected function add() {
         $error = '';
         
@@ -77,6 +83,9 @@
         }
     }
     
+    /**
+     * @Purpose: Used to edit jobs in the database
+     */
     protected function edit() {
         $error = '';
         
@@ -152,8 +161,11 @@
             $this->sys->template->response = '<div class="form_success">Job Updated Successfully</div>';
             return true;
         }
-    }
+    } //End edit
     
+    /**
+     * @Purpose: Used to remove jobs from the database
+     */
     protected function remove() {
         $params = array(':id' => $_POST['job_id']);
         
@@ -165,7 +177,13 @@
         
         header('Location: ' . $this->sys->config->timeclock_root . 'jobs');
     }
+    /**
+     * END: Database Modification Block
+     */
     
+    /**
+     * @Purpose: Returns a list of all the jobs
+     */
     public function get_jobs($job_id='all') {
         /**
          * Add a setting to make this sortable by job id, client or job name

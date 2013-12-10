@@ -14,10 +14,12 @@
         <link type="text/css" rel="stylesheet" href="{timeclock_assets}css/main.css" />
 
 
-        <script src="{timeclock_assets}js/jquery.js"></script>
-        <script src="{timeclock_assets}js/bootstrap.js"></script>
-        <script src="{timeclock_assets}js/jquery-ui.js"></script>
+        <script src="{timeclock_assets}js/includes/jquery.js"></script>
+        <script src="{timeclock_assets}js/includes/bootstrap.js"></script>
+        <script src="{timeclock_assets}js/includes/jquery-ui.js"></script>
         <script src="{timeclock_assets}js/main.js"></script>
+        <script src="{timeclock_assets}js/dialogs.js"></script>
+        <script src="{timeclock_assets}js/functions.js"></script>
 
 
         <title>{title}</title>
