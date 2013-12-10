@@ -12,6 +12,7 @@
     <div class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li {home_active}><a href="{timeclock_root}main">Home</a></li>
+        <li {jobs_active}><a href="{timeclock_root}jobs">Jobs</a></li>
         <li {about_active}><a href="{timeclock_root}about">About</a></li>
         <li {settings_active}><a href="{timeclock_root}settings">Settings</a></li>
         <li><a href="{timeclock_root}logout">Logout</a></l>

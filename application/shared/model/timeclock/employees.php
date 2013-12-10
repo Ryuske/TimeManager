@@ -75,7 +75,7 @@ class model_timeclock_employees {
         
         if (isset($_POST['generate_uid']) && '' === $_POST['uid']) {
             do {
-                $uid = substr(md5(rand()), 0, 8);
+                $uid = substr(md5(mt_rand()), 0, 8);
                 $uid = str_split($uid, 2);
                 foreach ($uid as &$new_uid) {
                     $new_uid = '0x' . strtoupper($new_uid);

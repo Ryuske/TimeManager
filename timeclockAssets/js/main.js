@@ -34,6 +34,7 @@ jQuery(document).ready(function() {
             }
         }
     });
+    
     jQuery('.add_date_dialog').dialog({
         resizable: false,
         autoOpen: false,
@@ -50,6 +51,7 @@ jQuery(document).ready(function() {
             }
         }
     });
+    
     jQuery('.add_date_response').dialog({
         resizable: false,
         autoOpen: false,
@@ -63,6 +65,56 @@ jQuery(document).ready(function() {
         }
     });
     
+    jQuery('.client_add_dialog').dialog({
+        resizable: false,
+        autoOpen: false,
+        height: 225,
+        width: 250,
+        title: 'Add Client',
+        modal: true,
+        buttons: {
+            'Add Client': function() {
+                jQuery('.add_client_form').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    
+    jQuery('.client_edit_dialog').dialog({
+        resizable: false,
+        autoOpen: false,
+        height: 225,
+        width: 250,
+        title: 'Edit Client',
+        modal: true,
+        buttons: {
+            'Edit Client': function() {
+                jQuery('.edit_client_form').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    
+    jQuery('.client_remove_dialog').dialog({
+        resizable: false,
+        autoOpen: false,
+        height: 175,
+        title: 'Remove Client',
+        modal: true,
+        buttons: {
+            'Remove Client': function() {
+                jQuery('.remove_client_form').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    
     jQuery('.date').datepicker({
         altField: '.date_to_add',
         gotoCurrent: true,
@@ -71,7 +123,6 @@ jQuery(document).ready(function() {
     });
     jQuery('.date').datepicker('option', 'dateFormat', 'mm/dd/y');
     jQuery('.date').datepicker('option', 'altFormat', 'mm/dd/y');
-    //jQuery('.date').datepicker('setDate', jQuery('.start_date').text());
 });
 
 function employeeTableClicked(action, employee_id) {
@@ -152,4 +203,25 @@ function createMaxDate(date) {
 function add_date_response(response) {
     jQuery('.add_date_response_text').text = response;
     jQuery('.add_date_response').dialog('open');
+}
+
+function client_operations(operation) {
+    switch (operation) {
+        case 'add':
+            jQuery('.client_add_dialog').dialog('open');
+            break;
+        case 'edit':
+            jQuery('.client_edit_dialog').dialog('open');
+            jQuery('.client_name').text(jQuery('select[name=client] option[value=' + jQuery('select[name=client]').val() + ']').text());
+            jQuery('input[name=client_name]').val(jQuery('select[name=client] option[value=' + jQuery('select[name=client]').val() + ']').text());
+            jQuery('input[name=client_id]').val(jQuery('select[name=client] option[value=' + jQuery('select[name=client]').val() + ']').val());
+            break;
+        case 'remove':
+            jQuery('.client_remove_dialog').dialog('open');
+            jQuery('.client_name').text(jQuery('select[name=client] option[value=' + jQuery('select[name=client]').val() + ']').text());
+            jQuery('input[name=client_id]').val(jQuery('select[name=client] option[value=' + jQuery('select[name=client]').val() + ']').val());
+            break;
+        default:
+            //None
+    }
 }
