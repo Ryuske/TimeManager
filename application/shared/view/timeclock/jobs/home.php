@@ -4,7 +4,7 @@
         <div class="col-sm-8">
             <div class="well">
                 <p>This system is designed as a management panel for external timeclock hardware.</p>
-                <a href="about" class="btn btn-primary btn-lg" role="button">Learn more &raquo;</a>
+                <a href="{timeclock_root}about" class="btn btn-primary btn-lg" role="button">Learn more &raquo;</a>
             </div>
         </div>
         <div class="col-sm-4">
@@ -13,7 +13,7 @@
                     <h3 class="panel-title">Job Mangement</h3>
                 </div>
                 <div class="panel-body center">
-                    <p><a href="jobs/add">Add New Job</a></p>
+                    <p><a href="{timeclock_root}jobs/add">Add New Job</a></p>
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
                     <tbody>
                         <?php
                         for ($i=0; $i<(count($this->sys->template->jobs)-1); $i++) {
-                            $client = $this->sys->template->jobs['client'][$this->sys->template->jobs[$i]['client']];
+                            $client = $this->sys->template->jobs['clients'][$this->sys->template->jobs[$i]['client']];
                             $status = array('', '');
                             switch ($this->sys->template->jobs[$i]['status']) {
                                 case 'na':

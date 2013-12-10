@@ -13,7 +13,7 @@
                     <h3 class="panel-title">Employee Mangement</h3>
                 </div>
                 <div class="panel-body center">
-                    <a href="employee/add">Add New Employee</a>
+                    <a href="{timeclock_root}employee/add">Add New Employee</a>
                 </div>
             </div>
         </div>

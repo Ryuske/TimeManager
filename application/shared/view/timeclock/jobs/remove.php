@@ -4,7 +4,7 @@
         <div class="col-sm-8">
             <div class="well">
                 <p>This system is designed as a management panel for external timeclock hardware.</p>
-                <a href="about" class="btn btn-primary btn-lg" role="button">Learn more &raquo;</a>
+                <a href="{timeclock_root}about" class="btn btn-primary btn-lg" role="button">Learn more &raquo;</a>
             </div>
         </div>
         <div class="col-sm-4">
@@ -13,7 +13,7 @@
                     <h3 class="panel-title">Job Mangement</h3>
                 </div>
                 <div class="panel-body center">
-                    <p><a href="jobs/add">Add New Job</a></p>
+                    <p><a href="{timeclock_root}jobs/add">Add New Job</a></p>
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
                     <tbody>
                         <?php
                         for ($i=0; $i<(count($this->sys->template->jobs)-1); $i++) {
-                            $client = $this->sys->template->jobs['client'][$this->sys->template->jobs[$i]['client']];
+                            $client = $this->sys->template->jobs['clients'][$this->sys->template->jobs[$i]['client']];
                             $status = array('', '');
                             switch ($this->sys->template->jobs[$i]['status']) {
                                 case 'na':
@@ -86,14 +86,16 @@
         </div> <!-- END: panel -->
     </div> <!-- END: col-sm-12 -->
 </div> <!-- END: row -->
-<div class="remove_employee_dialog">
+<div class="remove_job_dialog">
     <div class="dialog_text">
-        Are you sure you want to remove <br /> 
-        <span class="bold">{employees_by_id[<?php echo $this->sys->template->employee_id; ?>]['firstname']} {employees_by_id[<?php echo $this->sys->template->employee_id; ?>]['lastname']}?
+        Are you sure you want to remove <br />
+        <span class="bold">{job['job_name']} ({job['job_uid']})</span>
+        for
+        <span class="bold"><?php echo $this->sys->template->jobs['clients'][$this->sys->template->job['client']]; ?></span>?
     </div>
 
-    <form class="remove_employee_form" method="post" action="">
-        <input type="hidden" name="employee_id" value="{employees_by_id[<?php echo $this->sys->template->employee_id; ?>]['id']}" />
-        <input type="hidden" name="remove_employee" value="remove" />
+    <form class="remove_job_form" method="post" action="">
+        <input type="hidden" name="job_id" value="{job['job_id']}" />
+        <input type="hidden" name="remove_job" value="remove_job" />
     </form>
 </div>
