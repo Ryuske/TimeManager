@@ -60,9 +60,10 @@ class timeclock_employee extends controller {
      */
     public function edit($employee_id) {
         $this->sys->template->response = '';
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'settings'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'categories', 'settings'));
         $this->sys->template->employees_by_id = $this->model_employees->get_employees(True);
         $this->sys->template->employee_id = (int) $employee_id;
+        $this->sys->template->categories = $this->model_categories->get_categories();
         
         if ($this->is_logged_in()) {
             $this->sys->template->title = 'TimeClock | Employee | Edit';

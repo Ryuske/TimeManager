@@ -60,17 +60,20 @@ class model_timeclock_employees {
     protected function add() {
         $error = '';
 
-        if ('' === $_POST['firstname']) {
+        if (!array_key_exists('firstname', $_POST) || '' === $_POST['firstname']) {
             $error = '<p>Please enter employee\'s first name.</p>';
         }
-        if ('' === $_POST['lastname']) {
+        if (!array_key_exists('lastname', $_POST) || '' === $_POST['lastname']) {
             $error .= '<p>Please enter employee\'s last name.</p>';
         }
-        if ('' === $_POST['uid'] && !isset($_POST['generate_uid'])) {
+        if ((!array_key_exists('uid', $_POST) || '' === $_POST['uid']) && !array_key_exists('generate_uid', $_POST)) {
             $error .= '<p>You either need to enter a UID or check \'Pick a UID For Me\'.</p>';
         }
-        if ('' !== $_POST['username'] && $_POST['password'] === '') {
+        if ((!array_key_exists('username', $_POST) || '' !== $_POST['username']) && (!array_key_exists('password', $_POST) || $_POST['password'] === '')) {
             $error .= '<p>If you pick a username, you must enter a password.</p>';
+        }
+        if (!array_key_exists('category', $_POST) || '' === $_POST['category']) {
+            $error .= '<p>Please select a category.</p>';
         }
         
         if (isset($_POST['generate_uid']) && '' === $_POST['uid']) {
@@ -113,8 +116,9 @@ class model_timeclock_employees {
         }
 
         if ($error === '') {
-            $query = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', :uid, :firstname, :lastname, :username, :password)", array(
+            $query = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `category_id`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', :uid, :category, :firstname, :lastname, :username, :password)", array(
                     ':uid' => $uid,
+                    ':category' => (int) $_POST['category'],
                     ':firstname' => $_POST['firstname'],
                     ':lastname' => $_POST['lastname'],
                     ':username' => $_POST['username'],
@@ -129,7 +133,7 @@ class model_timeclock_employees {
             $this->sys->template->response = '<div class="form_success">Employee Added Successfully</div>';
             $this->sys->template->meta = array('1', $this->sys->config->timeclock_root . 'main');
         }
-    } //End add_employee
+    } //End add
 
     /**
      * @Purpose: Used to edit an employees database records
@@ -157,6 +161,9 @@ class model_timeclock_employees {
         }
         if ('' === $_POST['uid'] && !isset($_POST['generate_uid'])) {
             $error .= '<p>You either need to enter a UID or check \'Pick a UID For Me\'.</p>';
+        }
+        if (!array_key_exists('category', $_POST) || '' === $_POST['category']) {
+            $error .= '<p>Please select a category.</p>';
         }
         if ('' !== $_POST['username'] && $_POST['password'] === '') {
             $query = $this->sys->db->query("SELECT `employee_password` FROM `employees` WHERE `employee_username`=:username", array(
@@ -211,9 +218,10 @@ class model_timeclock_employees {
         }
 
         if ($error === '') {
-            $query = $this->sys->db->query("UPDATE `employees` SET `employee_uid`=:uid, `employee_firstname`=:firstname, `employee_lastname`=:lastname, `employee_username`=:username, `employee_password`=:password WHERE `employee_id`=:id", array(
+            $query = $this->sys->db->query("UPDATE `employees` SET `employee_uid`=:uid, `category_id`=:category, `employee_firstname`=:firstname, `employee_lastname`=:lastname, `employee_username`=:username, `employee_password`=:password WHERE `employee_id`=:id", array(
                     ':id' => $id,
                     ':uid' => $uid,
+                    ':category' => (int) $_POST['category'],
                     ':firstname' => $_POST['firstname'],
                     ':lastname' => $_POST['lastname'],
                     ':username' => $_POST['username'],
@@ -228,7 +236,7 @@ class model_timeclock_employees {
             $this->sys->template->response = '<div class="form_success">Employee Updated Successfully</div>';
             $this->sys->template->meta = array('1', $this->sys->config->timeclock_root . 'main');
         }
-    } //End edit_employee
+    } //End edit
     
     /**
      * @Purpose: User to remove an employee from the database
@@ -255,13 +263,13 @@ class model_timeclock_employees {
     public function get_employees($by_id = False, $paginate = False) {
         switch ($this->sys->template->model_settings->sort_employees_by) {
             case 'first_name':
-                $sort_employees_by = '`employee_firstname`, `employee_lastname`';
+                $sort_employees_by = 'employees.employee_firstname, employees.employee_lastname';
                 break;
             case 'uid':
-                $sort_employees_by = '`employee_uid`';
+                $sort_employees_by = 'employees.employee_uid';
                 break;
             default:
-                $sort_employees_by = '`employee_lastname`, `employee_firstname`';
+                $sort_employees_by = 'employees.employee_lastname, employees.employee_firstname';
         }
         
         if (True === $paginate) {
@@ -272,7 +280,7 @@ class model_timeclock_employees {
             $limit = '';
         }
         
-        $result = $this->sys->db->query("SELECT * FROM `employees` ORDER BY $sort_employees_by $limit");
+        $result = $this->sys->db->query("SELECT * FROM `employees` AS employees JOIN `categories` AS categories on categories.category_id = employees.category_id ORDER BY $sort_employees_by $limit");
         $return = array();
         foreach ($result as $employee_key=>$employee_value) {
             foreach ($employee_value as $key=>$value) {
@@ -295,7 +303,7 @@ class model_timeclock_employees {
     /**
      * @Purpose: Used to return employees in a view-friendly manner
      */
-    public function get_employees_for_view($paginate = True) {
+    public function get_employees_for_view($paginate = true) {
         global $sys;
         $employees = $this->get_employees(False, $paginate);
         $return_employees = array();

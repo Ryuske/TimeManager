@@ -38,8 +38,7 @@
                     </thead>
                     <tbody>
                         <?php
-                        for ($i=0; $i<(count($this->sys->template->jobs)-1); $i++) {
-                            $client = $this->sys->template->jobs['clients'][$this->sys->template->jobs[$i]['client']];
+                        for ($i=0; $i<count($this->sys->template->jobs); $i++) {
                             $status = array('', '');
                             switch ($this->sys->template->jobs[$i]['status']) {
                                 case 'na':
@@ -57,7 +56,7 @@
                             ?>
                             <tr>
                             <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_id']}')">{jobs[<?php echo $i; ?>]['job_uid']}</td>
-                            <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_id']}')"><?php echo $client; ?></td>
+                            <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_id']}')">{jobs[<?php echo $i; ?>]['client_name']}</td>
                             <td onclick="jobClicked('view', '{jobs[<?php echo $i; ?>]['job_id']}')">{jobs[<?php echo $i; ?>]['job_name']}</td>
                             <td onclick="jobClicked('view', '{jobs[<?php echo $i; ?>]['job_id']}')"><div class="<?php echo $status[0]; ?>"><?php echo $status[1]; ?></div></td>
                                 <td>
@@ -91,7 +90,7 @@
         Are you sure you want to remove <br />
         <span class="bold">{job['job_name']} ({job['job_uid']})</span>
         for
-        <span class="bold"><?php echo $this->sys->template->jobs['clients'][$this->sys->template->job['client']]; ?></span>?
+        <span class="bold">{job['client_name']}</span>?
     </div>
 
     <form class="remove_job_form" method="post" action="">

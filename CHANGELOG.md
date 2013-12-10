@@ -1,3 +1,7 @@
+### 12/10/13 - Commit 6 ###
+* https://github.com/Ryuske/TimeClock/issues/10 <-- Finished implimenting categories into employees
+* Paginated jobs
+
 ### 12/10/13 - Commit 5 ###
 * Added setting for sorting jobs
 

@@ -79,6 +79,7 @@
             return false;
         } else {
             $this->sys->template->response = '<div class="form_success">Job Added Successfully</div>';
+            $this->sys->template->meta = array('1', $this->sys->config->timeclock_root . 'jobs');
             return true;
         }
     }
@@ -159,6 +160,7 @@
             return false;
         } else {
             $this->sys->template->response = '<div class="form_success">Job Updated Successfully</div>';
+            $this->sys->template->meta = array('1', $this->sys->config->timeclock_root . 'jobs');
             return true;
         }
     } //End edit
@@ -184,7 +186,15 @@
     /**
      * @Purpose: Returns a list of all the jobs
      */
-    public function get_jobs($job_id='all') {
+    public function get_jobs($job_id='all', $paginate=true) {
+        if (true === $paginate) {
+            $start = ((1 >= $this->sys->template->page_id)) ? 0 : (int) ($this->sys->template->page_id-1) * $this->sys->template->paginate_by;
+            $end = $this->sys->template->paginate_by;
+            $limit = 'LIMIT ' . $start . ',' . $end;
+        } else {
+            $limit = '';
+        }
+        
         switch ($this->sys->template->model_settings->sort_jobs_by) {
             case 'job_name':
                 $sort_by = 'jobs.job_name, clients.client_name';
@@ -199,7 +209,7 @@
          * Add a setting to make this sortable by job id, client or job name
          */
         if (is_numeric($job_id)) {
-            $jobs = $this->sys->db->query("SELECT * FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client WHERE jobs.job_id=:id ORDER BY $sort_by", array(
+            $jobs = $this->sys->db->query("SELECT * FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client WHERE jobs.job_id=:id ORDER BY $sort_by $limit", array(
                 ':id' => (int) $job_id
             ));
             if (!empty($jobs)) {
@@ -208,15 +218,9 @@
                 return false;
             }
         } else {
-            $jobs = $this->sys->db->query("SELECT * FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client ORDER BY $sort_by");
+            $jobs = $this->sys->db->query("SELECT * FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client ORDER BY $sort_by $limit");
         }
-        
-        $clients = $this->sys->db->query("SELECT * FROM `clients`");
-        
-        foreach ($clients as $client) {
-            $jobs['clients'][$client['client_id']] = $client['client_name'];
-        }
-        
+
         return $jobs;
     }
  }

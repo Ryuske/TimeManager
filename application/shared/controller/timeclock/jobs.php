@@ -40,14 +40,17 @@ class timeclock_jobs extends controller {
         return $this->model_loggedIn->status();
     }
     
-    public function index() {
+    public function index($page_id=1) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'jobs'));
         $this->login_failed();
 
         if ($this->is_logged_in()) {
             $this->sys->template->title = 'TimeClock | Jobs';
             $this->sys->template->jobs_active = 'class="active"';
+            $this->sys->template->page_id = (int) $page_id;
+            $this->sys->template->paginate_by = $this->model_settings->paginate_by;
             $this->sys->template->jobs = $this->model_jobs->get_jobs();
+            $this->sys->template->pagination = $this->model_renderPage->generate_pagination('jobs/home', 'jobs', (int) $page_id);
             
             $parse = 'jobs_home';
             $full_page = True;
@@ -84,7 +87,7 @@ class timeclock_jobs extends controller {
     }
     
     public function edit($job_id) {
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'clients', 'jobs'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'clients', 'settings', 'jobs'));
 
         if (!isset($this->sys->template->response)) {
             $this->sys->template->response = '';
@@ -107,14 +110,17 @@ class timeclock_jobs extends controller {
     }
     
     public function remove($job_id) {
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'jobs'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'jobs'));
         $this->login_failed();
 
         if ($this->is_logged_in()) {
             $this->sys->template->title = 'TimeClock | Jobs';
             $this->sys->template->jobs_active = 'class="active"';
+            $this->sys->template->page_id = 1;
+            $this->sys->template->paginate_by = $this->model_settings->paginate_by;
             $this->sys->template->jobs = $this->model_jobs->get_jobs();
             $this->sys->template->job = $this->model_jobs->get_jobs((int) $job_id);
+            $this->sys->template->pagination = $this->model_renderPage->generate_pagination('jobs/home', 'jobs', 1);
             
             $parse = 'jobs_remove';
             $full_page = True;
