@@ -122,6 +122,7 @@ class timeclock_home extends controller {
             $this->sys->template->paginate_by = (NULL !== $this->model_settings->paginate_by) ? $this->model_settings->paginate_by : 10;
             $this->sys->template->sort_employees_by = $this->model_settings->sort_employees_by;
             $this->sys->template->list_employees_as = $this->model_settings->list_employees_as;
+            $this->sys->template->sort_jobs_by = $this->model_settings->sort_jobs_by;
 
             $this->sys->template->title = 'TimeClock | Settings';
             $this->sys->template->settings_active = 'class="active"';

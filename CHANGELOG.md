@@ -1,3 +1,6 @@
+### 12/10/13 - Commit 5 ###
+* Added setting for sorting jobs
+
 ### 12/10/13 - Commit 4 ###
 * Updated comments
 * https://github.com/Ryuske/TimeClock/issues/14 <-- Split into main.js, dialogs.js and functions.js

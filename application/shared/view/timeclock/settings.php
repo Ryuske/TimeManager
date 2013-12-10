@@ -51,6 +51,14 @@
                         <option value="first_last"<?php echo ('first_last' === $this->sys->template->list_employees_as) ? 'selected="selected"' : ''; ?>>First Name, Last Name</option>
                     </select>
                 </div>
+                <div class="group">
+                    <label>Sort Jobs By</label>
+                    <select class="form-control" name="sort_jobs_by">
+                        <option value="job_id" <?php echo ('job_id' === $this->sys->template->sort_jobs_by) ? 'selected="selected"' : ''; ?>>Job ID</option>
+                        <option value="job_name" <?php echo ('job_name' === $this->sys->template->sort_jobs_by) ? 'selected="selected"' : ''; ?>>Job Name</option>
+                        <option value="client_name" <?php echo ('client_name' === $this->sys->template->sort_jobs_by) ? 'selected="selected"' : ''; ?>>Client Name</option>
+                    </select>
+                </div>
                 {update_status}
                 <button type="submit" name="update_settings" class="btn btn-primary">Submit</button>
             </form>
