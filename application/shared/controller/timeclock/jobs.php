@@ -41,7 +41,7 @@ class timeclock_jobs extends controller {
     }
     
     public function index() {
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'jobs'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'jobs'));
         $this->login_failed();
 
         if ($this->is_logged_in()) {

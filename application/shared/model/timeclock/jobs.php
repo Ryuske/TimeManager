@@ -185,11 +185,21 @@
      * @Purpose: Returns a list of all the jobs
      */
     public function get_jobs($job_id='all') {
+        switch ($this->sys->template->model_settings->sort_jobs_by) {
+            case 'job_name':
+                $sort_by = 'jobs.job_name, clients.client_name';
+                break;
+            case 'client_name':
+                $sort_by = 'clients.client_name, jobs.job_id';
+                break;
+            default: //job_id
+                $sort_by = 'jobs.job_id, jobs.job_name';
+        }
         /**
          * Add a setting to make this sortable by job id, client or job name
          */
         if (is_numeric($job_id)) {
-            $jobs = $this->sys->db->query("SELECT * FROM `jobs` WHERE `job_id`=:id", array(
+            $jobs = $this->sys->db->query("SELECT * FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client WHERE jobs.job_id=:id ORDER BY $sort_by", array(
                 ':id' => (int) $job_id
             ));
             if (!empty($jobs)) {
@@ -198,7 +208,7 @@
                 return false;
             }
         } else {
-            $jobs = $this->sys->db->query("SELECT * FROM `jobs`");
+            $jobs = $this->sys->db->query("SELECT * FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client ORDER BY $sort_by");
         }
         
         $clients = $this->sys->db->query("SELECT * FROM `clients`");
