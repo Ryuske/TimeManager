@@ -26,6 +26,9 @@
     /**
      * Database Modification - Add/Edit/Remove
      */
+    /**
+     * @Purpose: Used ot add clients to the database
+     */
     protected function add() {
         $error = (array_key_exists('client_name', $_POST) && '' === $_POST['client_name']) ? '<p>Please enter a name for the client</p>' : '';
         
@@ -42,6 +45,9 @@
         }
     }
     
+    /**
+     * * @Purpose: Used ot edit clients in the database
+     */
     protected function edit() {
         $error = '';
         
@@ -74,6 +80,9 @@
         }
     }
     
+    /**
+     * @Purpose: Used ot remove clients from the database
+     */
     protected function remove() {
         $error = '';
         
@@ -97,6 +106,9 @@
      * END: Database Modification Block
      */
     
+    /**
+     * @Purpose: Returns a list of all the clients
+     */
     public function get_clients() {
         $clients = $this->sys->db->query("SELECT * FROM `clients`");
         

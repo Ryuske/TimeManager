@@ -41,10 +41,12 @@ class timeclock_employee extends controller {
      */
     public function add() {
         $this->sys->template->response = '';
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'categories', 'employees'));
 
         if ($this->is_logged_in()) {
             $this->sys->template->title = 'TimeClock | Employee | Add';
+            $this->sys->template->categories = $this->model_categories->get_categories();
+            
             $parse = 'employee_add';
         } else {
             $this->load_home();

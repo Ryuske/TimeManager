@@ -1,3 +1,9 @@
+### 12/10/13 - Commit 4 ###
+* Updated comments
+* https://github.com/Ryuske/TimeClock/issues/14 <-- Split into main.js, dialogs.js and functions.js
+* Fixed some javascript errors. Not sure what I was thinking.
+* https://github.com/Ryuske/TimeClock/issues/10 <-- You can now add/edit/remove categories
+
 ### 12/10/13 - Commit 3 ###
 * https://github.com/Ryuske/TimeClock/issues/7 <-- updated model/timeclock/employees.php method naming conventions
 

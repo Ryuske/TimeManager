@@ -15,8 +15,8 @@ $date_format = 'm/d/y';
                         <div class="title col-sm-5">
                             {employees_by_id[<?php echo $this->sys->template->employee_id ?>]['firstname']}
                             {employees_by_id[<?php echo $this->sys->template->employee_id ?>]['lastname']}
-                            (<?php echo date($date_format, $this->sys->template->pay_period_monday); ?> -
-                            <?php echo date($date_format, $this->sys->template->pay_period_sunday); ?>) -
+                            (<span class="start_date"><?php echo date($date_format, $this->sys->template->pay_period_monday); ?></span> -
+                            <span class="end_date"><?php echo date($date_format, $this->sys->template->pay_period_sunday); ?></span>) -
                             <?php echo (float) $this->sys->template->total_hours; ?> hours
                         </div>
                         <div class="col-sm-1 col-sm-offset-6">
@@ -159,7 +159,6 @@ $date_format = 'm/d/y';
     <form class="add_date_form" method="post" action="">
         <div class="dialog_text">
             <div class="date"></div>
-            <div class="hide start_date"><?php echo date('m/d/Y', $this->sys->template->pay_period_monday); ?></div>
             <input class="date_to_add" type="hidden" name="date" />
         </div>
         <input type="hidden" name="employee_id" value="{employees_by_id[<?php echo $this->sys->template->employee_id ?>]['id']}" />
