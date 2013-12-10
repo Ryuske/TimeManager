@@ -1,3 +1,9 @@
+### 12/9/13 - Commit 1 ###
+* https://github.com/Ryuske/TimeClock/issues/5 <-- Started integrating issue #5
+** Can add/update/remove clients
+** Can add jobs
+* Updated main controller comments
+
 ### 12/6/13 - Commit 2 ###
 * https://github.com/Ryuske/TimeClock/issues/6 <-- Integrated issue #6
 

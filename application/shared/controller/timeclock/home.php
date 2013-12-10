@@ -2,14 +2,11 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/13/13
- * @Date Modified: 12/2/13
- * @Purpose: Default controller for TimeClock
+ * @Date Modified: 12/09/13
+ * @Purpose: Default controller - used for top level pages (home, about, settings, etc)
  * @Version: 1.0
  */
 
-/**
- * @Purpose: Default controller - used for top level pages (home, about, settings, etc)
- */
 class timeclock_home extends controller {
     /**
      * @Purpose: Primarily used to load models based on $this->_dependencies;
