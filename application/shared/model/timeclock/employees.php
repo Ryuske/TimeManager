@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/15/13
- * @Date Modified: 12/5/13
+ * @Date Modified: 12/10/13
  * @Purpose: Used to pull the employees from the database and use the results in a view
  * @Version: 1.0
  */
@@ -42,22 +42,22 @@ class model_timeclock_employees {
         $this->sys = &$sys;
 
         if (array_key_exists('add_employee', $_POST)) {
-            $this->add_employee();
+            $this->add();
         }
         
         if (array_key_exists('edit_employee', $_POST)) {
-            $this->edit_employee();
+            $this->edit();
         }
         
         if (array_key_exists('remove_employee', $_POST)) {
-            $this->remove_employee();
+            $this->remove();
         }
     }
 
     /**
      * @Purpose: Used to add an employee to the database
      */
-    protected function add_employee() {
+    protected function add() {
         $error = '';
 
         if ('' === $_POST['firstname']) {
@@ -134,7 +134,7 @@ class model_timeclock_employees {
     /**
      * @Purpose: Used to edit an employees database records
      */
-    protected function edit_employee() {
+    protected function edit() {
         $id = (int) $_POST['employee_id'];
         $password = '';
         
@@ -233,7 +233,7 @@ class model_timeclock_employees {
     /**
      * @Purpose: User to remove an employee from the database
      */
-    protected function remove_employee() {
+    protected function remove() {
         $id = (int) $_POST['employee_id'];
         
         $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_id`=:id", array(
