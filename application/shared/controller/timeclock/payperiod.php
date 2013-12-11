@@ -62,7 +62,15 @@ class timeclock_payperiod extends controller {
      */
     public function rx($uid, $data, $pay_period='current') {
         $this->load_dependencies(array('payPeriod', 'settings'));
-        $employee = $this->sys->db->query("SELECT * FROM `employees` WHERE `employee_uid`=:uid", array(
+        $employee = $this->sys->db->query("
+            SELECT *
+            FROM `employees` AS employee
+                JOIN `categories` AS category on category.category_id=employee.category_id
+                LEFT JOIN `job_punch` AS job on job.employee_id=employee.employee_id
+                LEFT JOIN `jobs` AS jobs on jobs.job_uid=job.job_id
+            WHERE `employee_uid`=:uid
+            ORDER BY job.punch_id DESC
+        ", array(
             ':uid' => $uid
         ));
         $pay_period_query = $this->sys->db->query("SELECT `time`,`date`,`operation` FROM `employee_punch` WHERE `employee_id`=:employee_id ORDER BY `employee_punch_id` DESC", array(
@@ -80,8 +88,14 @@ class timeclock_payperiod extends controller {
         }
 
         switch ($data) {
-            case 'employee_name':
+            case 'name':
                 $response = $employee[0]['employee_firstname'] . ' ' . $employee[0]['employee_lastname'];
+                break;
+            case 'category':
+                $response = $employee[0]['category_name'];
+                break;
+            case 'last_job':
+                $response = $employee[0]['job_name'];
                 break;
             case 'last_op':
                 $response = $pay_period_query[0]['operation'];
