@@ -1,3 +1,8 @@
+### 12/11/13 - Commit 2 ###
+* https://github.com/Ryuske/TimeClock/issues/11 <-- Finished
+* Printer friendly version of jobs
+* Total hours, total hours by category
+
 ### 12/11/13 - Commit 1 ###
 * https://github.com/Ryuske/TimeClock/issues/11 <-- You can now add/edit/remove dates and update the employee or category assigned to a time
 

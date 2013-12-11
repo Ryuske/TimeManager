@@ -139,19 +139,21 @@ class timeclock_jobs extends controller {
      */
     public function view($job_id, $page_id = 1) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'categories', 'jobs', 'settings'));
-        $this->sys->template->page_id = (int) $page_id;
-        $this->sys->template->paginate_by = $this->model_settings->paginate_by;
-        $this->sys->template->job_id = (int) $job_id;
+        $this->sys->template->page_id       = (int) $page_id;
+        $this->sys->template->paginate_by   = $this->model_settings->paginate_by;
+        $this->sys->template->job_id        = (int) $job_id;
         
         if ($this->is_logged_in()) {
-            $this->sys->template->job = $this->model_jobs->get_jobs((int) $job_id);
-            $this->sys->template->job_table = $this->model_jobs->generate_job_table((int) $job_id);
-            $this->sys->template->start_date = $this->model_jobs->find_dates((int) $job_id, 'start');
-            $this->sys->template->last_date = $this->model_jobs->find_dates((int) $job_id, 'end');
+            $this->sys->template->job               = $this->model_jobs->get_jobs((int) $job_id);
+            $this->sys->template->job_table         = $this->model_jobs->generate_job_table((int) $job_id);
+            $this->sys->template->start_date        = $this->model_jobs->find_dates((int) $job_id, 'start');
+            $this->sys->template->last_date         = $this->model_jobs->find_dates((int) $job_id, 'end');
             $this->sys->template->add_date_response = '';
-            $this->sys->template->pagination = $this->model_renderPage->generate_pagination('jobs/view/' . (int) $job_id . '', (int) $page_id);
-            $this->sys->template->employees = $this->model_employees->get_employees();
-            $this->sys->template->categories = $this->model_categories->get_categories();
+            $this->sys->template->pagination        = $this->model_renderPage->generate_pagination('jobs/view/' . (int) $job_id . '', (int) $page_id);
+            $this->sys->template->employees         = $this->model_employees->get_employees();
+            $this->sys->template->categories        = $this->model_categories->get_categories();
+            $this->sys->template->total_hours       = $this->model_jobs->total_hours((int) $job_id, false);
+            $this->sys->template->hours_by_category = $this->model_jobs->total_hours((int) $job_id, true);
             
             $this->sys->template->title = 'TimeClock | Jobs | View';
             $this->sys->template->jobs_active = 'class="active"';
@@ -161,7 +163,31 @@ class timeclock_jobs extends controller {
         }
 
         //Parses the HTML from the view
-        $this->model_renderPage->parse($parse, True);
+        $this->model_renderPage->parse($parse, true);
+    }
+    
+    public function print_friendly($job_id) {
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'categories', 'jobs', 'settings'));
+        $this->sys->template->job_id        = (int) $job_id;
+        
+        if ($this->is_logged_in()) {
+            $this->sys->template->job               = $this->model_jobs->get_jobs((int) $job_id);
+            $this->sys->template->job_table         = $this->model_jobs->generate_job_table((int) $job_id);
+            $this->sys->template->start_date        = $this->model_jobs->find_dates((int) $job_id, 'start');
+            $this->sys->template->last_date         = $this->model_jobs->find_dates((int) $job_id, 'end');
+            $this->sys->template->employees         = $this->model_employees->get_employees();
+            $this->sys->template->categories        = $this->model_categories->get_categories();
+            $this->sys->template->total_hours       = $this->model_jobs->total_hours((int) $job_id, false);
+            $this->sys->template->hours_by_category = $this->model_jobs->total_hours((int) $job_id, true);
+            
+            $this->sys->template->title = 'TimeClock | Jobs | Print';
+            $parse = 'jobs_print';
+        } else {
+            $this->load_home();
+        }
+
+        //Parses the HTML from the view
+        $this->model_renderPage->parse($parse, false);
     }
     
     /**

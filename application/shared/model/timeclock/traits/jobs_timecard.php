@@ -1,7 +1,26 @@
 <?php
 trait job_timecard {
-    protected function total_hours() {
+    public function total_hours($job_id, $by_category=false) {
+        $return_hours = 0;
+        $hours = $this->get_hours($job_id);
         
+        if ($by_category) {
+            $return_hours = array();
+            
+            foreach ($hours as $hour) {
+                if (!array_key_exists($hour['category_name'], $return_hours)) {
+                    $return_hours[$hour['category_name']] = 0;
+                }
+                
+                $return_hours[$hour['category_name']] += $hour['total_hours'];
+            }
+        } else {
+            foreach ($hours as $hour) {
+                $return_hours += $hour['total_hours'];
+            }
+        }
+        
+        return $return_hours;
     }
     
     protected function get_hours($job_id) {
