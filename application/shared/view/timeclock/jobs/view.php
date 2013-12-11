@@ -17,20 +17,19 @@ $date_format = 'm/d/y';
                             <?php
                             switch ($this->sys->template->job['status']) {
                                 case 'c':
-                                    $status = 'Completed';
+                                    $status = 'Completed | <span class="start_date">' . $this->sys->template->start_date . '</span> - <span class="end_sate">' . $this->sys->template->start_date . "</span>";
                                     break;
                                 case 'wip':
-                                    $status = "In Progress";
+                                    $status = 'In Progress | <span class="start_date">' . $this->sys->template->start_date . '</span> - <span class="end_sate">' . $this->sys->template->start_date . "</span>";
                                     break;
                                 default: //na
-                                    $status = "Not Started";
+                                    $status = 'Not Started';
                             }
                             ?>
-                            (<?php echo $status; ?> <span class="start_date">{start_date}</span> -
-                            <span class="end_date">{last_date}</span>)
+                            (<?php echo $status; ?>)
                         </div>
                         <div class="col-sm-1 col-sm-offset-5">
-                            <a href="{timeclock_root}jobs/print_friendly/{job['job_id']}" target="_blank" class="btn btn-primary btn-sm" role="button">Print</a>
+                            <a href="{timeclock_root}jobs/print_friendly/{job['job_uid']}" target="_blank" class="btn btn-primary btn-sm" role="button">Print</a>
                         </div>
                     </h3>
                 </div>
@@ -60,7 +59,7 @@ $date_format = 'm/d/y';
                             </tr>
                         </tfoot>
                     </table>
-                    <a href="javascript:addDate({job_id}, 'job')">Add Date</a>
+                    <a href="javascript:addDate('{job_id}', 'job')">Add Date</a>
                 </div> <!-- END: panel-body -->
             </div> <!-- END: panel -->
             <div class="row">

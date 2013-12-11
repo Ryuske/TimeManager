@@ -177,7 +177,7 @@ $sys->router->load_traits('jobs', 'timeclock');
             return false;
         } else {
             $this->sys->template->response = '<div class="form_success">Job Updated Successfully</div>';
-            $this->sys->template->meta = array('1', $this->sys->config->timeclock_root . 'jobs');
+            $this->sys->template->meta = array('0', $this->sys->config->timeclock_root . 'jobs');
             return true;
         }
     } //End edit
@@ -204,7 +204,7 @@ $sys->router->load_traits('jobs', 'timeclock');
      * @Purpose: Returns a list of all the jobs
      */
     public function get_jobs($job_id='all', $paginate=true) {
-        if (true === $paginate && !is_numeric($job_id)) {
+        if (true === $paginate && 'all' === $job_id) {
             $start = ((1 >= $this->sys->template->page_id)) ? 0 : (int) ($this->sys->template->page_id-1) * $this->sys->template->paginate_by;
             $end = $this->sys->template->paginate_by;
             $limit = 'LIMIT ' . $start . ',' . $end;
@@ -217,15 +217,21 @@ $sys->router->load_traits('jobs', 'timeclock');
                 $sort_by = 'jobs.job_name, clients.client_name';
                 break;
             case 'client_name':
-                $sort_by = 'clients.client_name, jobs.job_id';
+                $sort_by = 'clients.client_name, jobs.job_uid';
                 break;
             default: //job_id
-                $sort_by = 'jobs.job_id, jobs.job_name';
+                $sort_by = 'jobs.job_uid, jobs.job_name';
         }
-        if (is_numeric($job_id)) {
-            $jobs = $this->sys->db->query("SELECT * FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client WHERE jobs.job_id=:id ORDER BY $sort_by $limit", array(
-                ':id' => (int) $job_id
+        if ('all' !== $job_id) {
+            $jobs = $this->sys->db->query("
+                SELECT *
+                FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client
+                WHERE jobs.job_uid=:id
+                ORDER BY $sort_by $limit
+            ", array(
+                ':id' => $job_id
             ));
+
             if (!empty($jobs)) {
                 $jobs = $jobs[0];
             } else {
@@ -244,11 +250,11 @@ $sys->router->load_traits('jobs', 'timeclock');
     public function find_dates($job_id, $date_to_get) {
         if ('start' === $date_to_get) {
             $query = $this->sys->db->query("SELECT `date` FROM `job_punch` WHERE `job_id`=:id ORDER BY `date` LIMIT 1", array(
-                ':id' => (int) $job_id
+                ':id' => $job_id
             ));
         } else { //end
             $query = $this->sys->db->query("SELECT `date` FROM `job_punch` WHERE `job_id`=:id ORDER BY `date` DESC LIMIT 1", array(
-                ':id' => (int) $job_id
+                ':id' => $job_id
             ));
         }
         
@@ -264,7 +270,7 @@ $sys->router->load_traits('jobs', 'timeclock');
             SELECT * FROM `job_punch` AS punch
                 JOIN `employees` AS employees on employees.employee_id=punch.employee_id
                 LEFT JOIN `categories` AS categories on categories.category_id=employees.category_id
-            WHERE punch.job_id=:id ORDER BY punch.date", array(':id' => (int) $job_id));
+            WHERE punch.job_id=:id ORDER BY punch.date", array(':id' => $job_id));
         $job_info = array();
         
         foreach ($job_query as $temp) {
@@ -291,10 +297,10 @@ $sys->router->load_traits('jobs', 'timeclock');
                     $out = (!empty($hour['out']['out'])) ? date($this->_timeFormat, (int) $hour['out']['out']) : '';
                     
                     $return .= '<td>' . $hour['date'] . '</td>';
-                    $return .= '<td onclick="updateJobTime(' . $id['in'] . ', jQuery(this), \'in\')">' . $in . '</td>';
-                    $return .= '<td onclick="updateJobTime(' . $id['out'] . ', jQuery(this), \'out\')">' . $out . '</td>';
-                    $return .= '<td onclick="updateJobInfo(' . $id['in'] . ', ' . $job_info[$hour['employee']]['employee_id'] . ', ' . $hour['category_id'] . ')">' . $job_info[$hour['employee']]['employee_firstname'] . ', ' . $job_info[$hour['employee']]['employee_lastname'] . '</td>';
-                    $return .= '<td onclick="updateJobInfo(' . $id['in'] . ', ' . $job_info[$hour['employee']]['employee_id'] . ', ' . $hour['category_id'] . ')">' . $hour['category_name'] . '</td>';
+                    $return .= '<td onclick="updateJobTime(\'' . $id['in'] . '\', jQuery(this), \'in\')">' . $in . '</td>';
+                    $return .= '<td onclick="updateJobTime(\'' . $id['out'] . '\', jQuery(this), \'out\')">' . $out . '</td>';
+                    $return .= '<td onclick="updateJobInfo(\'' . $id['in'] . '\', ' . $job_info[$hour['employee']]['employee_id'] . ', ' . $hour['category_id'] . ')">' . $job_info[$hour['employee']]['employee_firstname'] . ', ' . $job_info[$hour['employee']]['employee_lastname'] . '</td>';
+                    $return .= '<td onclick="updateJobInfo(\'' . $id['in'] . '\', ' . $job_info[$hour['employee']]['employee_id'] . ', ' . $hour['category_id'] . ')">' . $hour['category_name'] . '</td>';
                     $return .= '<td>' . $hour['total_hours'] . '</td>';
                     $return .= '</tr>';
                 }

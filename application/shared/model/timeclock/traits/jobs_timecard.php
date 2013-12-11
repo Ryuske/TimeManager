@@ -8,6 +8,13 @@ trait job_timecard {
             $return_hours = array();
             
             foreach ($hours as $hour) {
+                if (!array_key_exists('category_name', $hour)) {
+                    $hour['category_name'] = 'Unassigned';
+                }
+                if (!array_key_exists('total_hours', $hour)) {
+                    $hour['total_hours'] = 0;
+                }
+                
                 if (!array_key_exists($hour['category_name'], $return_hours)) {
                     $return_hours[$hour['category_name']] = 0;
                 }
@@ -16,6 +23,10 @@ trait job_timecard {
             }
         } else {
             foreach ($hours as $hour) {
+                if (!array_key_exists('total_hours', $hour)) {
+                    $hour['total_hours'] = 0;
+                }
+                
                 $return_hours += $hour['total_hours'];
             }
         }
@@ -28,9 +39,9 @@ trait job_timecard {
             SELECT *
             FROM `job_punch` AS jobs JOIN `categories` AS categories on categories.category_id=jobs.category_id
             WHERE `job_id`=:job_id
-            ORDER BY `date` ASC
+            ORDER BY `date`, `punch_id` ASC
             ", array(
-            ':job_id' => (int) $job_id,
+            ':job_id' => $job_id,
         ));
         
         $return_hours = array();
@@ -66,10 +77,10 @@ trait job_timecard {
                 if (empty($hour['in']) || empty($hour['out'])) {
                     return 0;
                 }
-                
-                $in = (array_key_exists('in', $hour) && '' !== $hour['in']) ? strtotime(date('g:ia', (float) $hour['in']['in'])) : 0;
-                $out = (array_key_exists('out', $hour) && '' !== $hour['out']) ? strtotime(date('g:ia', (float) $hour['out']['out'])) : 0;
-                
+
+                $in = (array_key_exists('in', $hour) && '' !== $hour['in'] && 0 != $hour['in']['in']) ? strtotime(date('g:ia', (float) $hour['in']['in'])) : 0;
+                $out = (array_key_exists('out', $hour) && '' !== $hour['out'] && 0 != $hour['out']['out']) ? strtotime(date('g:ia', (float) $hour['out']['out'])) : 0;
+
                 //Used to find the difference of two timestamps in hours that are rounded to the nearest 15 minutes (.25 of an hour)
                 if (0 < $out) {
                     switch ($sys->template->model_settings->round_time_by) {
@@ -90,7 +101,9 @@ trait job_timecard {
                             $places = 2;
                     }
                     
-                    $return_hours[$punch_id]['total_hours'] += round((($out/60 - $in/60)/60)/$round_by, $places)*$round_by;
+                    if (0 !== $in || 0 !== $out) {
+                        $return_hours[$punch_id]['total_hours'] += round((($out/60 - $in/60)/60)/$round_by, $places)*$round_by;
+                    }
                 }
                 
                 if (!array_key_exists('total_hours', $return_hours[$punch_id])) {
@@ -102,11 +115,11 @@ trait job_timecard {
         return array_reverse($return_hours, true);
     } //End get_hours
     
-    protected function punch($job_id, $employee_id) {
+    public function punch($job_id, $employee_id) {
         $date_time = array('date' => date($this->_dateFormat), 'time' => time());
         $operation = '';
         $last_job = $this->sys->db->query("SELECT `punch_id`, `time`, `operation` FROM `job_punch` WHERE `job_id`=:job_id AND `employee_id`=:employee_id", array(
-            ':job_id'       => (int) $job_id,
+            ':job_id'       => $job_id,
             ':employee_id'  => (int) $employee_id
         ));
         $employee = $this->sys->db->query("SELECT `category_id` FROM `employees` WHERE `employee_id`=:id", array(
@@ -117,28 +130,32 @@ trait job_timecard {
         $last_out = array_pop($temp_times);
         
         if (empty($last_job) || ('0' !== $last_out['time'])) {
+            $operation = 'in';
+            
             $this->sys->db->query("INSERT INTO `job_punch` (`punch_id`, `job_id`, `employee_id`, `category_id`, `date`, `time`, `operation`) VALUES (NULL, :job_id, :employee_id, :category_id, :date, :time, 'in')", array(
-                ':job_id'       => (int) $job_id,
+                ':job_id'       => $job_id,
                 ':employee_id'  => (int) $employee_id,
                 ':category_id'  => (int) $employee[0]['category_id'],
                 ':date'         => $date_time['date'],
                 ':time'         => $date_time['time']
             ));
             $this->sys->db->query("INSERT INTO `job_punch` (`punch_id`, `job_id`, `employee_id`, `category_id`, `date`, `time`, `operation`) VALUES (NULL, :job_id, :employee_id, :category_id, :date, '', 'out')", array(
-                ':job_id'       => (int) $job_id,
+                ':job_id'       => $job_id,
                 ':employee_id'  => (int) $employee_id,
                 ':category_id'  => (int) $employee[0]['category_id'],
                 ':date'         => $date_time['date']
             ));
         } else {
+            $operation = 'out';
+            
             $this->sys->db->query("UPDATE `job_punch` SET `time`=:time WHERE `punch_id`=:id", array(
                 ':id'       => (int) $last_out['punch_id'],
                 ':time'         => $date_time['time']
             ));
         }
         
-        $this->sys->db->query("UPDATE `jobs` SET `status`='wip' WHERE `job_id`=:id", array(
-            ':id' => (int) $job_id
+        $this->sys->db->query("UPDATE `jobs` SET `status`='wip' WHERE `job_uid`=:id", array(
+            ':id' => $job_id
         ));
         
         return array($operation, $date_time);
@@ -229,8 +246,8 @@ trait job_timecard {
     protected function add_date() {
         if ((array_key_exists('id', $_POST) && '' !== $_POST['id']) && (array_key_exists('employee', $_POST) && '' !== $_POST['employee'])) {
             //Check to see if job_id exists
-            $check_job = $this->sys->db->query("SELECT `job_id` FROM `jobs` WHERE `job_id`=:id", array(
-                ':id' => (int) $_POST['id']
+            $check_job = $this->sys->db->query("SELECT `job_uid` FROM `jobs` WHERE `job_uid`=:id", array(
+                ':id' => $_POST['id']
             ));
             
             //Check to see if employee exists
@@ -240,13 +257,13 @@ trait job_timecard {
 
             if (!empty($check_job) && !empty($check_employee)) {
                 $this->sys->db->query("INSERT INTO `job_punch` (`punch_id`, `job_id`, `employee_id`, `category_id`, `date`, `time`, `operation`) VALUES (NULL, :job_id, :employee_id, :category_id, :date, '', 'in')", array(
-                    ':job_id'       => (int) $_POST['id'],
+                    ':job_id'       => $_POST['id'],
                     ':employee_id'  => (int) $_POST['employee'],
                     ':category_id'  => (int) $check_employee[0]['category_id'],
                     ':date'         => $_POST['date']
                 ));
                 $this->sys->db->query("INSERT INTO `job_punch` (`punch_id`, `job_id`, `employee_id`, `category_id`, `date`, `time`, `operation`) VALUES (NULL, :job_id, :employee_id, :category_id, :date, '', 'out')", array(
-                    ':job_id'       => (int) $_POST['id'],
+                    ':job_id'       => $_POST['id'],
                     ':employee_id'  => (int) $_POST['employee'],
                     ':category_id'  => (int) $check_employee[0]['category_id'],
                     ':date'         => $_POST['date']

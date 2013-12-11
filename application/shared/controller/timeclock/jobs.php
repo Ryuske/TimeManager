@@ -97,7 +97,7 @@ class timeclock_jobs extends controller {
             $this->sys->template->title = 'TimeClock | Jobs | Edit';
             $this->sys->template->jobs_active = 'class="active"';
             $this->sys->template->clients = $this->model_clients->get_clients();
-            $this->sys->template->job = $this->model_jobs->get_jobs((int) $job_id);
+            $this->sys->template->job = $this->model_jobs->get_jobs($job_id, false);
             
             $parse = (false !== $this->sys->template->job) ? 'jobs_edit' : 'jobs_home';
             $full_page = True;
@@ -119,7 +119,7 @@ class timeclock_jobs extends controller {
             $this->sys->template->page_id = 1;
             $this->sys->template->paginate_by = $this->model_settings->paginate_by;
             $this->sys->template->jobs = $this->model_jobs->get_jobs();
-            $this->sys->template->job = $this->model_jobs->get_jobs((int) $job_id);
+            $this->sys->template->job = $this->model_jobs->get_jobs($job_id, false);
             $this->sys->template->pagination = $this->model_renderPage->generate_pagination('jobs/home', 'jobs', 1);
             
             $parse = 'jobs_remove';
@@ -137,23 +137,23 @@ class timeclock_jobs extends controller {
     /**
      * @Purpose: Used to view an existing jobs time card
      */
-    public function view($job_id, $page_id = 1) {
+    public function view($job_uid, $page_id = 1) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'categories', 'jobs', 'settings'));
         $this->sys->template->page_id       = (int) $page_id;
         $this->sys->template->paginate_by   = $this->model_settings->paginate_by;
-        $this->sys->template->job_id        = (int) $job_id;
+        $this->sys->template->job_id        = $job_uid;
         
         if ($this->is_logged_in()) {
-            $this->sys->template->job               = $this->model_jobs->get_jobs((int) $job_id);
-            $this->sys->template->job_table         = $this->model_jobs->generate_job_table((int) $job_id);
-            $this->sys->template->start_date        = $this->model_jobs->find_dates((int) $job_id, 'start');
-            $this->sys->template->last_date         = $this->model_jobs->find_dates((int) $job_id, 'end');
+            $this->sys->template->job               = $this->model_jobs->get_jobs($job_uid, false);
+            $this->sys->template->job_table         = $this->model_jobs->generate_job_table($job_uid);
+            $this->sys->template->start_date        = $this->model_jobs->find_dates($job_uid, 'start');
+            $this->sys->template->last_date         = $this->model_jobs->find_dates($job_uid, 'end');
             $this->sys->template->add_date_response = '';
-            $this->sys->template->pagination        = $this->model_renderPage->generate_pagination('jobs/view/' . (int) $job_id . '', (int) $page_id);
+            $this->sys->template->pagination        = $this->model_renderPage->generate_pagination('jobs/view/' . $job_uid . '', (int) $page_id);
             $this->sys->template->employees         = $this->model_employees->get_employees();
             $this->sys->template->categories        = $this->model_categories->get_categories();
-            $this->sys->template->total_hours       = $this->model_jobs->total_hours((int) $job_id, false);
-            $this->sys->template->hours_by_category = $this->model_jobs->total_hours((int) $job_id, true);
+            $this->sys->template->total_hours       = $this->model_jobs->total_hours($job_uid, false);
+            $this->sys->template->hours_by_category = $this->model_jobs->total_hours($job_uid, true);
             
             $this->sys->template->title = 'TimeClock | Jobs | View';
             $this->sys->template->jobs_active = 'class="active"';
@@ -166,19 +166,18 @@ class timeclock_jobs extends controller {
         $this->model_renderPage->parse($parse, true);
     }
     
-    public function print_friendly($job_id) {
+    public function print_friendly($job_uid) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'categories', 'jobs', 'settings'));
-        $this->sys->template->job_id        = (int) $job_id;
-        
+        $this->sys->template->job_id = $job_uid;
         if ($this->is_logged_in()) {
-            $this->sys->template->job               = $this->model_jobs->get_jobs((int) $job_id);
-            $this->sys->template->job_table         = $this->model_jobs->generate_job_table((int) $job_id);
-            $this->sys->template->start_date        = $this->model_jobs->find_dates((int) $job_id, 'start');
-            $this->sys->template->last_date         = $this->model_jobs->find_dates((int) $job_id, 'end');
+            $this->sys->template->job               = $this->model_jobs->get_jobs($job_uid);
+            $this->sys->template->job_table         = $this->model_jobs->generate_job_table($job_uid);
+            $this->sys->template->start_date        = $this->model_jobs->find_dates($job_uid, 'start');
+            $this->sys->template->last_date         = $this->model_jobs->find_dates($job_uid, 'end');
             $this->sys->template->employees         = $this->model_employees->get_employees();
             $this->sys->template->categories        = $this->model_categories->get_categories();
-            $this->sys->template->total_hours       = $this->model_jobs->total_hours((int) $job_id, false);
-            $this->sys->template->hours_by_category = $this->model_jobs->total_hours((int) $job_id, true);
+            $this->sys->template->total_hours       = $this->model_jobs->total_hours($job_uid, false);
+            $this->sys->template->hours_by_category = $this->model_jobs->total_hours($job_uid, true);
             
             $this->sys->template->title = 'TimeClock | Jobs | Print';
             $parse = 'jobs_print';
@@ -188,6 +187,81 @@ class timeclock_jobs extends controller {
 
         //Parses the HTML from the view
         $this->model_renderPage->parse($parse, false);
+    }
+    
+    public function rx($job_uid, $data) {
+        $this->load_dependencies(array('settings', 'jobs'));
+        $response = 'Error';
+        
+        //Check job & employee exist
+        $check_ids = $this->sys->db->query("
+            SELECT *
+            FROM `jobs` AS job
+                JOIN `job_punch` AS punch on punch.job_id=:job_uid
+                LEFT JOIN `employees` AS employee on employee.employee_id=punch.employee_id
+                LEFT JOIN `clients` AS client on client.client_id=job.client
+                LEFT JOIN `categories` AS category on category.category_id=punch.category_id
+            WHERE job.job_uid=:job_uid
+            ORDER BY punch.punch_id DESC
+        ", array(
+            ':job_uid'      => $job_uid
+        ));
+        
+        if (!empty($check_ids)) {
+            switch ($data) {
+                case 'name':
+                    $response = $check_ids[0]['job_name'];
+                    break;
+                case 'client':
+                    $response = $check_ids[0]['client_name'];
+                    break;
+                case 'last_time':
+                    $response = date('g:ia', $check_ids[0]['time']);
+                    break;
+                case 'last_date':
+                    $response = $check_ids[0]['date'];
+                    break;
+                case 'last_category':
+                    $response = $check_ids[0]['category_name'];;
+                    break;
+                case 'last_employee':
+                    $response = $check_ids[0]['employee_firstname'] . ' ' . $check_ids[0]['employee_lastname'];
+                    break;
+                case 'total_hours':
+                    $response = $this->model_jobs->total_hours($job_uid, false);
+                    break;
+                default:
+                    $response = NULL;
+            }
+        }
+        
+        $this->sys->template->response = $response;
+        
+        $this->sys->template->parse($this->sys->config->timeclock_subdirectories . '_jobs_response');
+    }
+    
+    public function tx($job_uid, $employee_uid) {
+        $this->load_dependencies(array('jobs'));
+        $response = 'Error';
+        
+        //Check job & employee exist
+        $check_ids = $this->sys->db->query("
+            SELECT *
+            FROM `jobs` AS job JOIN `employees` AS employee on employee.employee_uid=:employee_uid
+            WHERE job.job_uid=:job_uid
+        ", array(
+            ':job_uid'      => $job_uid,
+            ':employee_uid' => $employee_uid
+        ));
+
+        if (!empty($check_ids)) {
+            $response = $this->model_jobs->punch($check_ids[0]['job_uid'], $check_ids[0]['employee_id']);
+            $response = $check_ids[0]['employee_firstname'] . ' ' . $check_ids[0]['employee_lastname'] . ', ' . $check_ids[0]['job_uid'] . ', ' . $check_ids[0]['job_name'] . ', ' . $response[0] . ', ' . $response[1]['time'];
+        }
+        
+        $this->sys->template->response = $response;
+        
+        $this->sys->template->parse($this->sys->config->timeclock_subdirectories . '_jobs_response');
     }
     
     /**
