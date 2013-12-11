@@ -57,8 +57,8 @@
                             <tr>
                             <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_id']}')">{jobs[<?php echo $i; ?>]['job_uid']}</td>
                             <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_id']}')">{jobs[<?php echo $i; ?>]['client_name']}</td>
-                            <td onclick="jobClicked('view', '{jobs[<?php echo $i; ?>]['job_id']}')">{jobs[<?php echo $i; ?>]['job_name']}</td>
-                            <td onclick="jobClicked('view', '{jobs[<?php echo $i; ?>]['job_id']}')"><div class="<?php echo $status[0]; ?>"><?php echo $status[1]; ?></div></td>
+                            <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_id']}')">{jobs[<?php echo $i; ?>]['job_name']}</td>
+                            <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_id']}')"><div class="<?php echo $status[0]; ?>"><?php echo $status[1]; ?></div></td>
                                 <td>
                                     <ul class="icons">
                                     <li class="ui-state-default ui-corner-all" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil" onclick="jobTableClicked('edit', '{jobs[<?php echo $i; ?>]['job_id']}')"></span></li>
