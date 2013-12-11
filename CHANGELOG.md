@@ -1,3 +1,6 @@
+### 12/10/13 - Commit 7 ###
+* https://github.com/Ryuske/TimeClock/issues/11 <-- Displaying the table works, need to add updating times & adding dates
+
 ### 12/10/13 - Commit 6 ###
 * https://github.com/Ryuske/TimeClock/issues/10 <-- Finished implimenting categories into employees
 * Paginated jobs
