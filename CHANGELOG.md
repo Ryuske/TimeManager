@@ -1,3 +1,6 @@
+### 12/11/13 - Commit 6 ###
+* https://github.com/Ryuske/TimeClock/issues/18 <-- Updated API. Also changed employee_name to name
+
 ### 12/11/13 - Commit 5 ###
 * https://github.com/Ryuske/TimeClock/issues/16 <-- Updated database
 
