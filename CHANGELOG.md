@@ -1,3 +1,6 @@
+### 12/11/13 - Commit 5 ###
+* https://github.com/Ryuske/TimeClock/issues/16 <-- Updated database
+
 ### 12/11/13 - Commit 4 ###
 * Pushed to version 2.0
 * Added SQL file for job tracking
