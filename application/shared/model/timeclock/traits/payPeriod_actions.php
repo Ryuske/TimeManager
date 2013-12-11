@@ -1,4 +1,12 @@
 <?php
+/**
+ * @Author: Kenyon Haliwell
+ * @Date Created: 12/5/13
+ * @Date Modified: 12/11/13
+ * @Purpose: A trait for general payperiod actions
+ * @Version: 2.0
+ */
+
 trait payPeriod_actions {
     /**
      * @Purpose: Used to add a new pay period to the database

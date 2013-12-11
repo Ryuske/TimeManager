@@ -2,9 +2,9 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/26/13
- * @Date Modified: 11/27/13
+ * @Date Modified: 12/11/13
  * @Purpose: Various functions that apply to installing timeclock
- * @Version: 1.0
+ * @Version: 2.0
  */
 class model_timeclock_install {
     /**

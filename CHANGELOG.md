@@ -1,3 +1,7 @@
+### 12/11/13 - Commit 4 ###
+* Pushed to version 2.0
+* Added SQL file for job tracking
+
 ### 12/11/13 - Commit 3 ###
 * Decided to remove API information from About page - still in README.md
 * https://github.com/Ryuske/TimeClock/issues/12 <-- Implimented
