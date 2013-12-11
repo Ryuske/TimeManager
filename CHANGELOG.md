@@ -1,3 +1,8 @@
+### 12/11/13 - Commit 3 ###
+* Decided to remove API information from About page - still in README.md
+* https://github.com/Ryuske/TimeClock/issues/12 <-- Implimented
+* Properly integrated Job UIDs - whoops.
+
 ### 12/11/13 - Commit 2 ###
 * https://github.com/Ryuske/TimeClock/issues/11 <-- Finished
 * Printer friendly version of jobs

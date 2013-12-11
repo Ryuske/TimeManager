@@ -110,41 +110,4 @@
             <h4>Punching In and Out</h4>
                 <p>Please refer to the API on how to punch an employee in and out.</p>
         </div>
-        
-    <h2>API</h2>
-        <div class="indent">
-            <div class="heading_info">The API is very simple, and for our examples we are going to assume that TimeClock was installed at
-            http://example.com/timeclock</div>
-            
-            <h4>API for punching in & out</h4>
-                <p><span class="italic">http://example.com/timeclock/payperiod/tx/[uid]</span> <br />
-                    <span class="extra_indent">Where [uid] can be anything you want, but the auto generator will generate a 4-byte hex ID.</span></p>
-                    
-                    <p>The responses will be in this format: <span class="bold">Kenyon, in, 11/18/13, 8:00am</span></p>
-            
-            <h4>Example UID</h4>
-                <p><span class="italic">0x00 0x00 0x00 0x00</span><br />
-                Please note that the UID for every employee MUST be different, but it can be anything you want.</p>
-            
-            <h4>Rest of the API</h4>
-                <p><span class="italic">http://example.com/timeclock/payperiod/rx/[uid]/employee_name</span><br />
-                    <span class="extra_indent">This returns the full name of the employee with a format of <span class="bold">[firstname] [lastname]</span></p>
-                
-                <p><span class="italic">http://example.com/timeclock/payperiod/tx/[uid]/last_op</span><br />
-                    <span class="extra_indent">This returns <span class="bold">"in"</span> or <span class="bold">"out"</span> (without quotes) depending on if the employee punched in or out last.</span></p>
-                    
-                <p><span class="italic">http://example.com/timeclock/payperiod/tx/[uid]/last_time</span><br />
-                    <span class="extra_indent">This will return the last time the employee punched in or out. Format: <span class="bold">5:00pm, 12:00am, etc</span></span></p>
-                    
-                <p><span class="italic">http://example.com/timeclock/payperiod/tx/[uid]/last_date</span><br />
-                    <span class="extra_indent">This will return the last date the employee punched in or out. Format: <span class="bold">mm/dd/yy</span></span></p>
-                    
-                <p><span class="italic">http://example.com/timeclock/payperiod/tx/[uid]/total_hours/[pay period]</span><br />
-                    <span class="extra_indent">This will return the total hours an employee worked for the given pay period. If no pay period</span>
-                    <span class="extra_indent">is given it will return the current pay period. The response is in hours (i.e. <span class="bold">17.25 hours</span>)</span>
-                    
-                    <p class="p_indent">Pay Period: Has to be given in the format <span class="bold">yyyy-mm-dd</span> (or any format compatible with <a href="http://us2.php.net/strtotime" target="_blank">PHP's strtotime()</a>)
-                        <span class="double_indent">Example: <span class="italic">2013-11-19</span> - would return the pay period <span class="bold">11/18/13-11/24/13</span></span></p>
-                </p>
-        </div>
 </div>
