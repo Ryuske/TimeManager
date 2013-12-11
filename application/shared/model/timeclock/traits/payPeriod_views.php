@@ -1,4 +1,12 @@
 <?php
+/**
+ * @Author: Kenyon Haliwell
+ * @Date Created: 12/5/13
+ * @Date Modified: 12/11/13
+ * @Purpose: A trait for general payperiod views
+ * @Version: 2.0
+ */
+
 trait payPeriod_views {
     /**
      * @Purpose: Used to get the response of add_date() - primarily used for if add_date() has an error

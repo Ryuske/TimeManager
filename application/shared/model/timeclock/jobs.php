@@ -2,9 +2,9 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 12/09/13
- * @Date Modified: 12/10/13
+ * @Date Modified: 12/11/13
  * @Purpose: Used as a wrapper for various methods surrounding jobs
- * @Version: 1.0
+ * @Version: 2.0
  */
 global $sys;
 $sys->router->load_traits('jobs', 'timeclock');

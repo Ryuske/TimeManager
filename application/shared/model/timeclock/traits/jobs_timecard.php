@@ -1,4 +1,12 @@
 <?php
+/**
+ * @Author: Kenyon Haliwell
+ * @Date Created: 12/10/13
+ * @Date Modified: 12/11/13
+ * @Purpose: A trait for general job operations
+ * @Version: 2.0
+ */
+
 trait job_timecard {
     public function total_hours($job_id, $by_category=false) {
         $return_hours = 0;

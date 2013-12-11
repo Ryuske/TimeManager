@@ -2,9 +2,9 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/13/13
- * @Date Modified: 12/09/13
+ * @Date Modified: 12/11/13
  * @Purpose: Default controller - used for top level pages (home, about, settings, etc)
- * @Version: 1.0
+ * @Version: 2.0
  */
 
 class timeclock_home extends controller {

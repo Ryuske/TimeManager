@@ -2,9 +2,9 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 12/09/13
- * @Date Modified: 12/10/13
+ * @Date Modified: 12/11/13
  * @Purpose: Controller for Jobs/Job Tracking
- * @Version: 1.0
+ * @Version: 2.0
  */
 
 class timeclock_jobs extends controller {

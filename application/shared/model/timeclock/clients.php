@@ -2,9 +2,9 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 12/09/13
- * @Date Modified: 12/09/13
+ * @Date Modified: 12/11/13
  * @Purpose: Used as a wrapper for various methods surrounding clients
- * @Version: 1.0
+ * @Version: 2.0
  */
 
  class model_timeclock_clients {
