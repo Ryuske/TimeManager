@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 11, 2013 at 12:04 PM
+-- Generation Time: Dec 11, 2013 at 12:23 PM
 -- Server version: 5.5.31-0+wheezy1
 -- PHP Version: 5.4.4-14+deb7u5
 
@@ -25,6 +25,8 @@ SET time_zone = "+00:00";
 --
 -- Table structure for table `categories`
 --
+-- Creation: Dec 10, 2013 at 11:39 PM
+--
 
 CREATE TABLE IF NOT EXISTS `categories` (
   `category_id` int(2) unsigned NOT NULL AUTO_INCREMENT,
@@ -38,6 +40,8 @@ CREATE TABLE IF NOT EXISTS `categories` (
 --
 -- Table structure for table `clients`
 --
+-- Creation: Dec 10, 2013 at 12:16 AM
+--
 
 CREATE TABLE IF NOT EXISTS `clients` (
   `client_id` int(3) unsigned NOT NULL AUTO_INCREMENT,
@@ -50,6 +54,8 @@ CREATE TABLE IF NOT EXISTS `clients` (
 
 --
 -- Table structure for table `employees`
+--
+-- Creation: Dec 10, 2013 at 11:39 PM
 --
 
 CREATE TABLE IF NOT EXISTS `employees` (
@@ -70,6 +76,8 @@ CREATE TABLE IF NOT EXISTS `employees` (
 --
 -- Table structure for table `employee_punch`
 --
+-- Creation: Dec 11, 2013 at 08:22 PM
+--
 
 CREATE TABLE IF NOT EXISTS `employee_punch` (
   `employee_punch_id` int(2) unsigned NOT NULL AUTO_INCREMENT,
@@ -77,15 +85,19 @@ CREATE TABLE IF NOT EXISTS `employee_punch` (
   `employee_id` int(3) unsigned NOT NULL,
   `time` int(10) unsigned NOT NULL,
   `date` varchar(8) COLLATE utf8_bin NOT NULL,
-  `operation` varchar(3) COLLATE utf8_bin NOT NULL,
+  `operation` enum('in','out') COLLATE utf8_bin NOT NULL DEFAULT 'in',
   PRIMARY KEY (`employee_punch_id`),
-  UNIQUE KEY `employee_punch_id` (`employee_punch_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=85 ;
+  UNIQUE KEY `employee_punch_id` (`employee_punch_id`),
+  KEY `pay_period_id` (`pay_period_id`),
+  KEY `employee_id` (`employee_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=85 ;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `jobs`
+--
+-- Creation: Dec 10, 2013 at 11:38 PM
 --
 
 CREATE TABLE IF NOT EXISTS `jobs` (
@@ -104,6 +116,8 @@ CREATE TABLE IF NOT EXISTS `jobs` (
 
 --
 -- Table structure for table `job_punch`
+--
+-- Creation: Dec 11, 2013 at 08:03 PM
 --
 
 CREATE TABLE IF NOT EXISTS `job_punch` (
@@ -125,6 +139,8 @@ CREATE TABLE IF NOT EXISTS `job_punch` (
 --
 -- Table structure for table `pay_periods`
 --
+-- Creation: Dec 11, 2013 at 08:20 PM
+--
 
 CREATE TABLE IF NOT EXISTS `pay_periods` (
   `pay_period_id` int(2) unsigned NOT NULL AUTO_INCREMENT,
@@ -132,12 +148,15 @@ CREATE TABLE IF NOT EXISTS `pay_periods` (
   `pay_period_sunday` int(10) unsigned NOT NULL,
   PRIMARY KEY (`pay_period_id`),
   UNIQUE KEY `pay_period_id` (`pay_period_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=12 ;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `settings`
+--
+-- Creation: Dec 10, 2013 at 11:39 PM
+-- Last update: Dec 11, 2013 at 07:14 PM
 --
 
 CREATE TABLE IF NOT EXISTS `settings` (
@@ -157,6 +176,13 @@ CREATE TABLE IF NOT EXISTS `settings` (
 --
 ALTER TABLE `employees`
   ADD CONSTRAINT `employees_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`);
+
+--
+-- Constraints for table `employee_punch`
+--
+ALTER TABLE `employee_punch`
+  ADD CONSTRAINT `employee_punch_ibfk_1` FOREIGN KEY (`pay_period_id`) REFERENCES `pay_periods` (`pay_period_id`),
+  ADD CONSTRAINT `employee_punch_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`);
 
 --
 -- Constraints for table `jobs`
