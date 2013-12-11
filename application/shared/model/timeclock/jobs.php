@@ -35,6 +35,9 @@ $sys->router->load_traits('jobs', 'timeclock');
         if (array_key_exists('add_date', $_POST)) {
             $this->add_date();
         }
+        if (array_key_exists('update_info', $_POST)) {
+            $this->update_time_info();
+        }
     }
     
     /**
@@ -243,8 +246,8 @@ $sys->router->load_traits('jobs', 'timeclock');
             $query = $this->sys->db->query("SELECT `date` FROM `job_punch` WHERE `job_id`=:id ORDER BY `date` LIMIT 1", array(
                 ':id' => (int) $job_id
             ));
-        } else {
-            $query = $this->sys->db->query("SELECT `date` FROM `job_punch` WHERE `job_id`=:id ORDER BY `date` ASC LIMIT 1", array(
+        } else { //end
+            $query = $this->sys->db->query("SELECT `date` FROM `job_punch` WHERE `job_id`=:id ORDER BY `date` DESC LIMIT 1", array(
                 ':id' => (int) $job_id
             ));
         }
@@ -267,24 +270,31 @@ $sys->router->load_traits('jobs', 'timeclock');
         foreach ($job_query as $temp) {
             $job_info[$temp['employee_id']] = $temp;
         }
-        
         $return = '';
         
         if (!is_bool($hours)) {
             foreach ($hours as $punch_id=>$hour) {
                 if (!is_integer($punch_id/2)) {
+                    $id['in'] = $punch_id;
+                    $id['out'] = $punch_id+1;
                     $hour['in'] = $hour;
-                    $hour['out'] = $hours[$punch_id+1];
-                    
+                    $hour['out'] = (array_key_exists(($id['out']), $hours)) ? $hours[$id['out']] : array('out' => '');
+                } else {
+                    $id['in'] = $punch_id-1;
+                    $id['out'] = $punch_id;
+                    $hour['in'] = (array_key_exists(($id['in']), $hours)) ? NULL : array('in' => '');
+                    $hour['out'] = $hour;
+                }
+                
+                if (NULL !== $hour['in']) {
                     $in = (!empty($hour['in']['in'])) ? date($this->_timeFormat, (int) $hour['in']['in']) : '';
                     $out = (!empty($hour['out']['out'])) ? date($this->_timeFormat, (int) $hour['out']['out']) : '';
                     
                     $return .= '<td>' . $hour['date'] . '</td>';
-                    $return .= '<td onclick="updateJobTime(' . $punch_id . ', jQuery(this), \'in\')">' . $in . '</td>';
-                    $return .= '<td onclick="updateJobTime(' . ($punch_id+1) . ', jQuery(this), \'out\')">' . $out . '</td>';
-                    $return .= '<td>' . $job_info[$hour['employee']]['employee_uid'] . '</td>';
-                    $return .= '<td>' . $job_info[$hour['employee']]['employee_firstname'] . ', ' . $job_info[$hour['employee']]['employee_lastname'] . '</td>';
-                    $return .= '<td>' . $job_info[$hour['employee']]['category_name'] . '</td>';
+                    $return .= '<td onclick="updateJobTime(' . $id['in'] . ', jQuery(this), \'in\')">' . $in . '</td>';
+                    $return .= '<td onclick="updateJobTime(' . $id['out'] . ', jQuery(this), \'out\')">' . $out . '</td>';
+                    $return .= '<td onclick="updateJobInfo(' . $id['in'] . ', ' . $job_info[$hour['employee']]['employee_id'] . ', ' . $hour['category_id'] . ')">' . $job_info[$hour['employee']]['employee_firstname'] . ', ' . $job_info[$hour['employee']]['employee_lastname'] . '</td>';
+                    $return .= '<td onclick="updateJobInfo(' . $id['in'] . ', ' . $job_info[$hour['employee']]['employee_id'] . ', ' . $hour['category_id'] . ')">' . $hour['category_name'] . '</td>';
                     $return .= '<td>' . $hour['total_hours'] . '</td>';
                     $return .= '</tr>';
                 }

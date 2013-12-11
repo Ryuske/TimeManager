@@ -1,3 +1,6 @@
+### 12/11/13 - Commit 1 ###
+* https://github.com/Ryuske/TimeClock/issues/11 <-- You can now add/edit/remove dates and update the employee or category assigned to a time
+
 ### 12/10/13 - Commit 8 ###
 * https://github.com/Ryuske/TimeClock/issues/11 <-- You can now manually add dates - sort of. Needs debugging
 

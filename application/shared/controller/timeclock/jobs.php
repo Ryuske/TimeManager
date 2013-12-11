@@ -138,7 +138,7 @@ class timeclock_jobs extends controller {
      * @Purpose: Used to view an existing jobs time card
      */
     public function view($job_id, $page_id = 1) {
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'jobs', 'settings'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'categories', 'jobs', 'settings'));
         $this->sys->template->page_id = (int) $page_id;
         $this->sys->template->paginate_by = $this->model_settings->paginate_by;
         $this->sys->template->job_id = (int) $job_id;
@@ -151,6 +151,7 @@ class timeclock_jobs extends controller {
             $this->sys->template->add_date_response = '';
             $this->sys->template->pagination = $this->model_renderPage->generate_pagination('jobs/view/' . (int) $job_id . '', (int) $page_id);
             $this->sys->template->employees = $this->model_employees->get_employees();
+            $this->sys->template->categories = $this->model_categories->get_categories();
             
             $this->sys->template->title = 'TimeClock | Jobs | View';
             $this->sys->template->jobs_active = 'class="active"';

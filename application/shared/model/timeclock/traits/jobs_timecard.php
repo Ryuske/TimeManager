@@ -5,7 +5,12 @@ trait job_timecard {
     }
     
     protected function get_hours($job_id) {
-        $hours = $this->sys->db->query("SELECT `punch_id`, `job_id`, `employee_id`, `date`, `time`, `operation` FROM `job_punch` WHERE `job_id`=:job_id ORDER BY `date` ASC", array(
+        $hours = $this->sys->db->query("
+            SELECT *
+            FROM `job_punch` AS jobs JOIN `categories` AS categories on categories.category_id=jobs.category_id
+            WHERE `job_id`=:job_id
+            ORDER BY `date` ASC
+            ", array(
             ':job_id' => (int) $job_id,
         ));
         
@@ -22,6 +27,8 @@ trait job_timecard {
             $return_hours[$row['punch_id']]['employee'] = $row['employee_id'];
             $return_hours[$row['punch_id']]['job_id'] = $row['job_id'];
             $return_hours[$row['punch_id']]['date'] = $row['date'];
+            $return_hours[$row['punch_id']]['category_id'] = $row['category_id'];
+            $return_hours[$row['punch_id']]['category_name'] = $row['category_name'];
         });
         $return_hours = array_reverse($return_hours, true);
 
@@ -29,15 +36,12 @@ trait job_timecard {
         array_walk($return_hours, function($hour, $punch_id) use(&$return_hours, $sys) {
             if (!is_integer($punch_id/2)) {
                 $hour['in'] = $hour;
-                $hour['out'] = $return_hours[$punch_id+1];
-                
-                if (!array_key_exists('in', $hour)) {
-                    $return_hours[$punch_id]['in'] = '';
-                    $hour['in'] = '';
-                }
-                if (!array_key_exists('out', $hour)) {
+
+                if (!array_key_exists(($punch_id+1), $return_hours)) {
                     $return_hours[$punch_id+1]['out'] = '';
                     $hour['out'] = '';
+                } else {
+                    $hour['out'] = $return_hours[$punch_id+1];
                 }
                 
                 if (empty($hour['in']) || empty($hour['out'])) {
@@ -125,7 +129,6 @@ trait job_timecard {
         if (array_key_exists('id', $_POST) && 'id' !== $_POST) {
             $operation = (array_key_exists('operation', $_POST) && 'in' == $_POST['operation']) ? 'in' : 'out';
             $time = (array_key_exists('time', $_POST)) ? $_POST['time'] : '';
-            $delete = true;
             
             //Make sure punch_if exists
             $check_job = $this->sys->db->query("SELECT * FROM `job_punch` WHERE `punch_id`=:id", array(
@@ -133,18 +136,9 @@ trait job_timecard {
             ));
             
             if (!empty($check_job)) {
-                foreach ($check_job as $job) {
-                    if (0 !== (int) $job['time'] && (array_key_exists('time', $_POST) && '' !== $_POST['time'])) {
-                        $delete = false;
-                    }
-                }
-                
-                if ($delete) {;
+                if (!array_key_exists('time', $_POST) || (array_key_exists('time', $_POST) && '' === $_POST['time'])) {
                     $this->sys->db->query("DELETE FROM `job_punch` WHERE `punch_id`=:id", array(
                         ':id'           => (int) $check_job[0]['punch_id']
-                    ));
-                    $this->sys->db->query("DELETE FROM `job_punch` WHERE `punch_id`=:id", array(
-                        ':id'           => (int) $check_job[0]['punch_id']+1
                     ));
                     
                     return true;
@@ -158,11 +152,59 @@ trait job_timecard {
                 
                 return true;
             } else {
-                return false;
+                $id = (is_integer((int) $_POST['id']/2)) ? (int) $_POST['id']-1 : (int) $_POST['id']+1;
+                $time = (array_key_exists('time', $_POST)) ? $_POST['time'] : '';
+                $job_info = $this->sys->db->query("SELECT * FROM `job_punch` WHERE `punch_id`=:id", array(
+                    ':id' => $id
+                ));
+                
+                switch ($job_info[0]['operation']) {
+                    case 'in':
+                        $operation = 'out';
+                        break;
+                    default: //out
+                        $operation = 'in';
+                }
+                
+                $this->sys->db->query("
+                    INSERT INTO `job_punch`
+                        (`punch_id`, `job_id`, `employee_id`, `category_id`, `date`, `time`, `operation`)
+                        VALUES (:punch_id, :job_id, :employee_id, :category_id, :date, :time, :operation)
+                    ", array(
+                    ':punch_id'     => (int) $_POST['id'],
+                    ':job_id'       => $job_info[0]['job_id'],
+                    ':employee_id'  => $job_info[0]['employee_id'],
+                    ':category_id'  => $job_info[0]['category_id'],
+                    ':date'         => $job_info[0]['date'],
+                    ':time'         => strtotime($time),
+                    ':operation'    => $operation
+                ));
+                
+                return true;
             }
         } else {
             return false;
         }
+    }
+    
+    protected function update_time_info() {
+        $id = array('in' => (int) $_POST['job_id'], 'out' => (int) $_POST['job_id']+1);
+            
+        foreach ($id as $job) {
+            $check_job = $this->sys->db->query("SELECT `punch_id` FROM `job_punch` WHERE `punch_id`=:id", array(
+                ':id' => $job
+            ));
+            
+            if (!empty($check_job)) {
+                $this->sys->db->query("UPDATE `job_punch` SET `employee_id`=:employee_id, `category_id`=:category_id WHERE `punch_id`=:punch_id", array(
+                    ':employee_id'  => (int) $_POST['employee'],
+                    ':category_id'  => (int) $_POST['category'],
+                    ':punch_id'     => $job
+                ));
+            }
+        }
+        
+        return true;
     }
     
     protected function add_date() {

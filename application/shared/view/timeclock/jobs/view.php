@@ -30,7 +30,6 @@ $date_format = 'm/d/y';
                                 <th>Date</th>
                                 <th>In</th>
                                 <th>Out</th>
-                                <th>Employee UID</th>
                                 <th>Employee Name</th>
                                 <th>Category</th>
                                 <th>Total Hours</th>
@@ -44,7 +43,6 @@ $date_format = 'm/d/y';
                                 <th>Date</th>
                                 <th>In</th>
                                 <th>Out</th>
-                                <th>Employee UID</th>
                                 <th>Employee Name</th>
                                 <th>Category</th>
                                 <th>Total Hours</th>
@@ -67,6 +65,32 @@ $date_format = 'm/d/y';
         <input type="hidden" name="operation" />
         <input type="hidden" name="job_id" />
         <input type="hidden" name="update_time" value="update" />
+    </form>
+</div>
+<div class="update_info_dialog">
+    <form class="form-horizontal update_info_form" method="post" action="">
+        <div class="group">
+            <label>Employee</label>
+            <select class="form-control" name="employee">
+                <?php
+                foreach ($this->sys->template->employees as $employee) {
+                    echo '<option value="' . $employee['id'] . '">' . $employee['firstname'] . ' ' . $employee['lastname'] . '</option>';
+                }
+                ?>
+            </select>
+        </div>
+        <div class="group">
+            <label>Category</label>
+            <select class="form-control" name="category">
+                <?php
+                foreach ($this->sys->template->categories as $category) {
+                    echo '<option value="' . $category['category_id'] . '">' . $category['category_name'] . '</option>';
+                }
+                ?>
+            </select>
+        </div>
+        <input type="hidden" name="job_id" />
+        <input type="hidden" name="update_info" value="update_info" />
     </form>
 </div>
 <div class="add_date_dialog">
