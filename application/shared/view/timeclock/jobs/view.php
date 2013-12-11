@@ -51,7 +51,7 @@ $date_format = 'm/d/y';
                             </tr>
                         </tfoot>
                     </table>
-                    <a href="javascript:addDate({pay_period_id})">Add Date</a>
+                    <a href="javascript:addDate({job_id}, 'job')">Add Date</a>
                 </div>
             </div> <!-- END: panel-body -->
         </div> <!-- END: well -->
@@ -63,21 +63,31 @@ $date_format = 'm/d/y';
             <div class="bold dialog_title"></div>
             <input class="dialog_input" type="text" name="time" value="3:00pm" />
         </div>
-        <input type="hidden" name="employee_id" value="{employees_by_id[<?php echo $this->sys->template->employee_id ?>]['id']}" />
-        <input type="hidden" name="date" />
-        <input type="hidden" name="time_index" />
-        <input type="hidden" name="time_operation" />
+        <input type="hidden" name="id" />
+        <input type="hidden" name="operation" />
+        <input type="hidden" name="job_id" />
         <input type="hidden" name="update_time" value="update" />
     </form>
 </div>
 <div class="add_date_dialog">
-    <form class="add_date_form" method="post" action="">
-        <div class="dialog_text">
-            <div class="date"></div>
-            <input class="date_to_add" type="hidden" name="date" />
+    <form class="form-horizontal add_date_form" method="post" action="">
+        <div class="group">
+            <div class="dialog_text">
+                <div class="date"></div>
+                <input class="date_to_add" type="hidden" name="date" />
+            </div>
         </div>
-        <input type="hidden" name="employee_id" value="{employees_by_id[<?php echo $this->sys->template->employee_id ?>]['id']}" />
-        <input type="hidden" name="pay_period" />
+        <div class="group">
+            <label>Employee</label>
+            <select class="form-control" name="employee">
+                <?php
+                foreach ($this->sys->template->employees as $employee) {
+                    echo '<option value="' . $employee['id'] . '">' . $employee['firstname'] . ' ' . $employee['lastname'] . '</option>';
+                }
+                ?>
+            </select>
+        </div>
+        <input type="hidden" name="id" />
         <input type="hidden" name="add_date" value="add_date" />
     </form>
 </div>

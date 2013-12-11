@@ -162,7 +162,7 @@ $date_format = 'm/d/y';
             <input class="date_to_add" type="hidden" name="date" />
         </div>
         <input type="hidden" name="employee_id" value="{employees_by_id[<?php echo $this->sys->template->employee_id ?>]['id']}" />
-        <input type="hidden" name="pay_period" />
+        <input type="hidden" name="id" />
         <input type="hidden" name="add_date" value="add_date" />
     </form>
 </div>

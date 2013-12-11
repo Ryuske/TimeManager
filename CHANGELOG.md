@@ -1,3 +1,6 @@
+### 12/10/13 - Commit 8 ###
+* https://github.com/Ryuske/TimeClock/issues/11 <-- You can now manually add dates - sort of. Needs debugging
+
 ### 12/10/13 - Commit 7 ###
 * https://github.com/Ryuske/TimeClock/issues/11 <-- Displaying the table works, need to add updating times & adding dates
 
