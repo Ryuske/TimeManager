@@ -29,6 +29,12 @@ $sys->router->load_traits('jobs', 'timeclock');
         if (array_key_exists('remove_job', $_POST)) {
             $this->remove();
         }
+        if (array_key_exists('update_time', $_POST)) {
+            $this->update_time();
+        }
+        if (array_key_exists('add_date', $_POST)) {
+            $this->add_date();
+        }
     }
     
     /**
@@ -213,9 +219,6 @@ $sys->router->load_traits('jobs', 'timeclock');
             default: //job_id
                 $sort_by = 'jobs.job_id, jobs.job_name';
         }
-        /**
-         * Add a setting to make this sortable by job id, client or job name
-         */
         if (is_numeric($job_id)) {
             $jobs = $this->sys->db->query("SELECT * FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client WHERE jobs.job_id=:id ORDER BY $sort_by $limit", array(
                 ':id' => (int) $job_id
@@ -246,7 +249,7 @@ $sys->router->load_traits('jobs', 'timeclock');
             ));
         }
         
-        return $query[0]['date'];
+        return (!empty($query)) ? $query[0]['date'] : '';
     }
     
      /**
@@ -254,27 +257,37 @@ $sys->router->load_traits('jobs', 'timeclock');
      */
     public function generate_job_table($job_id) {
         $hours = $this->get_hours($job_id);
-        $job_info = $this->sys->db->query("
+        $job_query = $this->sys->db->query("
             SELECT * FROM `job_punch` AS punch
                 JOIN `employees` AS employees on employees.employee_id=punch.employee_id
                 LEFT JOIN `categories` AS categories on categories.category_id=employees.category_id
             WHERE punch.job_id=:id ORDER BY punch.date", array(':id' => (int) $job_id));
-        $job_info = $job_info[0];
+        $job_info = array();
+        
+        foreach ($job_query as $temp) {
+            $job_info[$temp['employee_id']] = $temp;
+        }
+        
         $return = '';
         
         if (!is_bool($hours)) {
-            foreach ($hours as $date=>$hour) {
-                $in = (!empty($hour['in'])) ? date($this->_timeFormat, (int) $hour['in']) : '';
-                $out = (!empty($hour['out'])) ? date($this->_timeFormat, (int) $hour['out']) : '';
-
-                $return .= '<td>' . $date . '</td>';
-                $return .= '<td onclick="">' . $in . '</td>';
-                $return .= '<td onclick="">' . $out . '</td>';
-                $return .= '<td>' . $job_info['employee_uid'] . '</td>';
-                $return .= '<td>' . $job_info['employee_firstname'] . ', ' . $job_info['employee_lastname'] . '</td>';
-                $return .= '<td>' . $job_info['category_name'] . '</td>';
-                $return .= '<td>' . $hour['total_hours'] . '</td>';
-                $return .= '</tr>';
+            foreach ($hours as $punch_id=>$hour) {
+                if (!is_integer($punch_id/2)) {
+                    $hour['in'] = $hour;
+                    $hour['out'] = $hours[$punch_id+1];
+                    
+                    $in = (!empty($hour['in']['in'])) ? date($this->_timeFormat, (int) $hour['in']['in']) : '';
+                    $out = (!empty($hour['out']['out'])) ? date($this->_timeFormat, (int) $hour['out']['out']) : '';
+                    
+                    $return .= '<td>' . $hour['date'] . '</td>';
+                    $return .= '<td onclick="updateJobTime(' . $punch_id . ', jQuery(this), \'in\')">' . $in . '</td>';
+                    $return .= '<td onclick="updateJobTime(' . ($punch_id+1) . ', jQuery(this), \'out\')">' . $out . '</td>';
+                    $return .= '<td>' . $job_info[$hour['employee']]['employee_uid'] . '</td>';
+                    $return .= '<td>' . $job_info[$hour['employee']]['employee_firstname'] . ', ' . $job_info[$hour['employee']]['employee_lastname'] . '</td>';
+                    $return .= '<td>' . $job_info[$hour['employee']]['category_name'] . '</td>';
+                    $return .= '<td>' . $hour['total_hours'] . '</td>';
+                    $return .= '</tr>';
+                }
             }
         }
         

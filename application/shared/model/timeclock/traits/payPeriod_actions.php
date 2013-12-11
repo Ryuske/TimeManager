@@ -43,7 +43,7 @@ trait payPeriod_actions {
     protected function add_date() {
         $pay_period = $this->get_pay_period($_POST['date']);
 
-        if ((int) $pay_period[2] === (int) $_POST['pay_period']) {
+        if ((int) $pay_period[2] === (int) $_POST['id']) {
             $get_dates = $this->sys->db->query("SELECT `date` FROM `employee_punch` WHERE `pay_period_id`=:pay_period_id AND `employee_id`=:employee_id AND `date`=:date", array(
                 ':pay_period_id' => (int) $pay_period[2],
                 ':employee_id' => (int) $_POST['employee_id'],
@@ -58,13 +58,13 @@ trait payPeriod_actions {
                     ':date' => $_POST['date']
                 ));
                 
-                return True;
+                return true;
             }
             
             $this->_add_date_response = '<script type="text/javascript">jQuery(document).ready(function () {add_date_response();});</script>';
-            return False;
+            return false;
         } else {
-            return False;
+            return false;
         }
     }
     

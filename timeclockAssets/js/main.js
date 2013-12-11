@@ -5,9 +5,7 @@ jQuery(document).ready(function() {
     
     jQuery('.date').datepicker({
         altField: '.date_to_add',
-        gotoCurrent: true,
-        minDate: new Date(jQuery('.start_date').text()),
-        maxDate: new Date(jQuery('.end_date').text()),
+        gotoCurrent: true
     });
 
     jQuery('.date').datepicker('option', 'dateFormat', 'mm/dd/y');
