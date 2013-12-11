@@ -6,8 +6,16 @@
  * @Purpose: Used as a wrapper for various methods surrounding jobs
  * @Version: 1.0
  */
-
+global $sys;
+$sys->router->load_traits('jobs', 'timeclock');
+ 
  class model_timeclock_jobs {
+    use job_timecard;
+    
+    protected $_dateFormat = 'm/d/y';
+    protected $_timeFormat = 'g:ia';
+    protected $_add_date_response = '';
+    
     public function __construct() {
         global $sys;
         $this->sys = &$sys;
@@ -187,7 +195,7 @@
      * @Purpose: Returns a list of all the jobs
      */
     public function get_jobs($job_id='all', $paginate=true) {
-        if (true === $paginate) {
+        if (true === $paginate && !is_numeric($job_id)) {
             $start = ((1 >= $this->sys->template->page_id)) ? 0 : (int) ($this->sys->template->page_id-1) * $this->sys->template->paginate_by;
             $end = $this->sys->template->paginate_by;
             $limit = 'LIMIT ' . $start . ',' . $end;
@@ -222,6 +230,55 @@
         }
 
         return $jobs;
+    }
+    
+    /**
+     * @Purpose: Used to find the first and last dates something happened to a job
+     */
+    public function find_dates($job_id, $date_to_get) {
+        if ('start' === $date_to_get) {
+            $query = $this->sys->db->query("SELECT `date` FROM `job_punch` WHERE `job_id`=:id ORDER BY `date` LIMIT 1", array(
+                ':id' => (int) $job_id
+            ));
+        } else {
+            $query = $this->sys->db->query("SELECT `date` FROM `job_punch` WHERE `job_id`=:id ORDER BY `date` ASC LIMIT 1", array(
+                ':id' => (int) $job_id
+            ));
+        }
+        
+        return $query[0]['date'];
+    }
+    
+     /**
+     * @Purpose: Used to create the table that is seen in the view.
+     */
+    public function generate_job_table($job_id) {
+        $hours = $this->get_hours($job_id);
+        $job_info = $this->sys->db->query("
+            SELECT * FROM `job_punch` AS punch
+                JOIN `employees` AS employees on employees.employee_id=punch.employee_id
+                LEFT JOIN `categories` AS categories on categories.category_id=employees.category_id
+            WHERE punch.job_id=:id ORDER BY punch.date", array(':id' => (int) $job_id));
+        $job_info = $job_info[0];
+        $return = '';
+        
+        if (!is_bool($hours)) {
+            foreach ($hours as $date=>$hour) {
+                $in = (!empty($hour['in'])) ? date($this->_timeFormat, (int) $hour['in']) : '';
+                $out = (!empty($hour['out'])) ? date($this->_timeFormat, (int) $hour['out']) : '';
+
+                $return .= '<td>' . $date . '</td>';
+                $return .= '<td onclick="">' . $in . '</td>';
+                $return .= '<td onclick="">' . $out . '</td>';
+                $return .= '<td>' . $job_info['employee_uid'] . '</td>';
+                $return .= '<td>' . $job_info['employee_firstname'] . ', ' . $job_info['employee_lastname'] . '</td>';
+                $return .= '<td>' . $job_info['category_name'] . '</td>';
+                $return .= '<td>' . $hour['total_hours'] . '</td>';
+                $return .= '</tr>';
+            }
+        }
+        
+        return $return;
     }
  }
 
