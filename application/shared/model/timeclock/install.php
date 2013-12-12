@@ -54,11 +54,15 @@ class model_timeclock_install {
     protected function add_admin() {
         $sql_file = __BASE_PATH . 'timeclock.sql';
 
-        if (is_readable($sql_file)) {
-            $sql_file = file_get_contents($sql_file);
-            $this->sys->db->query($sql_file);
-        } else {
-            return 'Could not read \'' . $sql_file . '\' for importing the database.';
+        $table = $this->sys->db->query("SELECT `employee_id` FROM `employees` LIMIT 0,1");
+        
+        if (false === $table) {
+            if (is_readable($sql_file)) {
+                $sql_file = file_get_contents($sql_file);
+                $this->sys->db->query($sql_file);
+            } else {
+                return 'Could not read \'' . $sql_file . '\' for importing the database.';
+            }
         }
         
         $add_user = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `category_id`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', '', '1', :firstname, :lastname, :username, :password)", array(

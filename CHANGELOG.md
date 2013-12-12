@@ -1,3 +1,6 @@
+### 12/12/13 - Commit 2 ###
+* Made installer a little more rebust and you can manually import the database
+
 ### 12/12/13 - Commit 1 ###
 * https://github.com/Ryuske/TimeClock/issues/20 <-- Fixed installer.
 
