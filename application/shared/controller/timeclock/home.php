@@ -55,7 +55,7 @@ class timeclock_home extends controller {
      */
     public function index($page_id=1) {
         $table = $this->sys->db->query("SELECT `employee_id` FROM `employees` LIMIT 0,1");
-        if (false === $table) {
+        if (false === $table || empty($table)) {
             $this->install();
             return true;
         }

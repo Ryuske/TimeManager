@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 11, 2013 at 12:23 PM
+-- Generation Time: Dec 12, 2013 at 08:36 AM
 -- Server version: 5.5.31-0+wheezy1
 -- PHP Version: 5.4.4-14+deb7u5
 
@@ -25,22 +25,25 @@ SET time_zone = "+00:00";
 --
 -- Table structure for table `categories`
 --
--- Creation: Dec 10, 2013 at 11:39 PM
---
 
 CREATE TABLE IF NOT EXISTS `categories` (
   `category_id` int(2) unsigned NOT NULL AUTO_INCREMENT,
   `category_name` varchar(256) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`category_id`),
   UNIQUE KEY `category_id` (`category_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`category_id`, `category_name`) VALUES
+(1, 'Uncategorized');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `clients`
---
--- Creation: Dec 10, 2013 at 12:16 AM
 --
 
 CREATE TABLE IF NOT EXISTS `clients` (
@@ -48,14 +51,19 @@ CREATE TABLE IF NOT EXISTS `clients` (
   `client_name` varchar(256) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`client_id`),
   UNIQUE KEY `client_id` (`client_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `clients`
+--
+
+INSERT INTO `clients` (`client_id`, `client_name`) VALUES
+(1, 'Example');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `employees`
---
--- Creation: Dec 10, 2013 at 11:39 PM
 --
 
 CREATE TABLE IF NOT EXISTS `employees` (
@@ -69,14 +77,12 @@ CREATE TABLE IF NOT EXISTS `employees` (
   PRIMARY KEY (`employee_id`),
   UNIQUE KEY `employee_id` (`employee_id`),
   KEY `category_id` (`category_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=15 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `employee_punch`
---
--- Creation: Dec 11, 2013 at 08:22 PM
 --
 
 CREATE TABLE IF NOT EXISTS `employee_punch` (
@@ -90,14 +96,12 @@ CREATE TABLE IF NOT EXISTS `employee_punch` (
   UNIQUE KEY `employee_punch_id` (`employee_punch_id`),
   KEY `pay_period_id` (`pay_period_id`),
   KEY `employee_id` (`employee_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=85 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `jobs`
---
--- Creation: Dec 10, 2013 at 11:38 PM
 --
 
 CREATE TABLE IF NOT EXISTS `jobs` (
@@ -107,17 +111,14 @@ CREATE TABLE IF NOT EXISTS `jobs` (
   `client` int(3) unsigned NOT NULL,
   `status` enum('na','wip','c') COLLATE utf8_bin NOT NULL DEFAULT 'na',
   PRIMARY KEY (`job_id`),
-  UNIQUE KEY `job_id_2` (`job_id`),
   KEY `client` (`client`),
   KEY `job_id` (`job_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `job_punch`
---
--- Creation: Dec 11, 2013 at 08:03 PM
 --
 
 CREATE TABLE IF NOT EXISTS `job_punch` (
@@ -132,14 +133,12 @@ CREATE TABLE IF NOT EXISTS `job_punch` (
   UNIQUE KEY `punch_id` (`punch_id`),
   KEY `employee_id` (`employee_id`,`category_id`),
   KEY `category_id` (`category_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=23 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `pay_periods`
---
--- Creation: Dec 11, 2013 at 08:20 PM
 --
 
 CREATE TABLE IF NOT EXISTS `pay_periods` (
@@ -148,15 +147,12 @@ CREATE TABLE IF NOT EXISTS `pay_periods` (
   `pay_period_sunday` int(10) unsigned NOT NULL,
   PRIMARY KEY (`pay_period_id`),
   UNIQUE KEY `pay_period_id` (`pay_period_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `settings`
---
--- Creation: Dec 10, 2013 at 11:39 PM
--- Last update: Dec 11, 2013 at 07:14 PM
 --
 
 CREATE TABLE IF NOT EXISTS `settings` (
@@ -165,7 +161,18 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `setting_value` varchar(128) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`setting_id`),
   UNIQUE KEY `setting_id` (`setting_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=15 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
+
+--
+-- Dumping data for table `settings`
+--
+
+INSERT INTO `settings` (`setting_id`, `setting_name`, `setting_value`) VALUES
+(1, 'round_time_by', 'none'),
+(2, 'sort_employees_by', 'first_name'),
+(3, 'list_employees_as', 'last_first'),
+(4, 'sort_jobs_by', 'job_id'),
+(5, 'paginate_by', '10');
 
 --
 -- Constraints for dumped tables

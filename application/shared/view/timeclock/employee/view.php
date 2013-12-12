@@ -1,3 +1,7 @@
+<?php
+$date_format = 'm/d/y';
+?>
+
 <div class="jumbotron">
     <h1>TimeClock</h1>
     <p>View employee</p>
