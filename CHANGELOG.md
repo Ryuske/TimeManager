@@ -1,3 +1,6 @@
+### 12/12/13 - Commit 1 ###
+* https://github.com/Ryuske/TimeClock/issues/20 <-- Fixed installer.
+
 ### 12/11/13 - Commit 6 ###
 * https://github.com/Ryuske/TimeClock/issues/18 <-- Updated API. Also changed employee_name to name
 

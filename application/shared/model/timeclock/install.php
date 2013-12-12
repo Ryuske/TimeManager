@@ -61,7 +61,7 @@ class model_timeclock_install {
             return 'Could not read \'' . $sql_file . '\' for importing the database.';
         }
         
-        $add_user = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', '', :firstname, :lastname, :username, :password)", array(
+        $add_user = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `category_id`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', '', '1', :firstname, :lastname, :username, :password)", array(
             ':firstname' => $_POST['firstname'],
             ':lastname' => $_POST['lastname'],
             ':username' => $_POST['username'],
