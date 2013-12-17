@@ -70,7 +70,7 @@ class timeclock_jobs extends controller {
      * Purpose: Load add jobs page
      */
     public function add() {
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'clients', 'jobs'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'clients', 'jobs', 'categories'));
 
         if (!isset($this->sys->template->response)) {
             $this->sys->template->response = '';
@@ -82,6 +82,7 @@ class timeclock_jobs extends controller {
                 return true;
             }
             
+            $this->sys->template->categories = $this->model_categories->get_categories(true);
             $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->title = 'TimeClock | Jobs | Add';
             $this->sys->template->jobs_active = 'class="active"';
@@ -100,7 +101,7 @@ class timeclock_jobs extends controller {
      * Purpose: Load edit jobs page
      */
     public function edit($job_id) {
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'clients', 'settings', 'jobs'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'clients', 'settings', 'jobs', 'categories'));
 
         if (!isset($this->sys->template->response)) {
             $this->sys->template->response = '';
@@ -112,6 +113,7 @@ class timeclock_jobs extends controller {
                 return true;
             }
             
+            $this->sys->template->categories = $this->model_categories->get_categories(true);
             $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->title = 'TimeClock | Jobs | Edit';
             $this->sys->template->jobs_active = 'class="active"';
@@ -179,7 +181,7 @@ class timeclock_jobs extends controller {
             $this->sys->template->add_date_response = '';
             $this->sys->template->pagination        = $this->model_renderPage->generate_pagination('jobs/view/' . $job_uid . '', (int) $page_id);
             $this->sys->template->employees         = $this->model_employees->get_employees();
-            $this->sys->template->categories        = $this->model_categories->get_categories();
+            $this->sys->template->categories        = $this->model_categories->get_categories(true);
             $this->sys->template->total_hours       = $this->model_jobs->total_hours($job_uid, false);
             $this->sys->template->hours_by_category = $this->model_jobs->total_hours($job_uid, true);
             

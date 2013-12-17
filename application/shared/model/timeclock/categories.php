@@ -119,10 +119,19 @@
     /**
      * @Purpose: Returns a list of all the categories.
      */
-    public function get_categories() {
+    public function get_categories($by_id=false) {
         $categories = $this->sys->db->query("SELECT * FROM `categories`");
+        $return_categories = array();
         
-        return $categories;
+        if ($by_id) {
+            foreach ($categories as $category) {
+                $return_categories[$category['category_id']] = $category;
+            }
+        } else {
+            $return_categories = $categories;
+        }
+        
+        return $return_categories;
     }
  }
  

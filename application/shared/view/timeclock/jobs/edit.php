@@ -7,13 +7,6 @@
         <div class="well">
         <form class="form" method="post" action="">
             <input type="hidden" name="id" value="{job['job_id']}" />
-            <input class="form-control" name="uid" type="text" placeholder="Job UID" value="{job['job_uid']}" />
-            <label class="checkbox">
-                <input type="checkbox" name="generate_uid" value="generate-uid" />
-                Generate ID
-            </label>
-            <input class="form-control" name="job_name" type="text" value="{job['job_name']}" required="required" />
-            <hr />
             <div class="group">
                 <label>
                     Client &raquo;
@@ -31,6 +24,16 @@
                     }
                     ?>
                 </select>
+            </div>
+            <div class="group">
+                <input class="form-control" name="uid" type="text" placeholder="Job UID" value="{job['job_uid']}" />
+                <label class="checkbox">
+                    <input type="checkbox" name="generate_uid" value="generate-uid" />
+                    Generate ID
+                </label>
+            </div>
+            <div class="group">
+                <input class="form-control" name="job_name" type="text" value="{job['job_name']}" required="required" />
             </div>
             <div class="group">
                 <label>Status</label>
@@ -55,6 +58,50 @@
                     <option value="wip" <?php echo $status[1]; ?>>In Progress</option>
                     <option value="c" <?php echo $status[2]; ?>>Completed</option>
                 </select>
+            </div>
+            <div class="group">
+                <label>Quote</label>
+                <table class="table">
+                    <?php
+                    $time = array('', '', '');
+                    for ($i = 0; $i < count($this->sys->template->categories); $i=$i+3) {
+                        $time[0] = (array_key_exists($this->sys->template->categories[$i]['category_id'], $this->sys->template->job['quoted_time'])) ? $this->sys->template->job['quoted_time'][$this->sys->template->categories[$i]['category_id']] : '0';
+
+                        echo '<tr>';
+                        echo '
+                            <td>
+                                <label>' . $this->sys->template->categories[$i]['category_name'] . '</label>
+                                <input class="form-control" name="quote[' . $this->sys->template->categories[$i]['category_id'] . ']" type="text" value="' . $time[0] . '" />
+                            </td>
+                        ';
+                        if (array_key_exists(($i+1), $this->sys->template->categories)) {
+                            $time[1] = (array_key_exists($this->sys->template->categories[$i+1]['category_id'], $this->sys->template->job['quoted_time'])) ? $this->sys->template->job['quoted_time'][$this->sys->template->categories[$i+1]['category_id']] : '0';
+                            
+                            echo '
+                                <td>
+                                    <label>' . $this->sys->template->categories[$i+1]['category_name'] . '</label>
+                                    <input class="form-control" name="quote[' . $this->sys->template->categories[$i+1]['category_id'] . ']" type="text" value="' . $time[1] . '" />
+                                </td>
+                            ';
+                        } else {
+                            echo '<td></td>';
+                        }
+                        if (array_key_exists(($i+2), $this->sys->template->categories)) {
+                            $time[2] = (array_key_exists($this->sys->template->categories[$i+2]['category_id'], $this->sys->template->job['quoted_time'])) ? $this->sys->template->job['quoted_time'][$this->sys->template->categories[$i+2]['category_id']] : '0';
+                            
+                            echo '
+                                <td>
+                                    <label>' . $this->sys->template->categories[$i+2]['category_name'] . '</label>
+                                    <input class="form-control" name="quote[' . $this->sys->template->categories[$i+2]['category_id'] . ']" type="text" value="' . $time[2] . '" />
+                                </td>
+                            ';
+                        } else {
+                            echo '<td></td>';
+                        }
+                        echo '</tr>';
+                    }
+                    ?>
+                </table>
             </div>
             {response}
             <input class="form-control" name="edit_job" type="submit" value="Edit Job" />

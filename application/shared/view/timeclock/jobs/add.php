@@ -6,12 +6,6 @@
     <div class="col-lg-4 col-lg-offset-4">
         <div class="well">
         <form class="form" method="post" action="">
-            <input class="form-control" name="uid" type="text" placeholder="Job UID" />
-            <label class="checkbox">
-                <input type="checkbox" name="generate_uid" value="generate-uid" checked="checked" />
-                Generate ID
-            </label>
-            <hr />
             <div class="group">
                 <label>
                     Client &raquo;
@@ -29,7 +23,53 @@
                     ?>
                 </select>
             </div>
-            <input class="form-control" name="job_name" type="text" placeholder="Job Name" required="required" />
+            <div class="group">
+                <input class="form-control" name="uid" type="text" placeholder="Job UID" />
+                <label class="checkbox">
+                    <input type="checkbox" name="generate_uid" value="generate-uid" checked="checked" />
+                    Generate ID
+                </label>
+            </div>
+            <div class="group">
+                <input class="form-control" name="job_name" type="text" placeholder="Job Name" required="required" />
+            </div>
+            <div class="group">
+                <label>Quote</label>
+                <table class="table">
+                    <?php
+                    for ($i = 0; $i < count($this->sys->template->categories); $i=$i+3) {
+                        echo '<tr>';
+                        echo '
+                            <td>
+                                <label>' . $this->sys->template->categories[$i]['category_name'] . '</label>
+                                <input class="form-control" name="quote[' . $this->sys->template->categories[$i]['category_id'] . ']" type="text" placeholder="Time" />
+                            </td>
+                        ';
+                        if (array_key_exists(($i+1), $this->sys->template->categories)) {
+                            echo '
+                                <td>
+                                    <label>' . $this->sys->template->categories[$i+1]['category_name'] . '</label>
+                                    <input class="form-control" name="quote[' . $this->sys->template->categories[$i+1]['category_id'] . ']" type="text" placeholder="Time" />
+                                </td>
+                            ';
+                        } else {
+                            echo '<td></td>';
+                        }
+                        if (array_key_exists(($i+2), $this->sys->template->categories)) {
+                            echo '
+                                <td>
+                                    <label>' . $this->sys->template->categories[$i+2]['category_name'] . '</label>
+                                    <input class="form-control" name="quote[' . $this->sys->template->categories[$i+2]['category_id'] . ']" type="text" placeholder="Time" />
+                                </td>
+                            ';
+                        } else {
+                            echo '<td></td>';
+                        }
+                        echo '</tr>';
+                    }
+                    ?>
+                </table>
+            </div>
             {response}
             <input class="form-control" name="add_job" type="submit" value="Add Job" />
             </form>

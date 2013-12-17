@@ -67,7 +67,7 @@ $date_format = 'm/d/y';
                         <div class="panel-heading">
                             <h3 class="panel-title row">
                                 <div class="title col-sm-12">
-                                    Hours Breakdown ({total_hours} Total Hours)
+                                    Hours Breakdown ({total_hours} Total Hours | <?php echo $this->model_jobs->quoted_hours($this->sys->template->job['job_id']); ?> Quoted Hours)
                                 </div>
                             </h3>
                         </div>
@@ -76,23 +76,41 @@ $date_format = 'm/d/y';
                                 <thead>
                                     <tr>
                                         <th>Category</th>
-                                        <th>Total Hours</th>
+                                        <th>Worked Hours</th>
+                                        <th>Quoted Hours</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
-                                    foreach ($this->sys->template->hours_by_category as $category=>$time) {
-                                        echo '<tr>';
-                                        echo '<td>' . $category . '</td>';
-                                        echo '<td>' . $time . '</td>';
-                                        echo '</tr>';
+                                    foreach ($this->sys->template->job['quoted_time'] as $category=>$time) {
+                                        if (0 < $time) {
+                                            echo '<tr>';
+                                                echo '<td>' . $this->sys->template->categories[$category]['category_name'] . '</td>';
+                                                if (array_key_exists($category, $this->sys->template->hours_by_category)) {
+                                                    $worked = $this->sys->template->hours_by_category[$category];
+                                                    echo '<td>' . $this->sys->template->hours_by_category[$category] . '</td>';
+                                                } else {
+                                                    $worked = 0;
+                                                    echo '<td>0</td>';
+                                                }
+                                                echo '<td>' . $time . '</td>';
+                                                
+                                                $difference = $time - $worked;
+                                                if (0 <= $difference) {
+                                                    echo '<td class="green">' . $difference . '</td>';
+                                                } else {
+                                                    echo '<td class="red">' . $difference . '</td>';
+                                                }
+                                            echo '</tr>';
+                                        }
                                     }
                                     ?>
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <th>Category</th>
-                                        <th>Total Hours</th>
+                                        <th>Worked Hours</th>
+                                        <th>Quoted Hours</th>
                                     </tr>
                                 </tfoot>
                             </table>
