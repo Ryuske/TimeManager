@@ -1,3 +1,8 @@
+### 12/17/13 - Commit 3 ###
+* https://github.com/Ryuske/TimeClock/issues/9 <-- Missed a part - jobs were vulnerable to exploits
+* Fixed error where 'user' wasn't set in $this->sys->session
+* https://github.com/Ryuske/TimeClock/issues/23 <-- Added quoted times
+
 ### 12/17/13 - Commit 2 ###
 * https://github.com/Ryuske/TimeClock/issues/9 <-- Added employee roles - admin & management
 * PayPeriod API updates - added `role` payperiod/employee API

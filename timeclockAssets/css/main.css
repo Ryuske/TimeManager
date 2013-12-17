@@ -187,3 +187,11 @@ form .group {
 .jobs .completed {
     color: #0C680C;
 }
+
+.red {
+    color: #8B0000;
+}
+
+.green {
+    color: #006400;
+}

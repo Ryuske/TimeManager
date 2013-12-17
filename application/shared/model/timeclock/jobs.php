@@ -1,10 +1,10 @@
 <?php
 /**
- * @Author: Kenyon Haliwell
- * @Date Created: 12/09/13
- * @Date Modified: 12/11/13
- * @Purpose: Used as a wrapper for various methods surrounding jobs
- * @Version: 2.0
+ * Author: Kenyon Haliwell
+ * Date Created: 12/09/13
+ * Date Modified: 12/17/13
+ * Purpose: Used as a wrapper for various methods surrounding jobs
+ * Version: 2.0
  */
 global $sys;
 $sys->router->load_traits('jobs', 'timeclock');
@@ -20,22 +20,32 @@ $sys->router->load_traits('jobs', 'timeclock');
         global $sys;
         $this->sys = &$sys;
         
-        if (array_key_exists('add_job', $_POST)) {
+        $is_admin = $this->sys->db->query("SELECT `employee_role` FROM `employees` WHERE `employee_id`=:id", array(
+            ':id' => (int) $this->sys->session['user']
+        ));
+        
+        if (!empty($is_admin)) {
+            $is_admin = ('admin' === $is_admin[0]['employee_role']) ? true : false;
+        } else {
+            $is_admin = false;
+        }
+        
+        if (array_key_exists('add_job', $_POST) && $is_admin) {
             $this->add();
         }
-        if (array_key_exists('edit_job', $_POST)) {
+        if (array_key_exists('edit_job', $_POST) && $is_admin) {
             $this->edit();
         }
-        if (array_key_exists('remove_job', $_POST)) {
+        if (array_key_exists('remove_job', $_POST) && $is_admin) {
             $this->remove();
         }
-        if (array_key_exists('update_time', $_POST)) {
+        if (array_key_exists('update_time', $_POST) && $is_admin) {
             $this->update_time();
         }
-        if (array_key_exists('add_date', $_POST)) {
+        if (array_key_exists('add_date', $_POST) && $is_admin) {
             $this->add_date();
         }
-        if (array_key_exists('update_info', $_POST)) {
+        if (array_key_exists('update_info', $_POST) && $is_admin) {
             $this->update_time_info();
         }
     }
@@ -44,7 +54,7 @@ $sys->router->load_traits('jobs', 'timeclock');
      * Database Modification - Add/Edit/Remove
      */
     /**
-     * @Purpose: Used to add jobs to the database
+     * Purpose: Used to add jobs to the database
      */
     protected function add() {
         $error = '';
@@ -85,10 +95,31 @@ $sys->router->load_traits('jobs', 'timeclock');
             }
         }
         
-        $add_job = ('' === $error) ? $this->sys->db->query("INSERT INTO `jobs` (`job_id`, `job_uid`, `job_name`, `client`, `status`) VALUES (NULL, :id, :name, :client, 'na')", array(
+        $categories_query = $this->sys->db->query("SELECT * FROM `categories`");
+        $categories = array();
+        
+        foreach ($categories_query as $category) {
+            $categories[$category['category_id']] = $category;
+        }
+        
+        $categories_query = array();
+        
+        foreach ($_POST['quote'] as $id=>&$time) {
+            if (array_key_exists($id, $categories)) {
+                if ('' === $time) {
+                    $time = 0;
+                }
+                
+                $categories_query[$id] = $time;
+            }
+        }
+        $categories_query = json_encode($categories_query);
+
+        $add_job = ('' === $error) ? $this->sys->db->query("INSERT INTO `jobs` (`job_id`, `job_uid`, `job_name`, `client`, `status`, `quoted_time`) VALUES (NULL, :id, :name, :client, 'na', :quote)", array(
             ':id'       => $id,
             ':name'     => $_POST['job_name'],
-            ':client'   => $_POST['client']
+            ':client'   => $_POST['client'],
+            ':quote'    => $categories_query
         )) : '';
         
         if (!empty($error)) {
@@ -102,7 +133,7 @@ $sys->router->load_traits('jobs', 'timeclock');
     }
     
     /**
-     * @Purpose: Used to edit jobs in the database
+     * Purpose: Used to edit jobs in the database
      */
     protected function edit() {
         $error = '';
@@ -163,13 +194,33 @@ $sys->router->load_traits('jobs', 'timeclock');
             default: //c
                 $status = 'c';
         }
+        $categories_query = $this->sys->db->query("SELECT * FROM `categories`");
+        $categories = array();
         
-        $edit_job = ('' === $error) ? $this->sys->db->query("UPDATE `jobs` SET `job_uid`=:uid, `job_name`=:name, `client`=:client, `status`=:status WHERE `job_id`=:id", array(
+        foreach ($categories_query as $category) {
+            $categories[$category['category_id']] = $category;
+        }
+        
+        $categories_query = array();
+        
+        foreach ($_POST['quote'] as $id=>&$time) {
+            if (array_key_exists($id, $categories)) {
+                if ('' === $time) {
+                    $time = 0;
+                }
+                
+                $categories_query[$id] = $time;
+            }
+        }
+        $categories_query = json_encode($categories_query);
+        
+        $edit_job = ('' === $error) ? $this->sys->db->query("UPDATE `jobs` SET `job_uid`=:uid, `job_name`=:name, `client`=:client, `status`=:status, `quoted_time`=:quote WHERE `job_id`=:id", array(
             ':id'       => (int) $_POST['id'],
             ':uid'      => $uid,
             ':name'     => $_POST['job_name'],
             ':client'   => $_POST['client'],
-            ':status'   => $status
+            ':status'   => $status,
+            ':quote'    => $categories_query
         )) : '';
         
         if (!empty($error)) {
@@ -183,7 +234,7 @@ $sys->router->load_traits('jobs', 'timeclock');
     } //End edit
     
     /**
-     * @Purpose: Used to remove jobs from the database
+     * Purpose: Used to remove jobs from the database
      */
     protected function remove() {
         $params = array(':id' => $_POST['job_id']);
@@ -201,7 +252,28 @@ $sys->router->load_traits('jobs', 'timeclock');
      */
     
     /**
-     * @Purpose: Returns a list of all the jobs
+     * Purpose: Calculate the total quoted hours of a job
+     */
+    public function quoted_hours($job_id) {
+        $job = $this->sys->db->query("SELECT `quoted_time` FROM `jobs` WHERE `job_id`=:id", array(
+            ':id' => (int) $job_id
+        ));
+        
+        if (!empty($job)) {
+            $times = json_decode($job[0]['quoted_time'], true);
+            $total_time = 0;
+            
+            foreach ($times as $time) {
+                $total_time += $time;
+            }
+            
+            return $total_time;
+        }
+        
+        return false;
+    }
+    /**
+     * Purpose: Returns a list of all the jobs
      */
     public function get_jobs($job_id='all', $paginate=true) {
         if (true === $paginate && 'all' === $job_id) {
@@ -234,18 +306,22 @@ $sys->router->load_traits('jobs', 'timeclock');
 
             if (!empty($jobs)) {
                 $jobs = $jobs[0];
+                $jobs['quoted_time'] = json_decode($jobs['quoted_time'], true);
             } else {
                 return false;
             }
         } else {
             $jobs = $this->sys->db->query("SELECT * FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client ORDER BY $sort_by $limit");
+            foreach ($jobs as &$job) {
+                $job['quoted_time'] = json_decode($job['quoted_time'], true);
+            }
         }
 
         return $jobs;
     }
     
     /**
-     * @Purpose: Used to find the first and last dates something happened to a job
+     * Purpose: Used to find the first and last dates something happened to a job
      */
     public function find_dates($job_id, $date_to_get) {
         if ('start' === $date_to_get) {
@@ -262,7 +338,7 @@ $sys->router->load_traits('jobs', 'timeclock');
     }
     
      /**
-     * @Purpose: Used to create the table that is seen in the view.
+     * Purpose: Used to create the table that is seen in the view.
      */
     public function generate_job_table($job_id) {
         $hours = $this->get_hours($job_id);

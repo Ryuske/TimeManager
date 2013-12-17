@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/13/13
- * @Date Modified: 12/11/13
+ * @Date Modified: 12/17/13
  * @Purpose: Various functions that apply to logged in users (or not logged in)
  * @Version: 2.0
  */
@@ -33,6 +33,8 @@ class model_timeclock_loggedIn {
     public function __construct() {
         global $sys;
         $this->sys = $sys;
+        $this->sys->session['user'] = ('' !== $this->sys->session['user']) ? $this->sys->session['user'] : '';
+        
         self::$_loginError = $this->login();
     }
 
@@ -48,10 +50,10 @@ class model_timeclock_loggedIn {
      */
     public function status() {
         if (NULL !== self::$_user) {
-            return True;
+            return true;
         }
 
-        return False;
+        return false;
     }
 
     /**
@@ -71,7 +73,8 @@ class model_timeclock_loggedIn {
                 return True;
             }
         }
-        if (isset($this->sys->session['user']) && NULL !== $this->sys->session['user']) {
+        
+        if (isset($this->sys->session['user']) && NULL !== $this->sys->session['user'] && '' !== $this->sys->session['user']) {
             self::$_user = $this->sys->session['user'];
         } else {
             self::$_user = NULL;
