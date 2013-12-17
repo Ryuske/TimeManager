@@ -42,6 +42,14 @@ class timeclock_payperiod extends controller {
     public function tx($uid) {
         $this->load_dependencies(array('payPeriod'));
         
+        $check_employee_id = $this->sys->db->query("SELECT `employee_uid` FROM `employees` WHERE `employee_id`=:id", array(
+            ':id' => $uid
+        ));
+        
+        if (!empty($check_employee_id)) {
+            $uid = $check_employee_id[0]['employee_uid'];
+        }
+        
         $employee = $this->sys->db->query("SELECT * FROM `employees` WHERE `employee_uid`=:uid", array(
             ':uid' => $uid
         ));
@@ -62,6 +70,15 @@ class timeclock_payperiod extends controller {
      */
     public function rx($uid, $data, $pay_period='current') {
         $this->load_dependencies(array('payPeriod', 'settings'));
+        
+        $check_employee_id = $this->sys->db->query("SELECT `employee_uid` FROM `employees` WHERE `employee_id`=:id", array(
+            ':id' => $uid
+        ));
+        
+        if (!empty($check_employee_id)) {
+            $uid = $check_employee_id[0]['employee_uid'];
+        }
+        
         $employee = $this->sys->db->query("
             SELECT *
             FROM `employees` AS employee
