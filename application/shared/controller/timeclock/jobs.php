@@ -39,7 +39,9 @@ class timeclock_jobs extends controller {
     protected function is_logged_in() {
         return $this->model_loggedIn->status();
     }
-    
+    /**
+     * Purpose: Loads the home page for jobs
+     */
     public function index($page_id=1) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'jobs'));
         $this->login_failed();
@@ -63,7 +65,9 @@ class timeclock_jobs extends controller {
         //Parses the HTML from the view
         $this->model_renderPage->parse($parse, $full_page);
     }
-    
+    /**
+     * Purpose: Load add jobs page
+     */
     public function add() {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'clients', 'jobs'));
 
@@ -85,7 +89,9 @@ class timeclock_jobs extends controller {
         //Parses the HTML from the view
         $this->model_renderPage->parse($parse, $full_page);
     }
-    
+    /**
+     * Purpose: Load edit jobs page
+     */
     public function edit($job_id) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'clients', 'settings', 'jobs'));
 
@@ -108,7 +114,9 @@ class timeclock_jobs extends controller {
         //Parses the HTML from the view
         $this->model_renderPage->parse($parse, $full_page);
     }
-    
+    /**
+     * Purpose: Load remove jobs page
+     */
     public function remove($job_id) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'jobs'));
         $this->login_failed();
@@ -165,7 +173,9 @@ class timeclock_jobs extends controller {
         //Parses the HTML from the view
         $this->model_renderPage->parse($parse, true);
     }
-    
+    /**
+     * Purpose: Used to generate a printer friendly version of a jobs time
+     */
     public function print_friendly($job_uid) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'categories', 'jobs', 'settings'));
         $this->sys->template->job_id = $job_uid;
@@ -188,7 +198,9 @@ class timeclock_jobs extends controller {
         //Parses the HTML from the view
         $this->model_renderPage->parse($parse, false);
     }
-    
+    /**
+     * Purpose: Used to recieve information about a job
+     */
     public function rx($job_uid, $data) {
         $this->load_dependencies(array('settings', 'jobs'));
         $response = 'Error';
@@ -239,10 +251,20 @@ class timeclock_jobs extends controller {
         
         $this->sys->template->parse($this->sys->config->timeclock_subdirectories . '_jobs_response');
     }
-    
+    /**
+     * Purpose: Used to punch in/out on a job
+     */
     public function tx($job_uid, $employee_uid) {
         $this->load_dependencies(array('jobs'));
         $response = 'Error';
+        
+        $check_employee_id = $this->sys->db->query("SELECT `employee_uid` FROM `employees` WHERE `employee_id`=:id", array(
+            ':id' => $employee_uid
+        ));
+        
+        if (!empty($check_employee_id)) {
+            $employee_uid = $check_employee_id[0]['employee_uid'];
+        }
         
         //Check job & employee exist
         $check_ids = $this->sys->db->query("
