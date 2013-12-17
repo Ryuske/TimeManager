@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/15/13
- * @Date Modified: 12/11/13
+ * @Date Modified: 12/17/13
  * @Purpose: Employee controller
  * @Version: 2.0
  */
@@ -41,9 +41,15 @@ class timeclock_employee extends controller {
      */
     public function add() {
         $this->sys->template->response = '';
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'categories', 'employees'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'categories', 'employees'));
 
         if ($this->is_logged_in()) {
+            if (!$this->model_settings->is_admin()) {
+                $this->load_home();
+                return true;
+            }
+            
+            $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->title = 'TimeClock | Employee | Add';
             $this->sys->template->categories = $this->model_categories->get_categories();
             
@@ -66,6 +72,12 @@ class timeclock_employee extends controller {
         $this->sys->template->categories = $this->model_categories->get_categories();
         
         if ($this->is_logged_in()) {
+            if (!$this->model_settings->is_admin()) {
+                $this->load_home();
+                return true;
+            }
+            
+            $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->title = 'TimeClock | Employee | Edit';
             $parse = 'employee_edit';
         } else {
@@ -82,6 +94,12 @@ class timeclock_employee extends controller {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'settings'));
 
         if ($this->is_logged_in()) {
+            if (!$this->model_settings->is_admin()) {
+                $this->load_home();
+                return true;
+            }
+            
+            $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->page_id = 1;
             $this->sys->template->paginate_by = $this->model_settings->paginate_by;
             $this->sys->template->employees = $this->model_employees->get_employees(False);
@@ -126,12 +144,13 @@ class timeclock_employee extends controller {
         $this->sys->template->add_date_response = $this->model_payPeriod->add_date_response();
         
         if ($this->is_logged_in()) {
+            $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->employees_by_id = $this->model_employees->get_employees(True);
             $this->sys->template->pagination = $this->model_renderPage->generate_pagination('employee/view/' . (int) $employee_id . '/' . $pay_period, 'payperiods', (int) $page_id);
 
             $this->sys->template->title = 'TimeClock | Employee | View';
             $this->sys->template->home_active = 'class="active"';
-            $parse = 'employee_view';
+            $parse = ($this->sys->template->admin) ? 'admin_employee_view' : 'employee_view';
         } else {
             $this->load_home();
         }

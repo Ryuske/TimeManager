@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 12/09/13
- * @Date Modified: 12/11/13
+ * @Date Modified: 12/17/13
  * @Purpose: Controller for Jobs/Job Tracking
  * @Version: 2.0
  */
@@ -47,6 +47,7 @@ class timeclock_jobs extends controller {
         $this->login_failed();
 
         if ($this->is_logged_in()) {
+            $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->title = 'TimeClock | Jobs';
             $this->sys->template->jobs_active = 'class="active"';
             $this->sys->template->page_id = (int) $page_id;
@@ -54,7 +55,7 @@ class timeclock_jobs extends controller {
             $this->sys->template->jobs = $this->model_jobs->get_jobs();
             $this->sys->template->pagination = $this->model_renderPage->generate_pagination('jobs/home', 'jobs', (int) $page_id);
             
-            $parse = 'jobs_home';
+            $parse = ($this->sys->template->admin) ? 'admin_jobs_home' : 'jobs_home';
             $full_page = True;
         } else {
             $this->sys->template->title = 'TimeClock | Sign In';
@@ -69,13 +70,19 @@ class timeclock_jobs extends controller {
      * Purpose: Load add jobs page
      */
     public function add() {
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'clients', 'jobs'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'clients', 'jobs'));
 
         if (!isset($this->sys->template->response)) {
             $this->sys->template->response = '';
         }
 
         if ($this->is_logged_in()) {
+            if (!$this->model_settings->is_admin()) {
+                $this->load_home();
+                return true;
+            }
+            
+            $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->title = 'TimeClock | Jobs | Add';
             $this->sys->template->jobs_active = 'class="active"';
             $this->sys->template->clients = $this->model_clients->get_clients();
@@ -100,6 +107,12 @@ class timeclock_jobs extends controller {
         }
 
         if ($this->is_logged_in()) {
+            if (!$this->model_settings->is_admin()) {
+                $this->load_home();
+                return true;
+            }
+            
+            $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->title = 'TimeClock | Jobs | Edit';
             $this->sys->template->jobs_active = 'class="active"';
             $this->sys->template->clients = $this->model_clients->get_clients();
@@ -122,6 +135,12 @@ class timeclock_jobs extends controller {
         $this->login_failed();
 
         if ($this->is_logged_in()) {
+            if (!$this->model_settings->is_admin()) {
+                $this->load_home();
+                return true;
+            }
+            
+            $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->title = 'TimeClock | Jobs | Remove';
             $this->sys->template->jobs_active = 'class="active"';
             $this->sys->template->page_id = 1;
@@ -152,6 +171,7 @@ class timeclock_jobs extends controller {
         $this->sys->template->job_id        = $job_uid;
         
         if ($this->is_logged_in()) {
+            $this->sys->template->admin             = $this->model_settings->is_admin();
             $this->sys->template->job               = $this->model_jobs->get_jobs($job_uid, false);
             $this->sys->template->job_table         = $this->model_jobs->generate_job_table($job_uid);
             $this->sys->template->start_date        = $this->model_jobs->find_dates($job_uid, 'start');
@@ -165,7 +185,7 @@ class timeclock_jobs extends controller {
             
             $this->sys->template->title = 'TimeClock | Jobs | View';
             $this->sys->template->jobs_active = 'class="active"';
-            $parse = 'jobs_view';
+            $parse = ($this->sys->template->admin) ? 'admin_jobs_view' : 'jobs_view';
         } else {
             $this->load_home();
         }

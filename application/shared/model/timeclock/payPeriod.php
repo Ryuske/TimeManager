@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/18/13
- * @Date Modified: 12/11/13
+ * @Date Modified: 12/17/13
  * @Purpose: Used to complete various pay period functions
  * @Version: 2.0
  */
@@ -75,10 +75,20 @@ class model_timeclock_payPeriod {
         global $sys;
         $this->sys = $sys;
         
-        if (array_key_exists('update_time', $_POST)) {
+        $is_admin = $this->sys->db->query("SELECT `employee_role` FROM `employees` WHERE `employee_id`=:id", array(
+            ':id' => (int) $this->sys->session['user']
+        ));
+        
+        if (!empty($is_admin)) {
+            $is_admin = ('admin' === $is_admin[0]['employee_role']) ? true : false;
+        } else {
+            $is_admin = false;
+        }
+        
+        if (array_key_exists('update_time', $_POST) && $is_admin) {
             $this->update_time();
         }
-        if (array_key_exists('add_date', $_POST)) {
+        if (array_key_exists('add_date', $_POST) && $is_admin) {
             $this->add_date();
         }
     }

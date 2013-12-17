@@ -108,6 +108,9 @@ class timeclock_payperiod extends controller {
             case 'name':
                 $response = $employee[0]['employee_firstname'] . ' ' . $employee[0]['employee_lastname'];
                 break;
+            case 'role':
+                $response = $employee[0]['employee_role'];
+                break;
             case 'category':
                 $response = $employee[0]['category_name'];
                 break;

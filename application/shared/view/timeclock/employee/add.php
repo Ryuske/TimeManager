@@ -27,6 +27,16 @@
                         ?>
                     </select>
                 </div>
+                <div class="group">
+                    <label>
+                        Role &raquo;
+                    </label>
+                    <select class="form-control" name="role">
+                        <option value="none">None</option>
+                        <option value="admin">Admin</option>
+                        <option value="management">Management</option>
+                    </select>
+                </div>
                 <hr />
                 <input class="form-control" name="uid" type="text" placeholder="Employees' Badge UID" />
                 <label class="checkbox">

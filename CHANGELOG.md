@@ -1,3 +1,7 @@
+### 12/17/13 - Commit 2 ###
+* https://github.com/Ryuske/TimeClock/issues/9 <-- Added employee roles - admin & management
+* PayPeriod API updates - added `role` payperiod/employee API
+
 ### 12/17/13 - Commit 1 ###
 * Created OLD.md to keep track of CHANGELOGs from previous versions.
 * Updated a couple comments
