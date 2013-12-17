@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/13/13
- * @Date Modified: 12/11/13
+ * @Date Modified: 12/17/13
  * @Purpose: Default controller - used for top level pages (home, about, settings, etc)
  * @Version: 2.0
  */
@@ -64,6 +64,7 @@ class timeclock_home extends controller {
         $this->login_failed();
 
         if ($this->is_logged_in()) {
+            $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->page_id = (1 > $page_id) ? 1 : (int) $page_id;
             $this->sys->template->paginate_by = $this->model_settings->paginate_by;
             $this->employees();
@@ -72,7 +73,8 @@ class timeclock_home extends controller {
 
             $this->sys->template->title = 'TimeClock | Home';
             $this->sys->template->home_active = 'class="active"';
-            $parse = 'home';
+            
+            $parse = ($this->sys->template->admin) ? 'admin_home' : 'home';
             $full_page = True;
         } else {
             $this->sys->template->title = 'TimeClock | Sign In';
@@ -88,13 +90,14 @@ class timeclock_home extends controller {
      * @Purpose: Used to load a help page
      */
     public function about() {
-        $this->load_dependencies(array('renderPage'));
+        $this->load_dependencies(array('renderPage', 'settings'));
         $this->login_failed();
 
         if ($this->is_logged_in()) {
+            $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->title = 'TimeClock | About';
             $this->sys->template->about_active = 'class="active"';
-            $parse = 'about';
+            $parse = ($this->sys->template->admin) ? 'admin_about' : 'about';
             $full_page = True;
         } else {
             $this->sys->template->title = 'TimeClock | Sign In';
@@ -116,6 +119,12 @@ class timeclock_home extends controller {
         $this->sys->template->update_status = $this->model_settings->update_status();
         
         if ($this->is_logged_in()) {
+            if (!$this->model_settings->is_admin()) {
+                $this->index();
+                return true;
+            }
+            
+            $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->pay_period_start = $this->model_settings->pay_period_start;
             $this->sys->template->pay_period_end = $this->model_settings->pay_period_end;
             $this->sys->template->round_time_by = $this->model_settings->round_time_by;

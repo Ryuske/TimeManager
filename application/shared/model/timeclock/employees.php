@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/15/13
- * @Date Modified: 12/11/13
+ * @Date Modified: 12/17/13
  * @Purpose: Used to pull the employees from the database and use the results in a view
  * @Version: 2.0
  */
@@ -41,15 +41,25 @@ class model_timeclock_employees {
         global $sys;
         $this->sys = &$sys;
 
-        if (array_key_exists('add_employee', $_POST)) {
+        $is_admin = $this->sys->db->query("SELECT `employee_role` FROM `employees` WHERE `employee_id`=:id", array(
+            ':id' => (int) $this->sys->session['user']
+        ));
+        
+        if (!empty($is_admin)) {
+            $is_admin = ('admin' === $is_admin[0]['employee_role']) ? true : false;
+        } else {
+            $is_admin = false;
+        }
+        
+        if (array_key_exists('add_employee', $_POST) && $is_admin) {
             $this->add();
         }
         
-        if (array_key_exists('edit_employee', $_POST)) {
+        if (array_key_exists('edit_employee', $_POST) && $is_admin) {
             $this->edit();
         }
         
-        if (array_key_exists('remove_employee', $_POST)) {
+        if (array_key_exists('remove_employee', $_POST) && $is_admin) {
             $this->remove();
         }
     }
@@ -75,7 +85,9 @@ class model_timeclock_employees {
         if (!array_key_exists('category', $_POST) || '' === $_POST['category']) {
             $error .= '<p>Please select a category.</p>';
         }
-        
+        if (!array_key_exists('role', $_POST) || !in_array($_POST['role'], array('none', 'admin', 'management'))) {
+            $error .= '<p>Please select a role.</p>';
+        }
         if (isset($_POST['generate_uid']) && '' === $_POST['uid']) {
             do {
                 $uid = substr(md5(mt_rand()), 0, 8);
@@ -116,13 +128,14 @@ class model_timeclock_employees {
         }
 
         if ($error === '') {
-            $query = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `category_id`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', :uid, :category, :firstname, :lastname, :username, :password)", array(
-                    ':uid' => $uid,
-                    ':category' => (int) $_POST['category'],
-                    ':firstname' => $_POST['firstname'],
-                    ':lastname' => $_POST['lastname'],
-                    ':username' => $_POST['username'],
-                    ':password' => $password
+            $query = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `category_id`, `employee_role`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', :uid, :category, :role, :firstname, :lastname, :username, :password)", array(
+                    ':uid'          => $uid,
+                    ':category'     => (int) $_POST['category'],
+                    ':role'         => $_POST['role'],
+                    ':firstname'    => $_POST['firstname'],
+                    ':lastname'     => $_POST['lastname'],
+                    ':username'     => $_POST['username'],
+                    ':password'     => $password
                 ));
         }
 
@@ -164,6 +177,9 @@ class model_timeclock_employees {
         }
         if (!array_key_exists('category', $_POST) || '' === $_POST['category']) {
             $error .= '<p>Please select a category.</p>';
+        }
+        if (!array_key_exists('role', $_POST) || !in_array($_POST['role'], array('none', 'admin', 'management'))) {
+            $error .= '<p>Please select a role.</p>';
         }
         if ('' !== $_POST['username'] && $_POST['password'] === '') {
             $query = $this->sys->db->query("SELECT `employee_password` FROM `employees` WHERE `employee_username`=:username", array(
@@ -218,18 +234,18 @@ class model_timeclock_employees {
         }
 
         if ($error === '') {
-            $query = $this->sys->db->query("UPDATE `employees` SET `employee_uid`=:uid, `category_id`=:category, `employee_firstname`=:firstname, `employee_lastname`=:lastname, `employee_username`=:username, `employee_password`=:password WHERE `employee_id`=:id", array(
-                    ':id' => $id,
-                    ':uid' => $uid,
-                    ':category' => (int) $_POST['category'],
-                    ':firstname' => $_POST['firstname'],
-                    ':lastname' => $_POST['lastname'],
-                    ':username' => $_POST['username'],
-                    ':password' => $password
+            $query = $this->sys->db->query("UPDATE `employees` SET `employee_uid`=:uid, `category_id`=:category, `employee_role`=:role, `employee_firstname`=:firstname, `employee_lastname`=:lastname, `employee_username`=:username, `employee_password`=:password WHERE `employee_id`=:id", array(
+                    ':id'           => $id,
+                    ':uid'          => $uid,
+                    ':role'         => $_POST['role'],
+                    ':category'     => (int) $_POST['category'],
+                    ':firstname'    => $_POST['firstname'],
+                    ':lastname'     => $_POST['lastname'],
+                    ':username'     => $_POST['username'],
+                    ':password'     => $password
                 ));
         }
-
-
+        
         if ($error !== '') {
             $this->sys->template->response = '<div class="form_failed">' . $error . '</div>';
         } else {

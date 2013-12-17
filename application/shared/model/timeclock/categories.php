@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 12/10/13
- * @Date Modified: 12/11/13
+ * @Date Modified: 12/17/13
  * @Purpose: Used as a wrapper for various methods surrounding employee categories
  * @Version: 2.0
  */
@@ -12,13 +12,23 @@
         global $sys;
         $this->sys = &$sys;
         
-        if (array_key_exists('add_category', $_POST)) {
+        $is_admin = $this->sys->db->query("SELECT `employee_role` FROM `employees` WHERE `employee_id`=:id", array(
+            ':id' => (int) $this->sys->session['user']
+        ));
+        
+        if (!empty($is_admin)) {
+            $is_admin = ('admin' === $is_admin[0]['employee_role']) ? true : false;
+        } else {
+            $is_admin = false;
+        }
+        
+        if (array_key_exists('add_category', $_POST) && $is_admin) {
             $this->add();
         }
-        if (array_key_exists('edit_category', $_POST)) {
+        if (array_key_exists('edit_category', $_POST) && $is_admin) {
             $this->edit();
         }
-        if (array_key_exists('remove_category', $_POST)) {
+        if (array_key_exists('remove_category', $_POST) && $is_admin) {
             $this->remove();
         }
     }

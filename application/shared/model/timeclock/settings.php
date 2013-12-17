@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/21/13
- * @Date Modified: 12/11/13
+ * @Date Modified: 12/17/13
  * @Purpose: Used to get and set settings
  * @Version: 2.0
  */
@@ -25,6 +25,7 @@ class model_timeclock_settings {
      */
     public function __construct() {
         global $sys;
+
         $settings = $sys->db->query("SELECT `setting_name`, `setting_value` FROM `settings`");
         $settings = (false === $settings) ? array() : $settings;
         
@@ -32,7 +33,7 @@ class model_timeclock_settings {
             $this->_settings[$setting['setting_name']] = $setting['setting_value'];
         }
         
-        if (array_key_exists('update_settings', $_POST)) {
+        if (array_key_exists('update_settings', $_POST) && $this->is_admin()) {
             $this->update_settings();
         }
     }
@@ -99,6 +100,25 @@ class model_timeclock_settings {
      */
     public function update_status($status='') {
         return $this->_update_status;
+    }
+    
+    /**
+     * Purpose: Used to determin if employee is admin
+     */
+    public function is_admin() {
+        global $sys;
+        
+        $is_admin = $sys->db->query("SELECT `employee_role` FROM `employees` WHERE `employee_id`=:id", array(
+            ':id' => (int) $sys->session['user']
+        ));
+        
+        if (empty($is_admin)) {
+            return false;
+        } elseif ('admin' === $is_admin[0]['employee_role']) {
+            return true;
+        } else {
+            return false;
+        }
     }
 } //End model_timeclock_settings
 

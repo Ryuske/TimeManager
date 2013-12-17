@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/13/13
- * @Date Modified: 12/11/13
+ * @Date Modified: 12/17/13
  * @Purpose: Used to load additional page stuff (like HTML headers and what not)
  * @Version: 2.0
  */
@@ -43,7 +43,11 @@ class model_timeclock_renderPage {
         $sys->template->timeclock_assets = $sys->config->timeclock_assets;
         
         $sys->template->page = $sys->template->parse($sys->config->timeclock_subdirectories . '_' . $page, true);
-        $sys->template->navbar = ($full_page) ? $sys->template->parse($sys->config->timeclock_subdirectories . '_includes_navbar', true) : '';
+        if ($sys->template->admin) {
+            $sys->template->navbar = ($full_page) ? $sys->template->parse($sys->config->timeclock_subdirectories . '_includes_navbar-admin', true) : '';
+        } else {
+            $sys->template->navbar = ($full_page) ? $sys->template->parse($sys->config->timeclock_subdirectories . '_includes_navbar', true) : '';
+        }
         $sys->template->parse($sys->config->timeclock_subdirectories . '_includes_htmlwrapper');
     }
     

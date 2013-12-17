@@ -29,6 +29,22 @@
                         ?>
                     </select>
                 </div>
+                <div class="group">
+                    <label>
+                        Role &raquo;
+                    </label>
+                    <select class="form-control" name="role">
+                        <?php
+                        $selected = array('none', 'admin', 'management');
+                        $selected['none'] = ('none' === $this->sys->template->employees_by_id[$this->sys->template->employee_id]['role']) ? 'selected="selected"' : '';
+                        $selected['admin'] = ('admin' === $this->sys->template->employees_by_id[$this->sys->template->employee_id]['role']) ? 'selected="selected"' : '';
+                        $selected['management'] = ('management' === $this->sys->template->employees_by_id[$this->sys->template->employee_id]['role']) ? 'selected="selected"' : '';
+                        ?>
+                        <option value="none" <?php echo $selected['none']; ?>>None</option>
+                        <option value="admin" <?php echo $selected['admin']; ?>>Admin</option>
+                        <option value="management" <?php echo $selected['management']; ?>>Management</option>
+                    </select>
+                </div>
                 <hr />
                 <input class="form-control" name="uid" type="text" placeholder="Employees' Badge UID" value="{employees_by_id[<?php echo $this->sys->template->employee_id; ?>]['uid']}" />
                 <label class="checkbox">
