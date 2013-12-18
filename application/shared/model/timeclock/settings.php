@@ -1,10 +1,10 @@
 <?php
 /**
- * @Author: Kenyon Haliwell
- * @Date Created: 11/21/13
- * @Date Modified: 12/17/13
- * @Purpose: Used to get and set settings
- * @Version: 2.0
+ * Author: Kenyon Haliwell
+ * Date Created: 11/21/13
+ * Date Modified: 12/18/13
+ * Purpose: Used to get and set settings
+ * Version: 2.0
  */
 
 /**
@@ -21,7 +21,7 @@ class model_timeclock_settings {
     private $_update_status = '';
 
     /**
-     * @Purpose: For initalizing the settings from the database
+     * Purpose: For initalizing the settings from the database
      */
     public function __construct() {
         global $sys;
@@ -39,7 +39,7 @@ class model_timeclock_settings {
     }
     
     /**
-     * @Purpose: Used to set a setting in an object-like manner
+     * Purpose: Used to set a setting in an object-like manner
      */
     public function __set($key, $value) {
         global $sys;
@@ -64,21 +64,21 @@ class model_timeclock_settings {
     }
     
     /**
-     * @Purpose: Used to get a setting in an object-like manner
+     * Purpose: Used to get a setting in an object-like manner
      */
     public function __get($key) {
         return array_key_exists($key, $this->_settings) ? $this->_settings[$key] : NULL;
     }
     
     /**
-     * @Purpose: Used to overload empty() so that you can check is settings are empty/isset
+     * Purpose: Used to overload empty() so that you can check is settings are empty/isset
      */
     public function __isset($key) {
         return isset($this->_settings[$key]);
     }
     
     /**
-     * @Purpose: Loads a page, including the neccessary HTML headers and things
+     * Purpose: Loads a page, including the neccessary HTML headers and things
      */
     public function update_settings() {
         $valid_round_times =        array('none', '1', '15', '30');
@@ -96,7 +96,7 @@ class model_timeclock_settings {
     }
     
     /**
-     * @Purpose: Used to pass back information about the settings (i.e. update successful)
+     * Purpose: Used to pass back information about the settings (i.e. update successful)
      */
     public function update_status($status='') {
         return $this->_update_status;

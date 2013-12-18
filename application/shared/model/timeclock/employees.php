@@ -1,10 +1,10 @@
 <?php
 /**
- * @Author: Kenyon Haliwell
- * @Date Created: 11/15/13
- * @Date Modified: 12/17/13
- * @Purpose: Used to pull the employees from the database and use the results in a view
- * @Version: 2.0
+ * Author: Kenyon Haliwell
+ * Date Created: 11/15/13
+ * Date Modified: 12/18/13
+ * Purpose: Used to pull the employees from the database and use the results in a view
+ * Version: 2.0
  */
 
 /**
@@ -33,9 +33,13 @@
  *          
  *
  */
-class model_timeclock_employees {
+
+global $sys;
+$sys->router->load_helpers('interfaces', 'general', 'timeclock');
+
+class model_timeclock_employees implements general_actions {
     /**
-     * @Purpose: Used to pull $sys into class scope
+     * Purpose: Used to pull $sys into class scope
      */
     public function __construct() {
         global $sys;
@@ -65,9 +69,9 @@ class model_timeclock_employees {
     }
 
     /**
-     * @Purpose: Used to add an employee to the database
+     * Purpose: Used to add an employee to the database
      */
-    protected function add() {
+    public function add() {
         $error = '';
 
         if (!array_key_exists('firstname', $_POST) || '' === $_POST['firstname']) {
@@ -149,9 +153,9 @@ class model_timeclock_employees {
     } //End add
 
     /**
-     * @Purpose: Used to edit an employees database records
+     * Purpose: Used to edit an employees database records
      */
-    protected function edit() {
+    public function edit() {
         $id = (int) $_POST['employee_id'];
         $password = '';
         
@@ -255,9 +259,9 @@ class model_timeclock_employees {
     } //End edit
     
     /**
-     * @Purpose: User to remove an employee from the database
+     * Purpose: User to remove an employee from the database
      */
-    protected function remove() {
+    public function remove() {
         $id = (int) $_POST['employee_id'];
         
         $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_id`=:id", array(
@@ -274,9 +278,9 @@ class model_timeclock_employees {
     }
     
     /**
-     * @Purpose: Used by this constructor to return employees
+     * Purpose: Used by this constructor to return employees
      */
-    public function get_employees($by_id = False, $paginate = False) {
+    public function get($action = false, $paginate = false) {
         switch ($this->sys->template->model_settings->sort_employees_by) {
             case 'first_name':
                 $sort_employees_by = 'employees.employee_firstname, employees.employee_lastname';
@@ -288,7 +292,7 @@ class model_timeclock_employees {
                 $sort_employees_by = 'employees.employee_lastname, employees.employee_firstname';
         }
         
-        if (True === $paginate) {
+        if (true === $paginate) {
             $start = ((1 >= $this->sys->template->page_id)) ? 0 : (int) ($this->sys->template->page_id-1) * $this->sys->template->paginate_by;
             $end = $this->sys->template->paginate_by;
             $limit = 'LIMIT ' . $start . ',' . $end;
@@ -305,7 +309,7 @@ class model_timeclock_employees {
         }
         $employees = array();
         
-        if (True === $by_id) {
+        if ($action) {
             array_walk($return, function($employee) use(&$employees) {
                 $employees[$employee['id']] = $employee;
             });
@@ -317,11 +321,11 @@ class model_timeclock_employees {
     }
 
     /**
-     * @Purpose: Used to return employees in a view-friendly manner
+     * Purpose: Used to return employees in a view-friendly manner
      */
     public function get_employees_for_view($paginate = true) {
         global $sys;
-        $employees = $this->get_employees(False, $paginate);
+        $employees = $this->get(False, $paginate);
         $return_employees = array();
 
         array_walk($employees, function($value) use(&$return_employees) {
@@ -330,6 +334,6 @@ class model_timeclock_employees {
 
         $this->sys->template->employees = $return_employees;
     }
-}//End model_timeclock_employees
+}
 
 //End File

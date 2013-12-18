@@ -1,10 +1,10 @@
 <?php
 /**
- * @Author: Kenyon Haliwell
- * @Date Created: 11/13/13
- * @Date Modified: 12/17/13
- * @Purpose: Used to load additional page stuff (like HTML headers and what not)
- * @Version: 2.0
+ * Author: Kenyon Haliwell
+ * Date Created: 11/13/13
+ * Date Modified: 12/18/13
+ * Purpose: Used to load additional page stuff (like HTML headers and what not)
+ * Version: 2.0
  */
 
 /**
@@ -52,7 +52,7 @@ class model_timeclock_renderPage {
     }
     
     /**
-     * @Purpose: Used to generate pagination links
+     * Purpose: Used to generate pagination links
      */
     public function generate_pagination($page, $type='employees', $current_page = 1) {
         global $sys;

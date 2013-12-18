@@ -1,15 +1,15 @@
 <?php
 /**
- * @Author: Kenyon Haliwell
- * @Date Created: 11/13/13
- * @Date Modified: 12/17/13
- * @Purpose: Default controller - used for top level pages (home, about, settings, etc)
- * @Version: 2.0
+ * Author: Kenyon Haliwell
+ * Date Created: 11/13/13
+ * Date Modified: 12/18/13
+ * Purpose: Default controller - used for top level pages (home, about, settings, etc)
+ * Version: 2.0
  */
 
 class timeclock_home extends controller {
     /**
-     * @Purpose: Primarily used to load models based on $this->_dependencies;
+     * Purpose: Primarily used to load models based on $this->_dependencies;
      */
     public function load_dependencies($dependencies) {
         foreach ($dependencies as $dependency) {
@@ -20,14 +20,14 @@ class timeclock_home extends controller {
     }
     
     /**
-     * @Purpose: This function is used to determin if the user is logged in or not
+     * Purpose: This function is used to determin if the user is logged in or not
      */
     protected function is_logged_in() {
         return $this->model_loggedIn->status();
     }
 
     /**
-     * @Purpose: Used to generate a failed login attempt message
+     * Purpose: Used to generate a failed login attempt message
      */
     protected function login_failed() {
         $this->load_dependencies(array('loggedIn'));
@@ -41,7 +41,7 @@ class timeclock_home extends controller {
     }
 
     /**
-     * @Purpose: Used to get & return employees to the view
+     * Purpose: Used to get & return employees to the view
      */
     protected function employees() {
         $this->load_dependencies(array('employees'));
@@ -51,7 +51,7 @@ class timeclock_home extends controller {
     }
 
     /**
-     * @Purpose: Default function to be run when class is called
+     * Purpose: Default function to be run when class is called
      */
     public function index($page_id=1) {
         $table = $this->sys->db->query("SELECT `employee_id` FROM `employees` LIMIT 0,1");
@@ -87,7 +87,7 @@ class timeclock_home extends controller {
     }
     
     /**
-     * @Purpose: Used to load a help page
+     * Purpose: Used to load a help page
      */
     public function about() {
         $this->load_dependencies(array('renderPage', 'settings'));
@@ -110,7 +110,7 @@ class timeclock_home extends controller {
     }
     
     /**
-     * @Purpose: Used to load the settings page
+     * Purpose: Used to load the settings page
      */
     public function settings() {
         $this->load_dependencies(array('renderPage', 'settings'));
@@ -147,7 +147,7 @@ class timeclock_home extends controller {
         $this->model_renderPage->parse($parse, $full_page);
     }
     /**
-     * @Purpose: Used for the initial installation of TimeClock
+     * Purpose: Used for the initial installation of TimeClock
      */
     public function install() {
         $this->load_dependencies(array('renderPage', 'install', 'settings'));

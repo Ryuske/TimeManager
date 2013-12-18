@@ -1,10 +1,10 @@
 <?php
 /**
- * @Author: Kenyon Haliwell
- * @Date Created: 11/15/13
- * @Date Modified: 12/11/13
- * @Purpose: Logout controller
- * @Version: 2.0
+ * Author: Kenyon Haliwell
+ * Date Created: 11/15/13
+ * Date Modified: 12/18/13
+ * Purpose: Logout controller
+ * Version: 2.0
  */
 
 /**
@@ -12,7 +12,7 @@
  */
 class timeclock_logout extends controller {
     /**
-     * @Purpose: Primarily used to load models based on $this->_dependencies;
+     * Purpose: Primarily used to load models based on $this->_dependencies;
      */
     public function load_dependencies($dependencies) {
         foreach ($dependencies as $dependency) {
@@ -23,14 +23,14 @@ class timeclock_logout extends controller {
     }
     
     /**
-     * @Purpose: This function is used to determin if the user is logged in or not
+     * Purpose: This function is used to determin if the user is logged in or not
      */
     protected function is_logged_in() {
         return $this->model_loggedIn->status();
     }
 
     /**
-     * @Purpose: Default function to be run when class is called
+     * Purpose: Default function to be run when class is called
      */
     public function index() {
         $this->load_dependencies(array('renderPage', 'loggedIn'));

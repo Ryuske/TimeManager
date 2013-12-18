@@ -1,10 +1,10 @@
 <?php
 /**
- * @Author: Kenyon Haliwell
- * @Date Created: 11/18/13
- * @Date Modified: 12/17/13
- * @Purpose: Used to complete various pay period functions
- * @Version: 2.0
+ * Author: Kenyon Haliwell
+ * Date Created: 11/18/13
+ * Date Modified: 12/18/13
+ * Purpose: Used to complete various pay period functions
+ * Version: 2.0
  */
 
 /**
@@ -59,7 +59,7 @@
  */
 
 global $sys;
-$sys->router->load_traits('payPeriod', 'timeclock');
+$sys->router->load_helpers('traits', 'payPeriod', 'timeclock');
  
 class model_timeclock_payPeriod {
     use payPeriod_views, payPeriod_actions;
@@ -69,7 +69,7 @@ class model_timeclock_payPeriod {
     protected $_add_date_response = '';
     
     /**
-     * @Purpose: Creates a constructor that sets various class variables
+     * Purpose: Creates a constructor that sets various class variables
      */
     public function __construct() {
         global $sys;
@@ -94,7 +94,7 @@ class model_timeclock_payPeriod {
     }
     
     /**
-     * @Purpose: Used to return a pay period in date format
+     * Purpose: Used to return a pay period in date format
      */
     public function get_pay_period($date='current', $paginate=False) {
         $date = (is_string($date)) ? strtolower($date) : $date;
@@ -174,7 +174,7 @@ class model_timeclock_payPeriod {
     } //End get_pay_period
     
     /**
-     * @Purpose: Used to get the hours of the requested pay period
+     * Purpose: Used to get the hours of the requested pay period
      */
     public function get_hours($employee_id, $pay_period) {
         $pay_period = $this->get_pay_period($pay_period);
@@ -253,7 +253,7 @@ class model_timeclock_payPeriod {
     } //End get_hours
     
     /**
-     * @Purpose: Used to calculate how many hours an employee has worked on a specified pay period
+     * Purpose: Used to calculate how many hours an employee has worked on a specified pay period
      */
     public function total_hours_for_pay_period($employee_id, $pay_period) {
         $pay_period = $this->get_pay_period($pay_period);
@@ -272,7 +272,7 @@ class model_timeclock_payPeriod {
     }
     
     /**
-     * @Purpose: Used to update time punches
+     * Purpose: Used to update time punches
      */
     protected function update_time() {
         $pay_period = $this->get_pay_period(strtotime($_POST['date']));
@@ -314,6 +314,6 @@ class model_timeclock_payPeriod {
         
         return True;
     }
-} //End model_timeclock_payPeriod
+}
 
 //End file

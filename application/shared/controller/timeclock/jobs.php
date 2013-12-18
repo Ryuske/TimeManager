@@ -1,15 +1,15 @@
 <?php
 /**
- * @Author: Kenyon Haliwell
- * @Date Created: 12/09/13
- * @Date Modified: 12/17/13
- * @Purpose: Controller for Jobs/Job Tracking
- * @Version: 2.0
+ * Author: Kenyon Haliwell
+ * Date Created: 12/09/13
+ * Date Modified: 12/18/13
+ * Purpose: Controller for Jobs/Job Tracking
+ * Version: 2.0
  */
 
 class timeclock_jobs extends controller {
     /**
-     * @Purpose: Primarily used to load models based on $this->_dependencies;
+     * Purpose: Primarily used to load models based on $this->_dependencies;
      */
     public function load_dependencies($dependencies) {
         foreach ($dependencies as $dependency) {
@@ -20,7 +20,7 @@ class timeclock_jobs extends controller {
     }
     
     /**
-     * @Purpose: Used to generate a failed login attempt message
+     * Purpose: Used to generate a failed login attempt message
      */
     protected function login_failed() {
         $this->load_dependencies(array('loggedIn'));
@@ -34,7 +34,7 @@ class timeclock_jobs extends controller {
     }
     
     /**
-     * @Purpose: This function is used to determin if the user is logged in or not
+     * Purpose: This function is used to determin if the user is logged in or not
      */
     protected function is_logged_in() {
         return $this->model_loggedIn->status();
@@ -52,7 +52,7 @@ class timeclock_jobs extends controller {
             $this->sys->template->jobs_active   = 'class="active"';
             $this->sys->template->page_id       = (int) $page_id;
             $this->sys->template->paginate_by   = $this->model_settings->paginate_by;
-            $this->sys->template->jobs          = $this->model_jobs->get_jobs();
+            $this->sys->template->jobs          = $this->model_jobs->get();
             $this->sys->template->pagination    = $this->model_renderPage->generate_pagination('jobs/home', 'jobs', (int) $page_id);
             
             $parse = ($this->sys->template->admin) ? 'admin_jobs_home' : 'jobs_home';
@@ -82,11 +82,11 @@ class timeclock_jobs extends controller {
                 return true;
             }
             
-            $this->sys->template->categories = $this->model_categories->get_categories();
+            $this->sys->template->categories = $this->model_categories->get();
             $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->title = 'TimeClock | Jobs | Add';
             $this->sys->template->jobs_active = 'class="active"';
-            $this->sys->template->clients = $this->model_clients->get_clients();
+            $this->sys->template->clients = $this->model_clients->get();
             
             $parse = 'jobs_add';
             $full_page = True;
@@ -113,12 +113,12 @@ class timeclock_jobs extends controller {
                 return true;
             }
             
-            $this->sys->template->categories = $this->model_categories->get_categories();
+            $this->sys->template->categories = $this->model_categories->get();
             $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->title = 'TimeClock | Jobs | Edit';
             $this->sys->template->jobs_active = 'class="active"';
-            $this->sys->template->clients = $this->model_clients->get_clients();
-            $this->sys->template->job = $this->model_jobs->get_jobs($job_id, false);
+            $this->sys->template->clients = $this->model_clients->get();
+            $this->sys->template->job = $this->model_jobs->get($job_id, false);
             
             $parse = (false !== $this->sys->template->job) ? 'jobs_edit' : 'jobs_home';
             $full_page = True;
@@ -147,8 +147,8 @@ class timeclock_jobs extends controller {
             $this->sys->template->jobs_active   = 'class="active"';
             $this->sys->template->page_id       = 1;
             $this->sys->template->paginate_by   = $this->model_settings->paginate_by;
-            $this->sys->template->jobs          = $this->model_jobs->get_jobs();
-            $this->sys->template->job           = $this->model_jobs->get_jobs($job_id, false);
+            $this->sys->template->jobs          = $this->model_jobs->get();
+            $this->sys->template->job           = $this->model_jobs->get($job_id, false);
             $this->sys->template->pagination    = $this->model_renderPage->generate_pagination('jobs/home', 'jobs', 1);
             
             $parse = 'jobs_remove';
@@ -164,7 +164,7 @@ class timeclock_jobs extends controller {
     }
     
     /**
-     * @Purpose: Used to view an existing jobs time card
+     * Purpose: Used to view an existing jobs time card
      */
     public function view($job_uid, $page_id = 1) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'categories', 'jobs', 'settings'));
@@ -174,14 +174,14 @@ class timeclock_jobs extends controller {
         
         if ($this->is_logged_in()) {
             $this->sys->template->admin             = $this->model_settings->is_admin();
-            $this->sys->template->job               = $this->model_jobs->get_jobs($job_uid, false);
+            $this->sys->template->job               = $this->model_jobs->get($job_uid, false);
             $this->sys->template->job_table         = $this->model_jobs->generate_job_table($job_uid);
             $this->sys->template->start_date        = $this->model_jobs->find_dates($job_uid, 'start');
             $this->sys->template->last_date         = $this->model_jobs->find_dates($job_uid, 'end');
             $this->sys->template->add_date_response = '';
             $this->sys->template->pagination        = $this->model_renderPage->generate_pagination('jobs/view/' . $job_uid . '', (int) $page_id);
-            $this->sys->template->employees         = $this->model_employees->get_employees();
-            $this->sys->template->categories        = $this->model_categories->get_categories(true);
+            $this->sys->template->employees         = $this->model_employees->get();
+            $this->sys->template->categories        = $this->model_categories->get(true);
             $this->sys->template->total_hours       = $this->model_jobs->total_hours($job_uid, false);
             $this->sys->template->hours_by_category = $this->model_jobs->total_hours($job_uid, true);
             $this->sys->template->worked_load       = $this->model_jobs->work_load($job_uid, false, true);
@@ -204,12 +204,12 @@ class timeclock_jobs extends controller {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'categories', 'jobs', 'settings'));
         $this->sys->template->job_id = $job_uid;
         if ($this->is_logged_in()) {
-            $this->sys->template->job               = $this->model_jobs->get_jobs($job_uid);
+            $this->sys->template->job               = $this->model_jobs->get($job_uid);
             $this->sys->template->job_table         = $this->model_jobs->generate_job_table($job_uid);
             $this->sys->template->start_date        = $this->model_jobs->find_dates($job_uid, 'start');
             $this->sys->template->last_date         = $this->model_jobs->find_dates($job_uid, 'end');
-            $this->sys->template->employees         = $this->model_employees->get_employees();
-            $this->sys->template->categories        = $this->model_categories->get_categories();
+            $this->sys->template->employees         = $this->model_employees->get();
+            $this->sys->template->categories        = $this->model_categories->get();
             $this->sys->template->total_hours       = $this->model_jobs->total_hours($job_uid, false);
             $this->sys->template->hours_by_category = $this->model_jobs->total_hours($job_uid, true);
             
@@ -311,7 +311,7 @@ class timeclock_jobs extends controller {
     }
     
     /**
-     * @Purpose: Function used to return you to the home controller if there is a problem
+     * Purpose: Function used to return you to the home controller if there is a problem
      */
     protected function load_home() {
         header('Location: ' . $this->sys->config->timeclock_root);

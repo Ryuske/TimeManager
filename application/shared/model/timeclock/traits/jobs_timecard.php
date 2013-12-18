@@ -1,10 +1,10 @@
 <?php
 /**
- * @Author: Kenyon Haliwell
- * @Date Created: 12/10/13
- * @Date Modified: 12/17/13
- * @Purpose: A trait for general job operations
- * @Version: 2.0
+ * Author: Kenyon Haliwell
+ * Date Created: 12/10/13
+ * Date Modified: 12/18/13
+ * Purpose: A trait for general job operations
+ * Version: 2.0
  */
 
 trait job_timecard {

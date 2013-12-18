@@ -1,22 +1,22 @@
 <?php
 /**
- * @Author: Kenyon Haliwell
- * @Date Created: 12/5/13
- * @Date Modified: 12/11/13
- * @Purpose: A trait for general payperiod views
- * @Version: 2.0
+ * Author: Kenyon Haliwell
+ * Date Created: 12/5/13
+ * Date Modified: 12/18/13
+ * Purpose: A trait for general payperiod views
+ * Version: 2.0
  */
 
 trait payPeriod_views {
     /**
-     * @Purpose: Used to get the response of add_date() - primarily used for if add_date() has an error
+     * Purpose: Used to get the response of add_date() - primarily used for if add_date() has an error
      */
     public function add_date_response() {
         return $this->_add_date_response;
     }
     
     /**
-     * @Purpose: Used to figure out which times should be editable, and have an onClick attribute
+     * Purpose: Used to figure out which times should be editable, and have an onClick attribute
      */
     protected function is_time_editable($hour, $times_array, $time_index, $time_operation, $date) {
         $return = '';
@@ -32,7 +32,7 @@ trait payPeriod_views {
     }
     
     /**
-     * @Purpose: Used to create the table that is seen in the view.
+     * Purpose: Used to create the table that is seen in the view.
      */
     public function generate_pay_period_table($employee_id, $pay_period) {
         $hours = $this->get_hours($employee_id, $pay_period);
@@ -91,7 +91,7 @@ trait payPeriod_views {
     } //End generate_current_pay_period_table
     
     /**
-     * @Purpose: Used to create the table that displays all the previous pay periods
+     * Purpose: Used to create the table that displays all the previous pay periods
      */
     public function generate_previous_pay_periods_table($employee_id, $selected_pay_period) {
         $pay_periods = $this->get_pay_period('all', True);

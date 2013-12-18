@@ -2,14 +2,16 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/09/13
- * Date Modified: 12/17/13
+ * Date Modified: 12/18/13
  * Purpose: Used as a wrapper for various methods surrounding jobs
  * Version: 2.0
  */
+
 global $sys;
-$sys->router->load_traits('jobs', 'timeclock');
+$sys->router->load_helpers('traits', 'jobs', 'timeclock');
+$sys->router->load_helpers('interfaces', 'general', 'timeclock');
  
- class model_timeclock_jobs {
+ class model_timeclock_jobs implements general_actions {
     use job_timecard;
     
     protected $_dateFormat = 'm/d/y';
@@ -56,7 +58,7 @@ $sys->router->load_traits('jobs', 'timeclock');
     /**
      * Purpose: Used to add jobs to the database
      */
-    protected function add() {
+    public function add() {
         $error = '';
         
         if (!array_key_exists('client', $_POST) || '' === $_POST['client']) {
@@ -135,7 +137,7 @@ $sys->router->load_traits('jobs', 'timeclock');
     /**
      * Purpose: Used to edit jobs in the database
      */
-    protected function edit() {
+    public function edit() {
         $error = '';
         
         $check_job = $this->sys->db->query("SELECT `job_uid` FROM `jobs` WHERE `job_id`=:id", array(
@@ -236,7 +238,7 @@ $sys->router->load_traits('jobs', 'timeclock');
     /**
      * Purpose: Used to remove jobs from the database
      */
-    protected function remove() {
+    public function remove() {
         $params = array(':id' => $_POST['job_id']);
         
         $check_job = $this->sys->db->query("SELECT `job_id` FROM `jobs` WHERE `job_id`=:id", $params);
@@ -254,8 +256,8 @@ $sys->router->load_traits('jobs', 'timeclock');
     /**
      * Purpose: Returns a list of all the jobs
      */
-    public function get_jobs($job_id='all', $paginate=true) {
-        if (true === $paginate && 'all' === $job_id) {
+    public function get($action='all', $paginate=true) {
+        if (true === $paginate && 'all' === $action) {
             $start = ((1 >= $this->sys->template->page_id)) ? 0 : (int) ($this->sys->template->page_id-1) * $this->sys->template->paginate_by;
             $end = $this->sys->template->paginate_by;
             $limit = 'LIMIT ' . $start . ',' . $end;
@@ -273,14 +275,14 @@ $sys->router->load_traits('jobs', 'timeclock');
             default: //job_id
                 $sort_by = 'jobs.job_uid, jobs.job_name';
         }
-        if ('all' !== $job_id) {
+        if ('all' !== $action) {
             $jobs = $this->sys->db->query("
                 SELECT *
                 FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client
                 WHERE jobs.job_uid=:id
                 ORDER BY $sort_by $limit
             ", array(
-                ':id' => $job_id
+                ':id' => $action
             ));
 
             if (!empty($jobs)) {
@@ -369,7 +371,7 @@ $sys->router->load_traits('jobs', 'timeclock');
      * Purpose: Used to calculate the load a job;
      */
     public function work_load($job_uid, $quoted_load=true, $by_category=false) {
-        $load_time = ($quoted_load) ? $this->get_jobs($job_uid, false) : $this->total_hours($job_uid, true);
+        $load_time = ($quoted_load) ? $this->get($job_uid, false) : $this->total_hours($job_uid, true);
         if (array_key_exists('quoted_time', $load_time)) {
             $load_time = $load_time['quoted_time'];
         }
