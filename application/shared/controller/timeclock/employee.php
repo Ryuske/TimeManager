@@ -1,18 +1,18 @@
 <?php
 /**
- * @Author: Kenyon Haliwell
- * @Date Created: 11/15/13
- * @Date Modified: 12/17/13
- * @Purpose: Employee controller
- * @Version: 2.0
+ * Author: Kenyon Haliwell
+ * Date Created: 11/15/13
+ * Date Modified: 12/18/13
+ * Purpose: Employee controller
+ * Version: 2.0
  */
 
 /**
- * @Purpose: Employee Controller
+ * Purpose: Employee Controller
  */
 class timeclock_employee extends controller {
     /**
-     * @Purpose: Primarily used to load models based on $this->_dependencies;
+     * Purpose: Primarily used to load models based on $this->_dependencies;
      */
     public function load_dependencies($dependencies) {
         foreach ($dependencies as $dependency) {
@@ -23,21 +23,21 @@ class timeclock_employee extends controller {
     }
     
     /**
-     * @Purpose: This function is used to determin if the user is logged in or not
+     * Purpose: This function is used to determin if the user is logged in or not
      */
     protected function is_logged_in() {
         return $this->model_loggedIn->status();
     }
 
     /**
-     * @Purpose: Default function to be run when class is called
+     * Purpose: Default function to be run when class is called
      */
     public function index() {
         $this->load_home();
     }
 
     /**
-     * @Purpose: Function that is run when employee/add is accessed
+     * Purpose: Function that is run when employee/add is accessed
      */
     public function add() {
         $this->sys->template->response = '';
@@ -62,7 +62,7 @@ class timeclock_employee extends controller {
     }
     
     /**
-     * @Purpose: Used for editing existing employees (employee/edit/x)
+     * Purpose: Used for editing existing employees (employee/edit/x)
      */
     public function edit($employee_id) {
         $this->sys->template->response = '';
@@ -88,7 +88,7 @@ class timeclock_employee extends controller {
     }
     
     /**
-     * @Purpose: Used to remove an existing employee (employee/remove/x)
+     * Purpose: Used to remove an existing employee (employee/remove/x)
      */
     public function remove($employee_id) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'settings'));
@@ -119,7 +119,7 @@ class timeclock_employee extends controller {
     }
 
     /**
-     * @Purpose: Used to view an existing employees time card
+     * Purpose: Used to view an existing employees time card
      */
     public function view($employee_id, $pay_period='current', $page_id = 1) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'settings', 'payPeriod'));
@@ -160,11 +160,84 @@ class timeclock_employee extends controller {
     }
     
     /**
-     * @Purpose: Function used to return you to the home controller if there is a problem
+     * Purpose: Used to send data back using the RESTFUL API
+     */
+    public function rx($uid, $data, $pay_period='current') {
+        $this->load_dependencies(array('payPeriod', 'settings'));
+        
+        $check_employee_id = $this->sys->db->query("SELECT `employee_uid` FROM `employees` WHERE `employee_id`=:id", array(
+            ':id' => $uid
+        ));
+        
+        if (!empty($check_employee_id)) {
+            $uid = $check_employee_id[0]['employee_uid'];
+        }
+        
+        $employee = $this->sys->db->query("
+            SELECT *
+            FROM `employees` AS employee
+                JOIN `categories` AS category on category.category_id=employee.category_id
+                LEFT JOIN `job_punch` AS job on job.employee_id=employee.employee_id
+                LEFT JOIN `jobs` AS jobs on jobs.job_uid=job.job_id
+            WHERE `employee_uid`=:uid
+            ORDER BY job.punch_id DESC
+        ", array(
+            ':uid' => $uid
+        ));
+        $pay_period_query = $this->sys->db->query("SELECT `time`,`date`,`operation` FROM `employee_punch` WHERE `employee_id`=:employee_id ORDER BY `employee_punch_id` DESC", array(
+            ':employee_id' => (int) $employee[0]['employee_id']
+        ));
+        
+        $pay_period = $this->model_payPeriod->get_pay_period($pay_period);
+        $response = 'Error';
+        
+        if (empty($employee)) {
+            $this->sys->template->response = $response;
+            $this->sys->template->parse($this->sys->config->timeclock_subdirectories . '_payperiod_response');
+            
+            return False;
+        }
+
+        switch ($data) {
+            case 'name':
+                $response = $employee[0]['employee_firstname'] . ' ' . $employee[0]['employee_lastname'];
+                break;
+            case 'role':
+                $response = $employee[0]['employee_role'];
+                break;
+            case 'category':
+                $response = $employee[0]['category_name'];
+                break;
+            case 'last_job':
+                $response = $employee[0]['job_name'];
+                break;
+            case 'last_op':
+                $response = $pay_period_query[0]['operation'];
+                break;
+            case 'last_time':
+                $response = date('g:ia', $pay_period_query[0]['time']);
+                break;
+            case 'last_date':
+                $response = $pay_period_query[0]['date'];
+                break;
+            case 'total_hours':
+                $response = $this->model_payPeriod->total_hours_for_pay_period($employee[0]['employee_id'], $pay_period[0][0]);
+                break;
+            default:
+                $response = NULL;
+        }
+        
+        $this->sys->template->response = $response;
+        $this->sys->template->parse($this->sys->config->timeclock_subdirectories . '_payperiod_response');
+        return True;
+    }
+    
+    /**
+     * Purpose: Function used to return you to the home controller if there is a problem
      */
     protected function load_home() {
         header('Location: ' . $this->sys->config->timeclock_root);
     }
-}//End timeclock_employee
+}
 
 //End File

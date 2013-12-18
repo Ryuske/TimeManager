@@ -1,3 +1,6 @@
+### 12/18/13 - Commit 2 ###
+* https://github.com/Ryuske/TimeClock/issues/26 <-- Split Pay Period and Employee into two different APIs
+
 ### 12/18/13 - Commit 1 ###
 * There was still an issue with $this->sys->session['user'] from 12/17/13 - Commit 3
 * https://github.com/Ryuske/TimeClock/issues/27 <-- Updated SQL file
