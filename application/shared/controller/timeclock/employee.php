@@ -71,7 +71,7 @@ class timeclock_employee extends controller {
         $this->sys->template->employee_id = (int) $employee_id;
         $this->sys->template->categories = $this->model_categories->get();
         
-        if ($this->is_logged_in()) {
+        if ($this->is_logged_in() && array_key_exists($this->sys->template->employee_id, $this->sys->template->employees_by_id)) {
             if (!$this->model_settings->is_admin()) {
                 $this->load_home();
                 return true;
@@ -92,8 +92,10 @@ class timeclock_employee extends controller {
      */
     public function remove($employee_id) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'settings'));
-
-        if ($this->is_logged_in()) {
+        $this->sys->template->employees_by_id = $this->model_employees->get(true);
+        $this->sys->template->employee_id = (int) $employee_id;
+            
+        if ($this->is_logged_in() && array_key_exists($this->sys->template->employee_id, $this->sys->template->employees_by_id)) {
             if (!$this->model_settings->is_admin()) {
                 $this->load_home();
                 return true;
@@ -103,8 +105,6 @@ class timeclock_employee extends controller {
             $this->sys->template->page_id = 1;
             $this->sys->template->paginate_by = $this->model_settings->paginate_by;
             $this->sys->template->employees = $this->model_employees->get();
-            $this->sys->template->employees_by_id = $this->model_employees->get(true);
-            $this->sys->template->employee_id = (int) $employee_id;
             $this->sys->template->pagination = $this->model_renderPage->generate_pagination('main', 'employees', 1);
 
             $this->sys->template->title = 'TimeClock | Employee | Remove';

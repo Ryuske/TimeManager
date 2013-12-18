@@ -69,213 +69,194 @@ class model_timeclock_employees implements general_actions {
     }
 
     /**
+     * Database Modification - Add/Edit/Remove
+     */
+    /**
+     * Purpose: Used for checking $_POST inputs
+     */
+    public function check_input($method) {
+        $error = '';
+        die('wtf');
+        if ('remove' !== $method) {
+            if (!array_key_exists('firstname', $_POST) || '' === $_POST['firstname']) {
+                $error = '<p>Please enter employee\'s first name.</p>';
+            }
+            if (!array_key_exists('lastname', $_POST) || '' === $_POST['lastname']) {
+                $error .= '<p>Please enter employee\'s last name.</p>';
+            }
+            if ((!array_key_exists('uid', $_POST) || '' === $_POST['uid']) && !array_key_exists('generate_uid', $_POST)) {
+                $error .= '<p>You either need to enter a UID or check \'Generate 4-byte hex UID\'.</p>';
+            }
+            if ((!array_key_exists('username', $_POST) || '' !== $_POST['username']) && (!array_key_exists('password', $_POST) || $_POST['password'] === '')) {
+                $error .= '<p>If you pick a username, you must enter a password.</p>';
+            }
+            if (!array_key_exists('category', $_POST) || '' === $_POST['category']) {
+                $error .= '<p>Please select a category.</p>';
+            }
+            if (!array_key_exists('role', $_POST) || !in_array($_POST['role'], array('none', 'admin', 'management'))) {
+                $error .= '<p>Please select a role.</p>';
+            }
+            
+            if (isset($_POST['generate_uid']) && '' === $_POST['uid']) {
+                do {
+                    $_POST['uid'] = substr(md5(mt_rand()), 0, 8);
+                    $_POST['uid'] = str_split($_POST['uid'], 2);
+                    foreach ($_POST['uid'] as &$new_uid) {
+                        $new_uid = '0x' . strtoupper($new_uid);
+                    }
+                    $_POST['uid'] = implode(' ', $_POST['uid']);
+                
+                    $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_uid`=:uid", array(
+                        ':uid' => $_POST['uid']
+                    ));
+                } while (!empty($query));
+            } else {
+                $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_uid`=:uid", array(
+                    ':uid' => $_POST['uid']
+                ));
+                
+                if (!empty($query)) {
+                    $error .= '<p>That UID (Unique ID) is already in use.</p>';
+                }
+            }
+            
+            if ('' !== $_POST['username']) {
+                $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_username`=:username", array(
+                    ':username' => $_POST['username']
+                ));
+                    
+                if (!empty($query)) {
+                    $error .= '<p>That username is already in use.</p>';
+                }
+                
+                $_POST['password'] = md5($_POST['password']);
+            } else {
+                $_POST['password'] = '';
+            }
+        }
+        
+        switch ($method) {
+            case 'add':        
+                break;
+            case 'edit':
+                if (array_key_exists('employee_id', $_POST)) {
+                    $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_id`=:id", array(
+                        ':id' => $_POST['employee_id']
+                    ));
+                    
+                    if (empty($query)) {
+                        $error .= '<div class="form_failed">That employee doesn\'t exist.</div>';
+                    }
+                } else {
+                    $error .= '<div class="form_failed">That employee doesn\'t exist.</div>';
+                }
+                
+                if ('' !== $_POST['username'] && $_POST['password'] === '') {
+                    $query = $this->sys->db->query("SELECT `employee_password` FROM `employees` WHERE `employee_username`=:username", array(
+                            ':username' => $_POST['username']
+                        ));
+                    
+                    $_POST['password'] = $query[0]['employee_password'];
+                    if ('' === $_POST['password']) {
+                        $error .= '<p>If you pick a username, you must enter a password.</p>';
+                    }
+                }
+                break;
+            case 'remove':
+                if (array_key_exists('employee_id', $_POST)) {
+                    $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_id`=:id", array(
+                        ':id' => (int) $_POST['employee_id']
+                    ));
+                    
+                    if (empty($query)) {
+                        $error .= 'No ID';
+                    }
+                } else {
+                    $error .= 'No ID';
+                }
+                break;
+            default:
+                return false;
+        }
+        
+        if (!empty($error)) {
+            $this->sys->template->response = '<div class="form_failed">' . $error . '</div>';
+            return true;
+        }
+            
+        return false;
+    } //End check_inputs
+    
+    /**
      * Purpose: Used to add an employee to the database
      */
     public function add() {
-        $error = '';
+        $error = $this->check_input('add');
 
-        if (!array_key_exists('firstname', $_POST) || '' === $_POST['firstname']) {
-            $error = '<p>Please enter employee\'s first name.</p>';
-        }
-        if (!array_key_exists('lastname', $_POST) || '' === $_POST['lastname']) {
-            $error .= '<p>Please enter employee\'s last name.</p>';
-        }
-        if ((!array_key_exists('uid', $_POST) || '' === $_POST['uid']) && !array_key_exists('generate_uid', $_POST)) {
-            $error .= '<p>You either need to enter a UID or check \'Pick a UID For Me\'.</p>';
-        }
-        if ((!array_key_exists('username', $_POST) || '' !== $_POST['username']) && (!array_key_exists('password', $_POST) || $_POST['password'] === '')) {
-            $error .= '<p>If you pick a username, you must enter a password.</p>';
-        }
-        if (!array_key_exists('category', $_POST) || '' === $_POST['category']) {
-            $error .= '<p>Please select a category.</p>';
-        }
-        if (!array_key_exists('role', $_POST) || !in_array($_POST['role'], array('none', 'admin', 'management'))) {
-            $error .= '<p>Please select a role.</p>';
-        }
-        if (isset($_POST['generate_uid']) && '' === $_POST['uid']) {
-            do {
-                $uid = substr(md5(mt_rand()), 0, 8);
-                $uid = str_split($uid, 2);
-                foreach ($uid as &$new_uid) {
-                    $new_uid = '0x' . strtoupper($new_uid);
-                }
-                $uid = implode(' ', $uid);
-            
-                $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_uid`=:uid", array(
-                    ':uid' => $uid
-                ));
-            } while (!empty($query));
-        } else {
-            $uid = $_POST['uid'];
-            
-            $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_uid`=:uid", array(
-                    ':uid' => $uid
-                ));
-            
-            if (!empty($query)) {
-                $error .= '<p>That UID (Unique ID) is already in use.</p>';
-            }
-        }
-
-        if ('' !== $_POST['username']) {
-            $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_username`=:username", array(
-                    ':username' => $_POST['username']
-                ));
-                
-            if (!empty($query)) {
-                $error .= '<p>That username is already in use.</p>';
-            }
-            
-            $password = md5($_POST['password']);
-        } else {
-            $password = '';
-        }
-
-        if ($error === '') {
+        if (!$error) {
             $query = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `category_id`, `employee_role`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', :uid, :category, :role, :firstname, :lastname, :username, :password)", array(
-                    ':uid'          => $uid,
-                    ':category'     => (int) $_POST['category'],
-                    ':role'         => $_POST['role'],
-                    ':firstname'    => $_POST['firstname'],
-                    ':lastname'     => $_POST['lastname'],
-                    ':username'     => $_POST['username'],
-                    ':password'     => $password
-                ));
-        }
+                ':uid'          => $_POST['uid'],
+                ':category'     => (int) $_POST['category'],
+                ':role'         => $_POST['role'],
+                ':firstname'    => $_POST['firstname'],
+                ':lastname'     => $_POST['lastname'],
+                ':username'     => $_POST['username'],
+                ':password'     => $_POST['password']
+            ));
 
-
-        if ($error !== '') {
-            $this->sys->template->response = '<div class="form_failed">' . $error . '</div>';
-        } else {
             $this->sys->template->response = '<div class="form_success">Employee Added Successfully</div>';
             $this->sys->template->meta = array('1', $this->sys->config->timeclock_root . 'main');
+            
+            return true;
         }
-    } //End add
+        
+        return false;
+    }
 
     /**
      * Purpose: Used to edit an employees database records
      */
     public function edit() {
-        $id = (int) $_POST['employee_id'];
-        $password = '';
-        
-        $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_id`=:id", array(
-                ':id' => $id                                                                                                                    
-            ));
-        
-        if (empty($query)) {
-            $this->sys->template->response = '<div class="form_failed">That employee doesn\'t exist.</div>';
-            return False;
-        }
-        
-        $error = '';
+        $error = $this->check_input('edit');
 
-        if ('' === $_POST['firstname']) {
-            $error = '<p>Please enter employee\'s first name.</p>';
-        }
-        if ('' === $_POST['lastname']) {
-            $error .= '<p>Please enter employee\'s last name.</p>';
-        }
-        if ('' === $_POST['uid'] && !isset($_POST['generate_uid'])) {
-            $error .= '<p>You either need to enter a UID or check \'Pick a UID For Me\'.</p>';
-        }
-        if (!array_key_exists('category', $_POST) || '' === $_POST['category']) {
-            $error .= '<p>Please select a category.</p>';
-        }
-        if (!array_key_exists('role', $_POST) || !in_array($_POST['role'], array('none', 'admin', 'management'))) {
-            $error .= '<p>Please select a role.</p>';
-        }
-        if ('' !== $_POST['username'] && $_POST['password'] === '') {
-            $query = $this->sys->db->query("SELECT `employee_password` FROM `employees` WHERE `employee_username`=:username", array(
-                    ':username' => $_POST['username']
-                ));
-            
-            $password = $query[0]['employee_password'];
-            if ('' === $password) {
-                $error .= '<p>If you pick a username, you must enter a password.</p>';
-            }
-        }
-        if (isset($_POST['generate_uid']) && '' === $_POST['uid']) {
-            do {
-                $uid = substr(md5(rand()), 0, 8);
-                $uid = str_split($uid, 2);
-                foreach ($uid as &$new_uid) {
-                    $new_uid = '0x' . strtoupper($new_uid);
-                }
-                $uid = implode(' ', $uid);
-            
-                $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_uid`=:uid", array(
-                    ':uid' => $uid
-                ));
-                
-            } while (!empty($query));
-        } else {
-            $uid = $_POST['uid'];
-            
-            $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_uid`=:uid", array(
-                    ':uid' => $uid
-            ));
-            
-            if (!empty($query) && $query[0]['employee_id'] != $id) {
-                $error .= '<p>That UID (Unique ID) is already in use.</p>';
-            }
-        }
-
-        if ('' !== $_POST['username']) {
-            $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_username`=:username", array(
-                    ':username' => $_POST['username']
-                ));
-                
-            if (!empty($query) && $query[0]['employee_id'] != $id) {
-                $error .= '<p>That username is already in use.</p>';
-            }
-            
-            if ('' === $password) {
-                $password = md5($_POST['password']);
-            }
-        } else {
-            $password = '';
-        }
-
-        if ($error === '') {
+        if (!$error) {
             $query = $this->sys->db->query("UPDATE `employees` SET `employee_uid`=:uid, `category_id`=:category, `employee_role`=:role, `employee_firstname`=:firstname, `employee_lastname`=:lastname, `employee_username`=:username, `employee_password`=:password WHERE `employee_id`=:id", array(
-                    ':id'           => $id,
-                    ':uid'          => $uid,
-                    ':role'         => $_POST['role'],
-                    ':category'     => (int) $_POST['category'],
-                    ':firstname'    => $_POST['firstname'],
-                    ':lastname'     => $_POST['lastname'],
-                    ':username'     => $_POST['username'],
-                    ':password'     => $password
-                ));
-        }
-        
-        if ($error !== '') {
-            $this->sys->template->response = '<div class="form_failed">' . $error . '</div>';
-        } else {
+                ':id'           => (int) $_POST['employee_id'],
+                ':uid'          => $_POST['uid'],
+                ':role'         => $_POST['role'],
+                ':category'     => (int) $_POST['category'],
+                ':firstname'    => $_POST['firstname'],
+                ':lastname'     => $_POST['lastname'],
+                ':username'     => $_POST['username'],
+                ':password'     => $_POST['password']
+            ));
+            
             $this->sys->template->response = '<div class="form_success">Employee Updated Successfully</div>';
             $this->sys->template->meta = array('1', $this->sys->config->timeclock_root . 'main');
+            
+            return true;
         }
-    } //End edit
+        
+        return false;
+    }
     
     /**
      * Purpose: User to remove an employee from the database
      */
     public function remove() {
-        $id = (int) $_POST['employee_id'];
+        $error = $this->check_input('remove');
         
-        $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_id`=:id", array(
-                ':id' => $id                                                                                                                    
+        if (!$error) {
+            $this->sys->db->query("DELETE FROM `employees` WHERE `employee_id`=:id", array(
+                ':id' => (int) $_POST['employee_id']
             ));
-        
-        if (!empty($query)) {
-            $query = $this->sys->db->query("DELETE FROM `employees` WHERE `employee_id`=:id", array(
-                    ':id' => $id                                           
-                ));
         }
         
         header('Location: ' . $this->sys->config->timeclock_root);
     }
+    /**
+     * END: Database Modification Block
+     */
     
     /**
      * Purpose: Used by this constructor to return employees

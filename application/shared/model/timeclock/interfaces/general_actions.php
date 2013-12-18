@@ -8,6 +8,7 @@
  */
 
  interface general_actions {
+    public function check_input($action);
     public function add();
     public function edit();
     public function remove();
