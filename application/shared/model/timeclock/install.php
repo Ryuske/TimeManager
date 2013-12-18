@@ -23,6 +23,32 @@ class model_timeclock_install {
     }
 
     /**
+     * Purpose: Used to make sure all the required inputs have been added
+     */
+    protected function check_inputs() {
+        $error = '';
+        
+        switch ($_POST) {
+            case !array_key_exists('firstname', $_POST):
+                $error .= 'Admin first name is required. <br />';
+            case !array_key_exists('lastname', $_POST):
+                $error .= 'Admin last name is required. <br />';
+            case !array_key_exists('username', $_POST):
+                $error .= 'Admin username is required. <br />';
+            case !array_key_exists('password', $_POST):
+                $error .= 'Admin password is required. <br />';
+            default:
+                break;
+        }
+        
+        if ('' !== $error) {
+            return $error;
+        } else {
+            return $this->add_admin();
+        }
+    }
+    
+    /**
      * Purpose: Adds the first user (admin user)
      */
     protected function add_admin() {

@@ -1,3 +1,6 @@
+### 12/18/13 - Commit 6 ###
+* Removed a function from install.php on a previous commit. Whoops.
+
 ### 12/18/13 - Commit 5 ###
 * https://github.com/Ryuske/TimeClock/issues/19 <-- Created wiki https://github.com/Ryuske/TimeClock/wiki
 * Moved OLD.md to Previous changelogs in the wiki
