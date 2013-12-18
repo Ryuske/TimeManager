@@ -2,12 +2,15 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 12/10/13
- * @Date Modified: 12/11/13
+ * @Date Modified: 12/17/13
  * @Purpose: A trait for general job operations
  * @Version: 2.0
  */
 
 trait job_timecard {
+    /**
+     * Purpose: Used to display the total hours assigned to a job
+     */
     public function total_hours($job_id, $by_category=false) {
         $return_hours = 0;
         $hours = $this->get_hours($job_id);
@@ -42,6 +45,31 @@ trait job_timecard {
         return $return_hours;
     }
     
+    /**
+     * Purpose: Calculate the total quoted hours of a job
+     */
+    public function quoted_hours($job_id) {
+        $job = $this->sys->db->query("SELECT `quoted_time` FROM `jobs` WHERE `job_id`=:id", array(
+            ':id' => (int) $job_id
+        ));
+        
+        if (!empty($job)) {
+            $times = json_decode($job[0]['quoted_time'], true);
+            $total_time = 0;
+            
+            foreach ($times as $time) {
+                $total_time += $time;
+            }
+            
+            return $total_time;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Purpose: Get the hours worked for a job
+     */
     protected function get_hours($job_id) {
         $hours = $this->sys->db->query("
             SELECT *
@@ -123,6 +151,9 @@ trait job_timecard {
         return array_reverse($return_hours, true);
     } //End get_hours
     
+    /**
+     * Purpose: Used to punch in/out of a job
+     */
     public function punch($job_id, $employee_id) {
         $date_time = array('date' => date($this->_dateFormat), 'time' => time());
         $operation = '';
@@ -169,6 +200,9 @@ trait job_timecard {
         return array($operation, $date_time);
     } //End punch
     
+    /**
+     * Purpose: Update the time for a specific job
+     */
     protected function update_time() {
         if (array_key_exists('id', $_POST) && 'id' !== $_POST) {
             $operation = (array_key_exists('operation', $_POST) && 'in' == $_POST['operation']) ? 'in' : 'out';
@@ -231,6 +265,9 @@ trait job_timecard {
         }
     }
     
+    /**
+     * Purpose: Used to update who worked that period, or which category worked that period
+     */
     protected function update_time_info() {
         $id = array('in' => (int) $_POST['job_id'], 'out' => (int) $_POST['job_id']+1);
             
@@ -251,6 +288,9 @@ trait job_timecard {
         return true;
     }
     
+    /**
+     * Purpose: Used to add a worked date to a job
+     */
     protected function add_date() {
         if ((array_key_exists('id', $_POST) && '' !== $_POST['id']) && (array_key_exists('employee', $_POST) && '' !== $_POST['employee'])) {
             //Check to see if job_id exists
@@ -275,6 +315,9 @@ trait job_timecard {
                     ':employee_id'  => (int) $_POST['employee'],
                     ':category_id'  => (int) $check_employee[0]['category_id'],
                     ':date'         => $_POST['date']
+                ));
+                $this->sys->db->query("UPDATE `jobs` SET `status`='wip' WHERE `job_uid`=:id", array(
+                    ':id' => $_POST['id']
                 ));
                 
                 return true;

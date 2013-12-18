@@ -252,27 +252,6 @@ $sys->router->load_traits('jobs', 'timeclock');
      */
     
     /**
-     * Purpose: Calculate the total quoted hours of a job
-     */
-    public function quoted_hours($job_id) {
-        $job = $this->sys->db->query("SELECT `quoted_time` FROM `jobs` WHERE `job_id`=:id", array(
-            ':id' => (int) $job_id
-        ));
-        
-        if (!empty($job)) {
-            $times = json_decode($job[0]['quoted_time'], true);
-            $total_time = 0;
-            
-            foreach ($times as $time) {
-                $total_time += $time;
-            }
-            
-            return $total_time;
-        }
-        
-        return false;
-    }
-    /**
      * Purpose: Returns a list of all the jobs
      */
     public function get_jobs($job_id='all', $paginate=true) {
@@ -384,6 +363,47 @@ $sys->router->load_traits('jobs', 'timeclock');
         }
         
         return $return;
+    }
+    
+    /**
+     * Purpose: Used to calculate the load a job;
+     */
+    public function work_load($job_uid, $quoted_load=true, $by_category=false) {
+        $load_time = ($quoted_load) ? $this->get_jobs($job_uid, false) : $this->total_hours($job_uid, true);
+        if (array_key_exists('quoted_time', $load_time)) {
+            $load_time = $load_time['quoted_time'];
+        }
+        
+        $total_load = 0;
+        $total_employees = 0;
+        $load = array();
+        $employees = array();
+        
+        foreach ($load_time as $category=>$time) {
+            $category_employees = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `category_id`=:category_id", array(
+                ':category_id' => $category
+            ));
+            
+            $employees[$category] = count($category_employees);
+            if (0 < $employees[$category]) {
+                $load[$category] = $time/($employees[$category]*8);
+            } else {
+                $load[$category] = 0;
+            }
+        }
+        
+        if ($by_category) {
+            return $load;
+        }
+        
+        foreach ($employees as $employee_load) {
+            $total_employees += $employee_load;
+        }
+        foreach ($load as $category_load) {
+            $total_load += $category_load;
+        }
+        
+        return $total_load;
     }
  }
 
