@@ -1,3 +1,7 @@
+### 12/18/13 - Commit 1 ###
+* There was still an issue with $this->sys->session['user'] from 12/17/13 - Commit 3
+* https://github.com/Ryuske/TimeClock/issues/27 <-- Updated SQL file
+
 ### 12/17/13 - Commit 4 ###
 * Displayed total_hours on jobs home page
 * Changed it so that adding a date to a job changes the status to wip
