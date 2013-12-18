@@ -1,3 +1,6 @@
+### 12/18/13 - Commit 7 ###
+* The user that installer now creates is flagged as admin
+
 ### 12/18/13 - Commit 6 ###
 * Removed a function from install.php on a previous commit. Whoops.
 

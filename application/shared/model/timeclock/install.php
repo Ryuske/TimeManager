@@ -65,7 +65,7 @@ class model_timeclock_install {
             }
         }
         
-        $add_user = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `category_id`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', '', '1', :firstname, :lastname, :username, :password)", array(
+        $add_user = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `category_id`, `employee_role`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', '', '1', 'admin', :firstname, :lastname, :username, :password)", array(
             ':firstname' => $_POST['firstname'],
             ':lastname' => $_POST['lastname'],
             ':username' => $_POST['username'],
