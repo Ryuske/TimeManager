@@ -1,13 +1,16 @@
 <?php
 /**
- * @Author: Kenyon Haliwell
- * @Date Created: 12/10/13
- * @Date Modified: 12/17/13
- * @Purpose: Used as a wrapper for various methods surrounding employee categories
- * @Version: 2.0
+ * Author: Kenyon Haliwell
+ * Date Created: 12/10/13
+ * Date Modified: 12/18/13
+ * Purpose: Used as a wrapper for various methods surrounding employee categories
+ * Version: 2.0
  */
 
- class model_timeclock_categories {
+global $sys;
+$sys->router->load_helpers('interfaces', 'general', 'timeclock');
+ 
+ class model_timeclock_categories implements general_actions {
     public function __construct() {
         global $sys;
         $this->sys = &$sys;
@@ -37,9 +40,9 @@
      * Database Modification - Add/Edit/Remove
      */
     /**
-     * @Purpose: Used to add categories to the database
+     * Purpose: Used to add categories to the database
      */
-    protected function add() {
+    public function add() {
         $error = (array_key_exists('category_name', $_POST) && '' === $_POST['category_name']) ? '<p>Please enter a name for the category</p>' : '';
         
         $add_category = ('' === $error) ? $this->sys->db->query("INSERT INTO `categories` (`category_id`, `category_name`) VALUES (NULL, :name)", array(
@@ -56,9 +59,9 @@
     }
     
     /**
-     * @Purpose: Used to edit categories in the database
+     * Purpose: Used to edit categories in the database
      */
-    protected function edit() {
+    public function edit() {
         $error = '';
         
         if (!array_key_exists('category_id', $_POST)) {
@@ -91,9 +94,9 @@
     }
     
     /**
-     * @Purpose: Used to remove categories from the database
+     * Purpose: Used to remove categories from the database
      */
-    protected function remove() {
+    public function remove() {
         $error = '';
         
         if (!array_key_exists('category_id', $_POST)) {
@@ -117,13 +120,13 @@
      */
     
     /**
-     * @Purpose: Returns a list of all the categories.
+     * Purpose: Returns a list of all the categories.
      */
-    public function get_categories($by_id=false) {
+    public function get($action=false, $pagination=false) {
         $categories = $this->sys->db->query("SELECT * FROM `categories`");
         $return_categories = array();
         
-        if ($by_id) {
+        if ($action) {
             foreach ($categories as $category) {
                 $return_categories[$category['category_id']] = $category;
             }

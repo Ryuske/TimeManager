@@ -1,14 +1,14 @@
 <?php
 /**
- * @Author: Kenyon Haliwell
- * @Date Created: 11/26/13
- * @Date Modified: 12/11/13
- * @Purpose: Various functions that apply to installing timeclock
- * @Version: 2.0
+ * Author: Kenyon Haliwell
+ * Date Created: 11/26/13
+ * Date Modified: 12/18/13
+ * Purpose: Various functions that apply to installing timeclock
+ * Version: 2.0
  */
 class model_timeclock_install {
     /**
-     * @Purpose: Creates a constructor that sets various class variables
+     * Purpose: Creates a constructor that sets various class variables
      */
     public function __construct() {
         global $sys;
@@ -23,7 +23,7 @@ class model_timeclock_install {
     }
     
     /**
-     * @Purpose: Used to make sure all the required inputs have been added
+     * Purpose: Used to make sure all the required inputs have been added
      */
     protected function check_inputs() {
         $error = '';
@@ -49,7 +49,7 @@ class model_timeclock_install {
     }
 
     /**
-     * @Purpose: Adds the first user (admin user)
+     * Purpose: Adds the first user (admin user)
      */
     protected function add_admin() {
         $sql_file = __BASE_PATH . 'timeclock.sql';

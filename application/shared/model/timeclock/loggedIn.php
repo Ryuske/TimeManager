@@ -1,10 +1,10 @@
 <?php
 /**
- * @Author: Kenyon Haliwell
- * @Date Created: 11/13/13
- * @Date Modified: 12/18/13
- * @Purpose: Various functions that apply to logged in users (or not logged in)
- * @Version: 2.0
+ * Author: Kenyon Haliwell
+ * Date Created: 11/13/13
+ * Date Modified: 12/18/13
+ * Purpose: Various functions that apply to logged in users (or not logged in)
+ * Version: 2.0
  */
 
 /**
@@ -28,7 +28,7 @@ class model_timeclock_loggedIn {
     public static $_loginError;
 
     /**
-     * @Purpose: Creates a constructor that sets various class variables
+     * Purpose: Creates a constructor that sets various class variables
      */
     public function __construct() {
         global $sys;
@@ -41,14 +41,14 @@ class model_timeclock_loggedIn {
     }
 
     /**
-     * @Purpose: Used to check if there was an error logging in or not
+     * Purpose: Used to check if there was an error logging in or not
      */
     public function login_error() {
         return self::$_loginError;
     }
 
     /**
-     * @Purpose: Determins if a user is logged in or not
+     * Purpose: Determins if a user is logged in or not
      */
     public function status() {
         if (NULL !== self::$_user) {
@@ -59,7 +59,7 @@ class model_timeclock_loggedIn {
     }
 
     /**
-     * @Purpose: Used by this constructor to set class variables
+     * Purpose: Used by this constructor to set class variables
      */
     public function login() {
         if (isset($_POST['login'])) {
@@ -84,7 +84,7 @@ class model_timeclock_loggedIn {
     }
 
     /**
-     * @Purpose: Used to log a user out
+     * Purpose: Used to log a user out
      */
     public function logout() {
         self::$_user = NULL;

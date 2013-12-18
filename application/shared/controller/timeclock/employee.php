@@ -51,7 +51,7 @@ class timeclock_employee extends controller {
             
             $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->title = 'TimeClock | Employee | Add';
-            $this->sys->template->categories = $this->model_categories->get_categories();
+            $this->sys->template->categories = $this->model_categories->get();
             
             $parse = 'employee_add';
         } else {
@@ -67,9 +67,9 @@ class timeclock_employee extends controller {
     public function edit($employee_id) {
         $this->sys->template->response = '';
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'categories', 'settings'));
-        $this->sys->template->employees_by_id = $this->model_employees->get_employees(True);
+        $this->sys->template->employees_by_id = $this->model_employees->get(true);
         $this->sys->template->employee_id = (int) $employee_id;
-        $this->sys->template->categories = $this->model_categories->get_categories();
+        $this->sys->template->categories = $this->model_categories->get();
         
         if ($this->is_logged_in()) {
             if (!$this->model_settings->is_admin()) {
@@ -102,8 +102,8 @@ class timeclock_employee extends controller {
             $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->page_id = 1;
             $this->sys->template->paginate_by = $this->model_settings->paginate_by;
-            $this->sys->template->employees = $this->model_employees->get_employees(False);
-            $this->sys->template->employees_by_id = $this->model_employees->get_employees(True);
+            $this->sys->template->employees = $this->model_employees->get();
+            $this->sys->template->employees_by_id = $this->model_employees->get(true);
             $this->sys->template->employee_id = (int) $employee_id;
             $this->sys->template->pagination = $this->model_renderPage->generate_pagination('main', 'employees', 1);
 
@@ -145,7 +145,7 @@ class timeclock_employee extends controller {
         
         if ($this->is_logged_in()) {
             $this->sys->template->admin = $this->model_settings->is_admin();
-            $this->sys->template->employees_by_id = $this->model_employees->get_employees(True);
+            $this->sys->template->employees_by_id = $this->model_employees->get(true);
             $this->sys->template->pagination = $this->model_renderPage->generate_pagination('employee/view/' . (int) $employee_id . '/' . $pay_period, 'payperiods', (int) $page_id);
 
             $this->sys->template->title = 'TimeClock | Employee | View';

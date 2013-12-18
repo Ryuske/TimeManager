@@ -29,19 +29,29 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Employee Name</th>
-                            <th>Employee UID</th>
-                            <th>Employee Username</th>
+                            <th>Name</th>
+                            <th>ID</th>
+                            <th>UID</th>
+                            <th>Role</th>
+                            <th>Category</th>
+                            <th>Username</th>
                             <th>Manage</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         for ($i=0; $i<count($this->sys->template->employees); $i++) {
+                            $name = ('first_last' === $this->sys->template->list_employees_as)
+                                ? $this->sys->template->employees[$i]['firstname'] . ', ' . $this->sys->template->employees[$i]['lastname']
+                                : $this->sys->template->employees[$i]['lastname'] . ', ' . $this->sys->template->employees[$i]['firstname']
+                            ;
                             ?>
                             <tr>
-                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['lastname']}, {employees[<?php echo $i; ?>]['firstname']}</td>
+                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')"><?php echo $name; ?></td>
+                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['id']}</td>
                             <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['uid']}</td>
+                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['role']}</td>
+                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['category_name']}</td>
                             <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['username']}</td>
                                 <td>
                                     <ul class="icons">
@@ -56,9 +66,12 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>Employee Name</th>
-                            <th>Employee UID</th>
-                            <th>Employee Username</th>
+                            <th>Name</th>
+                            <th>ID</th>
+                            <th>UID</th>
+                            <th>Role</th>
+                            <th>Category</th>
+                            <th>Username</th>
                             <th>Manage</th>
                         </tr>
                     </tfoot>

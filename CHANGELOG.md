@@ -1,3 +1,8 @@
+### 12/18/13 - Commit 3 ###
+* Forgot to update table when deleting employee
+* https://github.com/Ryuske/TimeClock/issues/13 <-- Created interfaces for categories/clients/employees/jobs
+* Updated comments styling
+
 ### 12/18/13 - Commit 2 ###
 * https://github.com/Ryuske/TimeClock/issues/26 <-- Split Pay Period and Employee into two different APIs
 

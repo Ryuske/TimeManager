@@ -1,13 +1,16 @@
 <?php
 /**
- * @Author: Kenyon Haliwell
- * @Date Created: 12/09/13
- * @Date Modified: 12/17/13
- * @Purpose: Used as a wrapper for various methods surrounding clients
- * @Version: 2.0
+ * Author: Kenyon Haliwell
+ * Date Created: 12/09/13
+ * Date Modified: 12/18/13
+ * Purpose: Used as a wrapper for various methods surrounding clients
+ * Version: 2.0
  */
 
- class model_timeclock_clients {
+global $sys;
+$sys->router->load_helpers('interfaces', 'general', 'timeclock');
+
+ class model_timeclock_clients implements general_actions {
     public function __construct() {
         global $sys;
         $this->sys = &$sys;
@@ -37,9 +40,9 @@
      * Database Modification - Add/Edit/Remove
      */
     /**
-     * @Purpose: Used ot add clients to the database
+     * Purpose: Used ot add clients to the database
      */
-    protected function add() {
+    public function add() {
         $error = (array_key_exists('client_name', $_POST) && '' === $_POST['client_name']) ? '<p>Please enter a name for the client</p>' : '';
         
         $add_client = ('' === $error) ? $this->sys->db->query("INSERT INTO `clients` (`client_id`, `client_name`) VALUES (NULL, :name)", array(
@@ -56,9 +59,9 @@
     }
     
     /**
-     * * @Purpose: Used ot edit clients in the database
+     * Purpose: Used ot edit clients in the database
      */
-    protected function edit() {
+    public function edit() {
         $error = '';
         
         if (!array_key_exists('client_id', $_POST)) {
@@ -91,9 +94,9 @@
     }
     
     /**
-     * @Purpose: Used ot remove clients from the database
+     * Purpose: Used ot remove clients from the database
      */
-    protected function remove() {
+    public function remove() {
         $error = '';
         
         if (!array_key_exists('client_id', $_POST)) {
@@ -117,9 +120,9 @@
      */
     
     /**
-     * @Purpose: Returns a list of all the clients
+     * Purpose: Returns a list of all the clients
      */
-    public function get_clients() {
+    public function get($action=false, $pagination=false) {
         $clients = $this->sys->db->query("SELECT * FROM `clients`");
         
         return $clients;

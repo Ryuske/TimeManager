@@ -1,15 +1,15 @@
 <?php
 /**
- * @Author: Kenyon Haliwell
- * @Date Created: 12/5/13
- * @Date Modified: 12/11/13
- * @Purpose: A trait for general payperiod actions
- * @Version: 2.0
+ * Author: Kenyon Haliwell
+ * Date Created: 12/5/13
+ * Date Modified: 12/18/13
+ * Purpose: A trait for general payperiod actions
+ * Version: 2.0
  */
 
 trait payPeriod_actions {
     /**
-     * @Purpose: Used to add a new pay period to the database
+     * Purpose: Used to add a new pay period to the database
      */
     protected function add_pay_period() {
         $current_date = getdate();
@@ -46,7 +46,7 @@ trait payPeriod_actions {
     }
     
     /**
-     * @Purpose: Used to add a date to the timecard
+     * Purpose: Used to add a date to the timecard
      */
     protected function add_date() {
         $pay_period = $this->get_pay_period($_POST['date']);
@@ -77,7 +77,7 @@ trait payPeriod_actions {
     }
     
     /**
-     * @Purpose: Used to figure out if employee should punch in or out, then performs that operation
+     * Purpose: Used to figure out if employee should punch in or out, then performs that operation
      */
     public function employee_punch($employee_id) {
         $employee_id = (int) $employee_id;
@@ -99,7 +99,7 @@ trait payPeriod_actions {
     }
     
     /**
-     * @Purpose: Used to check what the last punch an employee made is (in or out)
+     * Purpose: Used to check what the last punch an employee made is (in or out)
      */
     protected function check_punch($employee_id) {
         $employee_id = (int) $employee_id;
@@ -127,7 +127,7 @@ trait payPeriod_actions {
     }
     
     /**
-     * @Purpose: Used to punch an employee in
+     * Purpose: Used to punch an employee in
      */
     protected function punch_in($employee_id, $pay_period_id) {
         $date_time = array('date' => date($this->_dateFormat), 'time' => time());
@@ -143,7 +143,7 @@ trait payPeriod_actions {
     }
     
     /**
-     * @Purpose: Used to punch an employee out
+     * Purpose: Used to punch an employee out
      */
     protected function punch_out($employee_id, $pay_period_id) {
         $date_time = array('date' => date($this->_dateFormat), 'time' => time());
