@@ -7,15 +7,6 @@
  * Version: 2.0
  */
 
-/**
- * USAGE:
- *  To use the model:
- *      Within your controller, use:
- *      $this->settings = $this->load_model('timeclock_settings');
- *
- *      $this->settings->something = 'koala';
- *      echo $this->settings->something; //Returns 'koala'
- */
 class model_timeclock_settings {
     private $_settings = array();
     private $_update_status = '';

@@ -11,7 +11,7 @@ global $sys;
 $sys->router->load_helpers('traits', 'jobs', 'timeclock');
 $sys->router->load_helpers('interfaces', 'general', 'timeclock');
  
- class model_timeclock_jobs implements general_actions {
+class model_timeclock_jobs implements general_actions {
     use job_timecard;
     
     protected $_dateFormat = 'm/d/y';

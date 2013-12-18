@@ -7,30 +7,6 @@
  * Version: 2.0
  */
 
-/**
- * USAGE:
- *  To use the model:
- *      Within your controller, use:
- *      $renderPage = $this->load_model('renderPage');
- *      $renderPage->parse('main', True);
- *          This would load timeclock main, and it would include the navbar
- *
- *      $renderPage->parse('login', False);
- *          This would load timeclock login, without the navbar
- *
- *      $employees_pagination = $renderPage->generate_pagination('main', 'employees', 1);
- *          Parameter 1 is the page that prefixes the links (i.e. main/1 main/2 etc)
- *          Parameter 2 is what you want to paginate
- *          Parameter 3 is the page you're currently looking at
- *          Echo'ing this out would add pagination links <previous> 1, 2, 3 <next> based on employees and the page you're on
- *          
- *      $pay_period_pagination = $renderPage->generate_pagination('employee/view/<id>/<payperiod>', 'payperiods', 1);
- *          Parameter 1 is the page that prefixes the links (i.e. main/1 main/2 etc)
- *          Parameter 2 is what you want to paginate
- *          Parameter 3 is the page you're currently looking at
- *          Echo'ing this out would add pagination links <previous> 1, 2, 3 <next> based on payperiods and the page you're on
- *          Payperiods are still created as 4 arrays, so if you were to paginate by 1, it would still return 4 pay periods
- */
 class model_timeclock_renderPage {
     private $_user;
 

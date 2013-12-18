@@ -1,3 +1,7 @@
+### 12/18/13 - Commit 5 ###
+* https://github.com/Ryuske/TimeClock/issues/19 <-- Created wiki https://github.com/Ryuske/TimeClock/wiki
+* Moved OLD.md to Previous changelogs in the wiki
+
 ### 12/18/13 - Commit 4 ###
 * https://github.com/Ryuske/TimeClock/issues/15 <-- Created check_input() function under general_actions interface
 
