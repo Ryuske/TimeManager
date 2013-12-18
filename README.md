@@ -9,3 +9,7 @@ TimeClock was developed as an open-source time management system that can interf
 The original idea was that it would be used with an RFID scanner for punching in & out, however, through
 the development it was abstracted using a RESTFUL API and can be used by anything that can make a web
 call.
+
+Live Example: (http://kenyonhaliwell.com/timeclock)
+User: demo
+Pass: demo
