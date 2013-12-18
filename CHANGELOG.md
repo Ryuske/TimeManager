@@ -1,3 +1,6 @@
+### 12/18/13 - Commit 8 ###
+* Removed screenshots in favor of live example. Check README.md
+
 ### 12/18/13 - Commit 7 ###
 * The user that installer now creates is flagged as admin
 
