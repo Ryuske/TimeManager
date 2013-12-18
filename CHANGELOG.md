@@ -1,3 +1,6 @@
+### 12/18/13 - Commit 4 ###
+* https://github.com/Ryuske/TimeClock/issues/15 <-- Created check_input() function under general_actions interface
+
 ### 12/18/13 - Commit 3 ###
 * Forgot to update table when deleting employee
 * https://github.com/Ryuske/TimeClock/issues/13 <-- Created interfaces for categories/clients/employees/jobs

@@ -40,19 +40,59 @@ $sys->router->load_helpers('interfaces', 'general', 'timeclock');
      * Database Modification - Add/Edit/Remove
      */
     /**
-     * Purpose: Used to add categories to the database
+     * Purpose: Used for checking $_POST inputs
      */
-    public function add() {
-        $error = (array_key_exists('category_name', $_POST) && '' === $_POST['category_name']) ? '<p>Please enter a name for the category</p>' : '';
+    public function check_input($method) {
+        $error = '';
         
-        $add_category = ('' === $error) ? $this->sys->db->query("INSERT INTO `categories` (`category_id`, `category_name`) VALUES (NULL, :name)", array(
-            ':name' => $_POST['category_name']
-        )) : '';
+        if ('remove' !== $method) {
+            if (!array_key_exists('category_name', $_POST) || '' === $_POST['category_name']) {
+                $error .= '<p>Please enter a category name.</p>';
+            }
+        }
+        
+        switch ($method) {
+            case 'add':
+                break;
+            case 'edit':
+                if (!array_key_exists('category_id', $_POST)) {
+                    $error = '<p>Something wrong with the category ID.</p>';
+                } else {
+                    $category = (!$error) ? $this->sys->db->query("SELECT `category_id` FROM `categories` WHERE `category_id`=:id", array(
+                        ':id' => (int) $_POST['category_id']
+                    )) : '';
+
+                    $error .= '<p>Category Doesn\'t Exist.</p>';
+                }
+                break;
+            case 'remove':
+                if (!array_key_exists('category_id', $_POST)) {
+                    $error = '<p>Something wrong with the category ID.</p>';
+                }
+                break;
+            default:
+                return false;
+        }
         
         if (!empty($error)) {
             $this->sys->template->response = '<div class="form_failed">' . $error . '</div>';
-            return false;
-        } else {
+            return true;
+        }
+            
+        return false;
+    }
+    
+    /**
+     * Purpose: Used to add categories to the database
+     */
+    public function add() {
+        $error = $this->check_input('add');
+        
+        if (!$error) {
+            $this->sys->db->query("INSERT INTO `categories` (`category_id`, `category_name`) VALUES (NULL, :name)", array(
+                ':name' => $_POST['category_name']
+            ));
+            
             $this->sys->template->response = '<div class="form_success">Category Added Successfully</div>';
             return true;
         }
@@ -62,58 +102,39 @@ $sys->router->load_helpers('interfaces', 'general', 'timeclock');
      * Purpose: Used to edit categories in the database
      */
     public function edit() {
-        $error = '';
+        $error = $this->check_input('edit');
         
-        if (!array_key_exists('category_id', $_POST)) {
-            $error = '<p>Something wrong with the category ID.</p>';
-        }
-        if (!array_key_exists('category_name', $_POST) || '' === $_POST['category_name']) {
-            $error .= '<p>Please enter a category name.</p>';
-        }
-        
-        $category = ('' === $error) ? $this->sys->db->query("SELECT `category_id` FROM `categories` WHERE `category_id`=:id", array(
-            ':id' => (int) $_POST['category_id']
-        )) : '';
-        
-        if (empty($error) && empty($category)) {
-            $error .= '<p>Category Doesn\'t Exist.</p>';
-        } elseif (empty($error)) {
+        if (!$error) {
             $this->sys->db->query("UPDATE `categories` SET `category_name`=:name WHERE `category_id`=:id", array(
                 ':name' => $_POST['category_name'],
                 ':id'   => (int) $_POST['category_id']
             ));
-        }
-        
-        if (!empty($error)) {
-            $this->sys->template->response = '<div class="form_failed">' . $error . '</div>';
-            return false;
-        } else {
+            
             $this->sys->template->response = '<div class="form_success">Category Updated Successfully</div>';
+            
             return true;
         }
+        
+        return false;
     }
     
     /**
      * Purpose: Used to remove categories from the database
      */
     public function remove() {
-        $error = '';
+        $error = $this->check_input('remove');
         
-        if (!array_key_exists('category_id', $_POST)) {
-            $error = '<p>Something wrong with the category ID.</p>';
-        }
-        
-        if (empty($error)) {
+        if (!$error) {
             $this->sys->db->query("DELETE FROM `categories` WHERE `category_id`=:id", array(
                 ':id' => (int) $_POST['category_id']
             ));
             
             $this->sys->template->response = '<div class="form_success">Category Removed Successfully</div>';
+            
             return true;
-        } else {
-            $this->sys->template->response = '<div class="form_failed">' . $error . '</div>';
-            return false;
         }
+        
+        return false;
     }
     /**
      * END: Database Modification Block

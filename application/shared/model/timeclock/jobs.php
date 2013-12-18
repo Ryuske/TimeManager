@@ -56,195 +56,174 @@ $sys->router->load_helpers('interfaces', 'general', 'timeclock');
      * Database Modification - Add/Edit/Remove
      */
     /**
-     * Purpose: Used to add jobs to the database
+     * Purpose: Used for checking $_POST inputs
      */
-    public function add() {
+    public function check_input($method) {
         $error = '';
         
-        if (!array_key_exists('client', $_POST) || '' === $_POST['client']) {
-            $error = '<p>Please select a client.</p>';
-        }
-        if (!array_key_exists('job_name', $_POST) || '' === $_POST['job_name']) {
-            $error .= '<p>Please enter a job name.</p>';
-        }
-        if ((!array_key_exists('uid', $_POST) || '' === $_POST['uid']) && !array_key_exists('generate_uid', $_POST)) {
-            $error .= '<p>Please either enter a UID or select \'Generate ID.\'</p>';
-        }
-        
-        if (array_key_exists('generate_uid', $_POST) && (!array_key_exists('uid', $_POST) || '' === $_POST['uid'])) {
-            do {
-                $id = mt_rand(0, 99999);
-                
-                $query = $this->sys->db->query("SELECT `job_id` FROM `jobs` WHERE `job_uid`=:id", array(
-                    ':id' => $id
-                ));
-            } while (!empty($query));
-            
-        } else {
-            $id = $_POST['uid'];
-            
-            $check_job = $this->sys->db->query("SELECT `job_name`, `client` FROM `jobs` WHERE `job_uid`=:id", array(
-                ':id' => $id
-            ));
-            $client = $this->sys->db->query("SELECT `client_name` FROM `clients` WHERE `client_id`=:client_id", array(
-                'client_id' => $check_job[0]['client']
-            ));
-            
-            if (!empty($check_job)) {
-                $error .= 'That UID is already in use by the job ' . $check_job[0]['job_name'] . ' for ' . $client[0]['client_name'] . '.';
-                $this->sys->template->response = '<div class="form_failed">' . $error . '</div>';
-                return false;
+        if ('remove' !== $method) {
+            if (!array_key_exists('client', $_POST) || '' === $_POST['client']) {
+                $error = '<p>Please select a client.</p>';
             }
-        }
-        
-        $categories_query = $this->sys->db->query("SELECT * FROM `categories`");
-        $categories = array();
-        
-        foreach ($categories_query as $category) {
-            $categories[$category['category_id']] = $category;
-        }
-        
-        $categories_query = array();
-        
-        foreach ($_POST['quote'] as $id=>&$time) {
-            if (array_key_exists($id, $categories)) {
-                if ('' === $time) {
-                    $time = 0;
+            if (!array_key_exists('job_name', $_POST) || '' === $_POST['job_name']) {
+                $error .= '<p>Please enter a job name.</p>';
+            }
+            if ((!array_key_exists('uid', $_POST) || '' === $_POST['uid']) && !array_key_exists('generate_uid', $_POST)) {
+                $error .= '<p>Please either enter a UID or select \'Generate ID.\'</p>';
+            }
+            
+            if (array_key_exists('generate_uid', $_POST) && (!array_key_exists('uid', $_POST) || '' === $_POST['uid'])) {
+                do {
+                    $_POST['uid'] = mt_rand(0, 99999);
+                    
+                    $query = $this->sys->db->query("SELECT `job_id` FROM `jobs` WHERE `job_uid`=:id", array(
+                        ':id' => $_POST['uid']
+                    ));
+                } while (!empty($query));
+                
+            } else {
+                $client = $this->sys->db->query("SELECT client.client_name, job.job_name FROM `clients` AS client LEFT JOIN `jobs` AS job on job.job_uid=:uid WHERE client.client_id=job.client", array(
+                    ':id'           => $_POST['uid']
+                ));
+                
+                if (!empty($check_job)) {
+                    $error .= 'That UID is already in use by the job ' . $check_job[0]['job_name'] . ' for ' . $client[0]['client_name'] . '.';
+                }
+            }
+            
+            if (array_key_exists('quote', $_POST)) {
+                $categories_query = $this->sys->db->query("SELECT * FROM `categories`");
+                $categories = array();
+                
+                foreach ($categories_query as $category) {
+                    $categories[$category['category_id']] = $category;
                 }
                 
-                $categories_query[$id] = $time;
+                $categories_query = array();
+                
+                foreach ($_POST['quote'] as $id=>&$time) {
+                    if (array_key_exists($id, $categories)) {
+                        if ('' === $time) {
+                            $time = 0;
+                        }
+                        
+                        $categories_query[$id] = $time;
+                    }
+                }
+                $_POST['quote'] = json_encode($categories_query);
+            } else {
+                $error .= '<p>Please enter quoted times.</p>';
             }
         }
-        $categories_query = json_encode($categories_query);
-
-        $add_job = ('' === $error) ? $this->sys->db->query("INSERT INTO `jobs` (`job_id`, `job_uid`, `job_name`, `client`, `status`, `quoted_time`) VALUES (NULL, :id, :name, :client, 'na', :quote)", array(
-            ':id'       => $id,
-            ':name'     => $_POST['job_name'],
-            ':client'   => $_POST['client'],
-            ':quote'    => $categories_query
-        )) : '';
+        
+        switch ($method) {
+            case 'add':
+                break;
+            case 'edit':
+                if (array_key_exists('id', $_POST)) {
+                    $check_job = $this->sys->db->query("SELECT `job_uid` FROM `jobs` WHERE `job_id`=:id", array(
+                        ':id' => (int) $_POST['id']
+                    ));
+                    
+                    if (empty($check_job)) {
+                        $error = '<p>That job doesn\'t exist.</p>';
+                    }
+                } else {
+                    $error = '<p>That job doesn\'t exist.</p>';
+                }
+                
+                switch ($_POST['status']) {
+                    case 'na':
+                        $_POST['status'] = 'na';
+                        break;
+                    case 'wip':
+                        $_POST['status'] = 'wip';
+                        break;
+                    default: //c
+                        $_POST['status'] = 'c';
+                }
+                break;
+            case 'remove':
+                if (array_key_exists('job_id', $_POST)) {
+                    $check_job = $this->sys->db->query("SELECT `job_id` FROM `jobs` WHERE `job_id`=:id", array(
+                        ':id' => (int) $_POST['job_id']
+                    ));
+                    
+                    if (empty($check_job)) {
+                        $error = '<p>That job doesn\'t exist.</p>';
+                    }
+                } else {
+                    $error = '<p>That job doesn\'t exist.</p>';
+                }
+                break;
+            default:
+                return false;
+        }
         
         if (!empty($error)) {
             $this->sys->template->response = '<div class="form_failed">' . $error . '</div>';
-            return false;
-        } else {
+            return true;
+        }
+            
+        return false;
+    }
+    
+    /**
+     * Purpose: Used to add jobs to the database
+     */
+    public function add() {
+        $error = $this->check_input('add');
+
+        $this->sys->db->query("INSERT INTO `jobs` (`job_id`, `job_uid`, `job_name`, `client`, `status`, `quoted_time`) VALUES (NULL, :id, :name, :client, 'na', :quote)", array(
+            ':id'       => $_POST['uid'],
+            ':name'     => $_POST['job_name'],
+            ':client'   => $_POST['client'],
+            ':quote'    => $_POST['quote']
+        ));
+        
+        if (!$error) {
             $this->sys->template->response = '<div class="form_success">Job Added Successfully</div>';
             $this->sys->template->meta = array('1', $this->sys->config->timeclock_root . 'jobs');
             return true;
         }
+        
+        return false;
     }
     
     /**
      * Purpose: Used to edit jobs in the database
      */
     public function edit() {
-        $error = '';
+        $error = $this->check_input('edit');
         
-        $check_job = $this->sys->db->query("SELECT `job_uid` FROM `jobs` WHERE `job_id`=:id", array(
-            ':id' => (int) $_POST['id']
-        ));
-        
-        if (empty($check_job)) {
-            $error = '<p>That job doesn\'t exist.</p>';
-        }
-        if (!array_key_exists('client', $_POST) || '' === $_POST['client']) {
-            $error .= '<p>Please select a client.</p>';
-        }
-        if (!array_key_exists('job_name', $_POST) || '' === $_POST['job_name']) {
-            $error .= '<p>Please enter a job name.</p>';
-        }
-        if ((!array_key_exists('uid', $_POST) || '' === $_POST['uid']) && !array_key_exists('generate_uid', $_POST)) {
-            $error .= '<p>Please either enter a UID or select \'Generate ID.\'</p>';
-        }
-        
-        if (array_key_exists('generate_uid', $_POST) && (!array_key_exists('uid', $_POST) || '' === $_POST['uid'])) {
-            do {
-                $uid = mt_rand(0, 99999);
-                
-                $query = $this->sys->db->query("SELECT `job_id` FROM `jobs` WHERE `job_uid`=:id", array(
-                    ':id' => $uid
-                ));
-            } while (!empty($query));
-            
-        } else {
-            $uid = $_POST['uid'];
-            
-            if ($check_job[0]['job_uid'] != $_POST['uid']) {
-                $check_uid = $this->sys->db->query("SELECT `job_name`, `client` FROM `jobs` WHERE `job_uid`=:uid", array(
-                    ':uid' => $uid
-                ));
-                
-                if (!empty($check_uid)) {
-                    $client = $this->sys->db->query("SELECT `client_name` FROM `clients` WHERE `client_id`=:client_id", array(
-                        ':client_id' => $check_uid[0]['client']
-                    ));
-                    
-                    $error .= 'That UID is already in use by the job ' . $check_uid[0]['job_name'] . ' for ' . $client[0]['client_name'] . '.';
-                    $this->sys->template->response = '<div class="form_failed">' . $error . '</div>';
-                    return false;
-                }
-            }
-        }
-        
-        switch ($_POST['status']) {
-            case 'na':
-                $status = 'na';
-                break;
-            case 'wip':
-                $status = 'wip';
-                break;
-            default: //c
-                $status = 'c';
-        }
-        $categories_query = $this->sys->db->query("SELECT * FROM `categories`");
-        $categories = array();
-        
-        foreach ($categories_query as $category) {
-            $categories[$category['category_id']] = $category;
-        }
-        
-        $categories_query = array();
-        
-        foreach ($_POST['quote'] as $id=>&$time) {
-            if (array_key_exists($id, $categories)) {
-                if ('' === $time) {
-                    $time = 0;
-                }
-                
-                $categories_query[$id] = $time;
-            }
-        }
-        $categories_query = json_encode($categories_query);
-        
-        $edit_job = ('' === $error) ? $this->sys->db->query("UPDATE `jobs` SET `job_uid`=:uid, `job_name`=:name, `client`=:client, `status`=:status, `quoted_time`=:quote WHERE `job_id`=:id", array(
+        $this->sys->db->query("UPDATE `jobs` SET `job_uid`=:uid, `job_name`=:name, `client`=:client, `status`=:status, `quoted_time`=:quote WHERE `job_id`=:id", array(
             ':id'       => (int) $_POST['id'],
-            ':uid'      => $uid,
+            ':uid'      => $_POST['uid'],
             ':name'     => $_POST['job_name'],
             ':client'   => $_POST['client'],
-            ':status'   => $status,
-            ':quote'    => $categories_query
-        )) : '';
+            ':status'   => $_POST['status'],
+            ':quote'    => $_POST['quote']
+        ));
         
-        if (!empty($error)) {
-            $this->sys->template->response = '<div class="form_failed">' . $error . '</div>';
-            return false;
-        } else {
+        if (!$error) {
             $this->sys->template->response = '<div class="form_success">Job Updated Successfully</div>';
             $this->sys->template->meta = array('0', $this->sys->config->timeclock_root . 'jobs');
             return true;
         }
+        
+        return false;
     } //End edit
     
     /**
      * Purpose: Used to remove jobs from the database
      */
     public function remove() {
-        $params = array(':id' => $_POST['job_id']);
+        $error = $this->check_input('remove');
         
-        $check_job = $this->sys->db->query("SELECT `job_id` FROM `jobs` WHERE `job_id`=:id", $params);
-        
-        if (!empty($check_job)) {
-            $this->sys->db->query("DELETE FROM `jobs` WHERE `job_id`=:id", $params);
+        if (!$error) {
+            $this->sys->db->query("DELETE FROM `jobs` WHERE `job_id`=:id", array(
+                ':id' => (int) $_POST['job_id']
+            ));
         }
         
         header('Location: ' . $this->sys->config->timeclock_root . 'jobs');

@@ -102,12 +102,13 @@ class timeclock_jobs extends controller {
      */
     public function edit($job_id) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'clients', 'settings', 'jobs', 'categories'));
-
+        $this->sys->template->job = $this->model_jobs->get($job_id, false);
+        
         if (!isset($this->sys->template->response)) {
             $this->sys->template->response = '';
         }
 
-        if ($this->is_logged_in()) {
+        if ($this->is_logged_in() && $this->sys->template->job) {
             if (!$this->model_settings->is_admin()) {
                 $this->load_home();
                 return true;
@@ -118,7 +119,6 @@ class timeclock_jobs extends controller {
             $this->sys->template->title = 'TimeClock | Jobs | Edit';
             $this->sys->template->jobs_active = 'class="active"';
             $this->sys->template->clients = $this->model_clients->get();
-            $this->sys->template->job = $this->model_jobs->get($job_id, false);
             
             $parse = (false !== $this->sys->template->job) ? 'jobs_edit' : 'jobs_home';
             $full_page = True;
@@ -134,9 +134,9 @@ class timeclock_jobs extends controller {
      */
     public function remove($job_id) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'jobs'));
-        $this->login_failed();
+        $this->sys->template->job = $this->model_jobs->get($job_id, false);
 
-        if ($this->is_logged_in()) {
+        if ($this->is_logged_in() && $this->sys->template->job) {
             if (!$this->model_settings->is_admin()) {
                 $this->load_home();
                 return true;
@@ -148,15 +148,12 @@ class timeclock_jobs extends controller {
             $this->sys->template->page_id       = 1;
             $this->sys->template->paginate_by   = $this->model_settings->paginate_by;
             $this->sys->template->jobs          = $this->model_jobs->get();
-            $this->sys->template->job           = $this->model_jobs->get($job_id, false);
             $this->sys->template->pagination    = $this->model_renderPage->generate_pagination('jobs/home', 'jobs', 1);
             
             $parse = 'jobs_remove';
             $full_page = True;
         } else {
-            $this->sys->template->title = 'TimeClock | Sign In';
-            $parse = 'login';
-            $full_page = False;
+            $this->load_home();
         }
 
         //Parses the HTML from the view
