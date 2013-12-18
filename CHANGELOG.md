@@ -1,3 +1,8 @@
+### 12/17/13 - Commit 4 ###
+* Displayed total_hours on jobs home page
+* Changed it so that adding a date to a job changes the status to wip
+* https://github.com/Ryuske/TimeClock/issues/24 <-- Added work loads
+
 ### 12/17/13 - Commit 3 ###
 * https://github.com/Ryuske/TimeClock/issues/9 <-- Missed a part - jobs were vulnerable to exploits
 * Fixed error where 'user' wasn't set in $this->sys->session

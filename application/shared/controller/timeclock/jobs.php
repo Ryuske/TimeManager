@@ -47,13 +47,13 @@ class timeclock_jobs extends controller {
         $this->login_failed();
 
         if ($this->is_logged_in()) {
-            $this->sys->template->admin = $this->model_settings->is_admin();
-            $this->sys->template->title = 'TimeClock | Jobs';
-            $this->sys->template->jobs_active = 'class="active"';
-            $this->sys->template->page_id = (int) $page_id;
-            $this->sys->template->paginate_by = $this->model_settings->paginate_by;
-            $this->sys->template->jobs = $this->model_jobs->get_jobs();
-            $this->sys->template->pagination = $this->model_renderPage->generate_pagination('jobs/home', 'jobs', (int) $page_id);
+            $this->sys->template->admin         = $this->model_settings->is_admin();
+            $this->sys->template->title         = 'TimeClock | Jobs';
+            $this->sys->template->jobs_active   = 'class="active"';
+            $this->sys->template->page_id       = (int) $page_id;
+            $this->sys->template->paginate_by   = $this->model_settings->paginate_by;
+            $this->sys->template->jobs          = $this->model_jobs->get_jobs();
+            $this->sys->template->pagination    = $this->model_renderPage->generate_pagination('jobs/home', 'jobs', (int) $page_id);
             
             $parse = ($this->sys->template->admin) ? 'admin_jobs_home' : 'jobs_home';
             $full_page = True;
@@ -82,7 +82,7 @@ class timeclock_jobs extends controller {
                 return true;
             }
             
-            $this->sys->template->categories = $this->model_categories->get_categories(true);
+            $this->sys->template->categories = $this->model_categories->get_categories();
             $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->title = 'TimeClock | Jobs | Add';
             $this->sys->template->jobs_active = 'class="active"';
@@ -113,7 +113,7 @@ class timeclock_jobs extends controller {
                 return true;
             }
             
-            $this->sys->template->categories = $this->model_categories->get_categories(true);
+            $this->sys->template->categories = $this->model_categories->get_categories();
             $this->sys->template->admin = $this->model_settings->is_admin();
             $this->sys->template->title = 'TimeClock | Jobs | Edit';
             $this->sys->template->jobs_active = 'class="active"';
@@ -142,14 +142,14 @@ class timeclock_jobs extends controller {
                 return true;
             }
             
-            $this->sys->template->admin = $this->model_settings->is_admin();
-            $this->sys->template->title = 'TimeClock | Jobs | Remove';
-            $this->sys->template->jobs_active = 'class="active"';
-            $this->sys->template->page_id = 1;
-            $this->sys->template->paginate_by = $this->model_settings->paginate_by;
-            $this->sys->template->jobs = $this->model_jobs->get_jobs();
-            $this->sys->template->job = $this->model_jobs->get_jobs($job_id, false);
-            $this->sys->template->pagination = $this->model_renderPage->generate_pagination('jobs/home', 'jobs', 1);
+            $this->sys->template->admin         = $this->model_settings->is_admin();
+            $this->sys->template->title         = 'TimeClock | Jobs | Remove';
+            $this->sys->template->jobs_active   = 'class="active"';
+            $this->sys->template->page_id       = 1;
+            $this->sys->template->paginate_by   = $this->model_settings->paginate_by;
+            $this->sys->template->jobs          = $this->model_jobs->get_jobs();
+            $this->sys->template->job           = $this->model_jobs->get_jobs($job_id, false);
+            $this->sys->template->pagination    = $this->model_renderPage->generate_pagination('jobs/home', 'jobs', 1);
             
             $parse = 'jobs_remove';
             $full_page = True;
@@ -184,6 +184,8 @@ class timeclock_jobs extends controller {
             $this->sys->template->categories        = $this->model_categories->get_categories(true);
             $this->sys->template->total_hours       = $this->model_jobs->total_hours($job_uid, false);
             $this->sys->template->hours_by_category = $this->model_jobs->total_hours($job_uid, true);
+            $this->sys->template->worked_load       = $this->model_jobs->work_load($job_uid, false, true);
+            $this->sys->template->quoted_load       = $this->model_jobs->work_load($job_uid, true, true);
             
             $this->sys->template->title = 'TimeClock | Jobs | View';
             $this->sys->template->jobs_active = 'class="active"';

@@ -32,7 +32,10 @@
                             <th>Job ID</th>
                             <th>Client Name</th>
                             <th>Job Name</th>
+                            <th>Worked Time</th>
                             <th>Quoted Time</th>
+                            <th>Worked Load</th>
+                            <th>Quoted Load</th>
                             <th>Status</th>
                             <th>Manage</th>
                         </tr>
@@ -59,7 +62,10 @@
                             <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['job_uid']}</td>
                             <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['client_name']}</td>
                             <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['job_name']}</td>
+                            <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')"><?php echo $this->model_jobs->total_hours($this->sys->template->jobs[$i]['job_uid'], false); ?></td>
                             <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')"><?php echo $this->model_jobs->quoted_hours($this->sys->template->jobs[$i]['job_id']); ?></td>
+                            <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')"><?php echo $this->model_jobs->work_load($this->sys->template->jobs[$i]['job_uid'], false, false); ?>%</td>
+                            <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')"><?php echo $this->model_jobs->work_load($this->sys->template->jobs[$i]['job_uid'], true, false); ?>%</td>
                             <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')"><div class="<?php echo $status[0]; ?>"><?php echo $status[1]; ?></div></td>
                                 <td>
                                     <ul class="icons">
@@ -77,7 +83,10 @@
                             <th>Job ID</th>
                             <th>Client Name</th>
                             <th>Job Name</th>
+                            <th>Worked Time</th>
                             <th>Quoted Time</th>
+                            <th>Worked Load</th>
+                            <th>Quoted Load</th>
                             <th>Status</th>
                             <th>Manage</th>
                         </tr>

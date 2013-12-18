@@ -63,7 +63,7 @@ $date_format = 'm/d/y';
                 </div> <!-- END: panel-body -->
             </div> <!-- END: panel -->
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-8">
                     <div class="panel panel-success">
                         <div class="panel-heading">
                             <h3 class="panel-title row">
@@ -77,6 +77,8 @@ $date_format = 'm/d/y';
                                 <thead>
                                     <tr>
                                         <th>Category</th>
+                                        <th>Worked Load</th>
+                                        <th>Quoted Load</th>
                                         <th>Worked Hours</th>
                                         <th>Quoted Hours</th>
                                         <th>Difference</th>
@@ -88,6 +90,18 @@ $date_format = 'm/d/y';
                                         if (0 < $time) {
                                             echo '<tr>';
                                                 echo '<td>' . $this->sys->template->categories[$category]['category_name'] . '</td>';
+                                                
+                                                if (array_key_exists($category, $this->sys->template->worked_load)) {
+                                                    echo '<td>' . $this->sys->template->worked_load[$category] . '%</td>';
+                                                } else {
+                                                    echo '<td>0%</td>';
+                                                }
+                                                if (array_key_exists($category, $this->sys->template->quoted_load)) {
+                                                    echo '<td>' . $this->sys->template->quoted_load[$category] . '%</td>';
+                                                } else {
+                                                    echo '<td>0%</td>';
+                                                }
+                                                
                                                 if (array_key_exists($category, $this->sys->template->hours_by_category)) {
                                                     $worked = $this->sys->template->hours_by_category[$category];
                                                     echo '<td>' . $this->sys->template->hours_by_category[$category] . '</td>';
@@ -111,6 +125,8 @@ $date_format = 'm/d/y';
                                 <tfoot>
                                     <tr>
                                         <th>Category</th>
+                                        <th>Worked Load</th>
+                                        <th>Quoted Load</th>
                                         <th>Worked Hours</th>
                                         <th>Quoted Hours</th>
                                         <th>Difference</th>
