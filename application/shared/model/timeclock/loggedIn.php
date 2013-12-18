@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/13/13
- * @Date Modified: 12/17/13
+ * @Date Modified: 12/18/13
  * @Purpose: Various functions that apply to logged in users (or not logged in)
  * @Version: 2.0
  */
