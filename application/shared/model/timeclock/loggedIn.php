@@ -33,7 +33,9 @@ class model_timeclock_loggedIn {
     public function __construct() {
         global $sys;
         $this->sys = $sys;
-        $this->sys->session['user'] = ('' !== $this->sys->session['user']) ? $this->sys->session['user'] : '';
+        if (!array_key_exists('user', $this->sys->session)) {
+            $this->sys->session['user'] = '';
+        }
         
         self::$_loginError = $this->login();
     }

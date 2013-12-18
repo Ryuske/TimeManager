@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 12, 2013 at 08:36 AM
+-- Generation Time: Dec 18, 2013 at 08:54 AM
 -- Server version: 5.5.31-0+wheezy1
 -- PHP Version: 5.4.4-14+deb7u5
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `timeclock`
+-- Database: `timeclock_template`
 --
 
 -- --------------------------------------------------------
@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS `employees` (
   `employee_id` int(3) unsigned NOT NULL AUTO_INCREMENT,
   `employee_uid` varchar(64) COLLATE utf8_bin NOT NULL,
   `category_id` int(2) unsigned NOT NULL,
+  `employee_role` enum('admin','management','none') COLLATE utf8_bin NOT NULL DEFAULT 'none',
   `employee_firstname` varchar(24) COLLATE utf8_bin NOT NULL,
   `employee_lastname` varchar(24) COLLATE utf8_bin NOT NULL,
   `employee_username` varchar(28) COLLATE utf8_bin NOT NULL,
@@ -110,6 +111,7 @@ CREATE TABLE IF NOT EXISTS `jobs` (
   `job_name` varchar(256) COLLATE utf8_bin NOT NULL,
   `client` int(3) unsigned NOT NULL,
   `status` enum('na','wip','c') COLLATE utf8_bin NOT NULL DEFAULT 'na',
+  `quoted_time` blob NOT NULL,
   PRIMARY KEY (`job_id`),
   KEY `client` (`client`),
   KEY `job_id` (`job_id`)
