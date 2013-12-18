@@ -10,7 +10,7 @@
 global $sys;
 $sys->router->load_helpers('interfaces', 'general', 'timeclock');
 
- class model_timeclock_clients implements general_actions {
+class model_timeclock_clients implements general_actions {
     public function __construct() {
         global $sys;
         $this->sys = &$sys;

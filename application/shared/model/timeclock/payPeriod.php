@@ -7,57 +7,6 @@
  * Version: 2.0
  */
 
-/**
- * USAGE:
- *  To use the model:
- *      Within your controller, use:
- *      --- EXAMPLE 1 ---
- *      $pay_period = $this->load_model('timeclock_payPeriod');
- *      $pay_period->get_pay_period('current');
- *          This will return the current pay period that you're in.
- *          Returns with 2 arrays (start date and end date), that are in http://us2.php.net/getdate format
- *      $pay_period->get_pay_period('11/26/13');
- *          This will return the start date and end dates of the pay period that date falls within
- *          The two arrays are in http://us2.php.net/getdate format
- *
- *      --- EXAMPLE 2 ---
- *      $pay_period = $this->load_model('timeclock_payPeriod');
- *      $total_hours = $pay_period->total_hours_for_pay_period(1, 'current');
- *          $total_hours has the total hours worked by the employee with id 1 for the current pay period
- *          Parameter 1 is the ID of you the employee you want the total hours of
- *          Parameter 2 is the pay period you want the total hours of
- *
- *      --- EXAMPLE 3 ---
- *      $pay_period = $this->load_model('timeclock_payPeriod');
- *      $pay_period_table = $pay_period->generate_pay_period_table(1, 'current');
- *          $pay_period_table contains table rows for you can echo out.
- *          It only contains the <tr>'s that go within the <tbody> but you have to write the rest of the table
- *          It will display (6 <td>'s):
- *              The date
- *              3 in/out pairs
- *              Total Hours
- *
- *      --- EXAMPLE 4 ---
- *      $pay_period = $this->load_model('timeclock_payPeriod');
- *      $previous_pay_periods = $pay_period->generate_previous_pay_periods_table(1, 'current');
- *          $previous_pay_periods is a list of all the previous paeriods.
- *          Parameter 1 is the employee ID. It is used to determin which pay periods are bold (indicating the have time associated with them)
- *          Parameter 2 will be the pay period that it italizes (which indicates the one you're currently viewing)
- *
- *          It returns 4 arrays, so it goes like this:
- *          [0] = array(1, 5, 9);
- *          [1] = array(2, 6, 10);
- *          [2] = array(3, 7, 11);
- *          [3] = array(4, 8, 11);
- *
- *          This was done so you can display 4 side-by-side tables and display more pay periods within a smaller place.
- *          Which https://github.com/Ryuske/TimeClock/blob/master/screenshots/screen_timecard_pay_periods.jpg
- *             for an example of 4 side-by-side tables.
- *
- *          When you echo out a table, it will automatically loop through and add the <tr>'s that go within <tbody>, though you still
- *          have to write the <tbody> and everything else. Each <tr> has 2 <td>s, start date and end date.
- */
-
 global $sys;
 $sys->router->load_helpers('traits', 'payPeriod', 'timeclock');
  
