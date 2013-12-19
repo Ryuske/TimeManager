@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 11/15/13
- * Date Modified: 12/18/13
+ * Date Modified: 12/19/13
  * Purpose: Used to pull the employees from the database and use the results in a view
  * Version: 2.0
  */
@@ -49,7 +49,7 @@ class model_timeclock_employees implements general_actions {
      */
     public function check_input($method) {
         $error = '';
-        die('wtf');
+
         if ('remove' !== $method) {
             if (!array_key_exists('firstname', $_POST) || '' === $_POST['firstname']) {
                 $error = '<p>Please enter employee\'s first name.</p>';
@@ -59,9 +59,6 @@ class model_timeclock_employees implements general_actions {
             }
             if ((!array_key_exists('uid', $_POST) || '' === $_POST['uid']) && !array_key_exists('generate_uid', $_POST)) {
                 $error .= '<p>You either need to enter a UID or check \'Generate 4-byte hex UID\'.</p>';
-            }
-            if ((!array_key_exists('username', $_POST) || '' !== $_POST['username']) && (!array_key_exists('password', $_POST) || $_POST['password'] === '')) {
-                $error .= '<p>If you pick a username, you must enter a password.</p>';
             }
             if (!array_key_exists('category', $_POST) || '' === $_POST['category']) {
                 $error .= '<p>Please select a category.</p>';
@@ -88,28 +85,45 @@ class model_timeclock_employees implements general_actions {
                     ':uid' => $_POST['uid']
                 ));
                 
-                if (!empty($query)) {
+                if (
+                    !empty($query) &&
+                    !(
+                        'edit' === $method &&
+                        array_key_exists('employee_id', $_POST) &&
+                        $query[0]['employee_id'] === $_POST['employee_id']
+                    )
+                ) {
                     $error .= '<p>That UID (Unique ID) is already in use.</p>';
                 }
             }
-            
-            if ('' !== $_POST['username']) {
-                $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_username`=:username", array(
-                    ':username' => $_POST['username']
-                ));
-                    
-                if (!empty($query)) {
-                    $error .= '<p>That username is already in use.</p>';
+        }
+
+        switch ($method) {
+            case 'add':
+                if ((!array_key_exists('username', $_POST) || '' !== $_POST['username']) && (!array_key_exists('password', $_POST) || $_POST['password'] === '')) {
+                    $error .= '<p>If you pick a username, you must enter a password.</p>';
                 }
                 
-                $_POST['password'] = md5($_POST['password']);
-            } else {
-                $_POST['password'] = '';
-            }
-        }
-        
-        switch ($method) {
-            case 'add':        
+                if ('' !== $_POST['username']) {
+                    $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_username`=:username", array(
+                        ':username' => $_POST['username']
+                    ));
+                        
+                    if (
+                        !empty($query) &&
+                        !(
+                            'edit' === $method &&
+                            array_key_exists('employee_id', $_POST) &&
+                            $query[0]['employee_id'] === $_POST['employee_id']
+                        )
+                    ) {
+                        $error .= '<p>That username is already in use.</p>';
+                    }
+                    
+                    $_POST['password'] = md5($_POST['password']);
+                } else {
+                    $_POST['password'] = '';
+                }
                 break;
             case 'edit':
                 if (array_key_exists('employee_id', $_POST)) {
@@ -123,14 +137,15 @@ class model_timeclock_employees implements general_actions {
                 } else {
                     $error .= '<div class="form_failed">That employee doesn\'t exist.</div>';
                 }
-                
+
                 if ('' !== $_POST['username'] && $_POST['password'] === '') {
                     $query = $this->sys->db->query("SELECT `employee_password` FROM `employees` WHERE `employee_username`=:username", array(
-                            ':username' => $_POST['username']
-                        ));
-                    
-                    $_POST['password'] = $query[0]['employee_password'];
-                    if ('' === $_POST['password']) {
+                        ':username' => $_POST['username']
+                    ));
+
+                    if (!empty($query) && '' !== $query[0]['employee_password']) {
+                        $_POST['password'] = $query[0]['employee_password'];
+                    } else {
                         $error .= '<p>If you pick a username, you must enter a password.</p>';
                     }
                 }
@@ -151,7 +166,7 @@ class model_timeclock_employees implements general_actions {
             default:
                 return false;
         }
-        
+
         if (!empty($error)) {
             $this->sys->template->response = '<div class="form_failed">' . $error . '</div>';
             return true;

@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/09/13
- * Date Modified: 12/18/13
+ * Date Modified: 12/19/13
  * Purpose: Used as a wrapper for various methods surrounding jobs
  * Version: 2.0
  */
@@ -83,7 +83,7 @@ class model_timeclock_jobs implements general_actions {
                 
             } else {
                 $client = $this->sys->db->query("SELECT client.client_name, job.job_name FROM `clients` AS client LEFT JOIN `jobs` AS job on job.job_uid=:uid WHERE client.client_id=job.client", array(
-                    ':id'           => $_POST['uid']
+                    ':uid' => $_POST['uid']
                 ));
                 
                 if (!empty($check_job)) {
@@ -159,7 +159,7 @@ class model_timeclock_jobs implements general_actions {
             default:
                 return false;
         }
-        
+
         if (!empty($error)) {
             $this->sys->template->response = '<div class="form_failed">' . $error . '</div>';
             return true;
@@ -351,6 +351,7 @@ class model_timeclock_jobs implements general_actions {
      */
     public function work_load($job_uid, $quoted_load=true, $by_category=false) {
         $load_time = ($quoted_load) ? $this->get($job_uid, false) : $this->total_hours($job_uid, true);
+
         if (array_key_exists('quoted_time', $load_time)) {
             $load_time = $load_time['quoted_time'];
         }
@@ -367,7 +368,7 @@ class model_timeclock_jobs implements general_actions {
             
             $employees[$category] = count($category_employees);
             if (0 < $employees[$category]) {
-                $load[$category] = $time/($employees[$category]*8);
+                $load[$category] = round($time/($employees[$category]*8), 2);
             } else {
                 $load[$category] = 0;
             }

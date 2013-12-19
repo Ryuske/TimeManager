@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/10/13
- * Date Modified: 12/18/13
+ * Date Modified: 12/19/13
  * Purpose: Used as a wrapper for various methods surrounding employee categories
  * Version: 2.0
  */
@@ -58,12 +58,15 @@ $sys->router->load_helpers('interfaces', 'general', 'timeclock');
                 if (!array_key_exists('category_id', $_POST)) {
                     $error = '<p>Something wrong with the category ID.</p>';
                 } else {
-                    $category = (!$error) ? $this->sys->db->query("SELECT `category_id` FROM `categories` WHERE `category_id`=:id", array(
+                    $category = $this->sys->db->query("SELECT `category_id` FROM `categories` WHERE `category_id`=:id", array(
                         ':id' => (int) $_POST['category_id']
-                    )) : '';
-
-                    $error .= '<p>Category Doesn\'t Exist.</p>';
+                    ));
+                    
+                    if (empty($category)) {
+                        $error .= '<p>Category Doesn\'t Exist.</p>';
+                    }
                 }
+                
                 break;
             case 'remove':
                 if (!array_key_exists('category_id', $_POST)) {
