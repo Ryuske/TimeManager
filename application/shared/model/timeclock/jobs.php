@@ -351,7 +351,8 @@ class model_timeclock_jobs implements general_actions {
      */
     public function work_load($job_uid, $quoted_load=true, $by_category=false) {
         $load_time = ($quoted_load) ? $this->get($job_uid, false) : $this->total_hours($job_uid, true);
-
+        $zero_load = 0;
+        
         if (array_key_exists('quoted_time', $load_time)) {
             $load_time = $load_time['quoted_time'];
         }
@@ -375,16 +376,22 @@ class model_timeclock_jobs implements general_actions {
         }
         
         if ($by_category) {
+            foreach ($load as &$category_load) {
+                if (0 < $category_load) {
+                    $category_load = 100;
+                }
+            }
             return $load;
         }
         
-        foreach ($employees as $employee_load) {
-            $total_employees += $employee_load;
-        }
         foreach ($load as $category_load) {
             $total_load += $category_load;
+            if (0 < $total_load) {
+                $zero_load = 1;
+            }
         }
         
+        $total_load = (0 === $zero_load) ? 100 : $total_load;
         return $total_load;
     }
  }
