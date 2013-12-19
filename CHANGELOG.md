@@ -1,3 +1,8 @@
+### 12/19/13 - Commit 1 ###
+* Fixed a couple of bugs with adding/editing employees and jobs
+* Now rounding work load percentages to the 10ths place
+* Moved the project into a different directory
+
 ### 12/18/13 - Commit 8 ###
 * Removed screenshots in favor of live example. Check README.md
 

@@ -1,4 +1,4 @@
-var web_root = '/tnbtimeclock/timeclock/';
+var web_root = '/timeclock/timeclock/';
 
 jQuery(document).ready(function() {   
     jQuery('input[type=submit]').button();
