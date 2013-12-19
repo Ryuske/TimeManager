@@ -1,3 +1,6 @@
+### 12/19/13 - Commit 5 ###
+* Fixed printable version of jobs. Forgot to add the new hours breakdown.
+
 ### 12/19/13 - Commit 4 ###
 * Fixing styling issue a little bit until I can impliment https://github.com/Ryuske/TimeClock/issues/28
 

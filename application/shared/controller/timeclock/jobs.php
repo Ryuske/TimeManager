@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/09/13
- * Date Modified: 12/18/13
+ * Date Modified: 12/19/13
  * Purpose: Controller for Jobs/Job Tracking
  * Version: 2.0
  */
@@ -200,6 +200,7 @@ class timeclock_jobs extends controller {
     public function print_friendly($job_uid) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'categories', 'jobs', 'settings'));
         $this->sys->template->job_id = $job_uid;
+        
         if ($this->is_logged_in()) {
             $this->sys->template->job               = $this->model_jobs->get($job_uid);
             $this->sys->template->job_table         = $this->model_jobs->generate_job_table($job_uid);
@@ -209,6 +210,8 @@ class timeclock_jobs extends controller {
             $this->sys->template->categories        = $this->model_categories->get();
             $this->sys->template->total_hours       = $this->model_jobs->total_hours($job_uid, false);
             $this->sys->template->hours_by_category = $this->model_jobs->total_hours($job_uid, true);
+            $this->sys->template->worked_load       = $this->model_jobs->work_load($job_uid, false, true);
+            $this->sys->template->quoted_load       = $this->model_jobs->work_load($job_uid, true, true);
             
             $this->sys->template->title = 'TimeClock | Jobs | Print';
             $parse = 'jobs_print';
