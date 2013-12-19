@@ -1,3 +1,6 @@
+### 12/19/13 - Commit 4 ###
+* Fixing styling issue a little bit until I can impliment https://github.com/Ryuske/TimeClock/issues/28
+
 ### 12/19/13 - Commit 2-3 ###
 * Not sure if it's the right decision but now if there are no employees in a quoted category the load defaults to 100% instead of 0%
 * Whoops - did it backwards

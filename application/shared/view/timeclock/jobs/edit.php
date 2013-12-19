@@ -63,6 +63,7 @@
                 <label>Quote</label>
                 <table class="table">
                     <?php
+                    $substr_end = 12;
                     $time = array('', '', '');
                     for ($i = 0; $i < count($this->sys->template->categories); $i=$i+3) {
                         $time[0] = (array_key_exists($this->sys->template->categories[$i]['category_id'], $this->sys->template->job['quoted_time'])) ? $this->sys->template->job['quoted_time'][$this->sys->template->categories[$i]['category_id']] : '0';
@@ -70,7 +71,7 @@
                         echo '<tr>';
                         echo '
                             <td>
-                                <label>' . $this->sys->template->categories[$i]['category_name'] . '</label>
+                                <label>' . substr(ucwords(strtolower($this->sys->template->categories[$i]['category_name'])), 0, $substr_end) . '</label>
                                 <input class="form-control" name="quote[' . $this->sys->template->categories[$i]['category_id'] . ']" type="text" value="' . $time[0] . '" />
                             </td>
                         ';
@@ -79,7 +80,7 @@
                             
                             echo '
                                 <td>
-                                    <label>' . $this->sys->template->categories[$i+1]['category_name'] . '</label>
+                                    <label>' . substr(ucwords(strtolower($this->sys->template->categories[$i+1]['category_name'])), 0, $substr_end) . '</label>
                                     <input class="form-control" name="quote[' . $this->sys->template->categories[$i+1]['category_id'] . ']" type="text" value="' . $time[1] . '" />
                                 </td>
                             ';
@@ -91,7 +92,7 @@
                             
                             echo '
                                 <td>
-                                    <label>' . $this->sys->template->categories[$i+2]['category_name'] . '</label>
+                                    <label>' . substr(ucwords(strtolower($this->sys->template->categories[$i+2]['category_name'])), 0, $substr_end) . '</label>
                                     <input class="form-control" name="quote[' . $this->sys->template->categories[$i+2]['category_id'] . ']" type="text" value="' . $time[2] . '" />
                                 </td>
                             ';
