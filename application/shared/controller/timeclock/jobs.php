@@ -202,12 +202,12 @@ class timeclock_jobs extends controller {
         $this->sys->template->job_id = $job_uid;
         
         if ($this->is_logged_in()) {
-            $this->sys->template->job               = $this->model_jobs->get($job_uid);
+            $this->sys->template->job               = $this->model_jobs->get($job_uid, false);
             $this->sys->template->job_table         = $this->model_jobs->generate_job_table($job_uid);
             $this->sys->template->start_date        = $this->model_jobs->find_dates($job_uid, 'start');
             $this->sys->template->last_date         = $this->model_jobs->find_dates($job_uid, 'end');
             $this->sys->template->employees         = $this->model_employees->get();
-            $this->sys->template->categories        = $this->model_categories->get();
+            $this->sys->template->categories        = $this->model_categories->get(true);
             $this->sys->template->total_hours       = $this->model_jobs->total_hours($job_uid, false);
             $this->sys->template->hours_by_category = $this->model_jobs->total_hours($job_uid, true);
             $this->sys->template->worked_load       = $this->model_jobs->work_load($job_uid, false, true);
