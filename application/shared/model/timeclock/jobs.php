@@ -377,7 +377,7 @@ class model_timeclock_jobs implements general_actions {
         
         if ($by_category) {
             foreach ($load as &$category_load) {
-                if (0 < $category_load) {
+                if (0 === $category_load) {
                     $category_load = 100;
                 }
             }
