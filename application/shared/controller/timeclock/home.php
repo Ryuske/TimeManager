@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 11/13/13
- * Date Modified: 12/18/13
+ * Date Modified: 12/23/13
  * Purpose: Default controller - used for top level pages (home, about, settings, etc)
  * Version: 2.0
  */
@@ -146,6 +146,7 @@ class timeclock_home extends controller {
         //Parses the HTML from the view
         $this->model_renderPage->parse($parse, $full_page);
     }
+    
     /**
      * Purpose: Used for the initial installation of TimeClock
      */
@@ -166,6 +167,15 @@ class timeclock_home extends controller {
         }
 
         $this->model_renderPage->parse($parse, False);
+    }
+    
+    /**
+     * Purpose: Returns the current_time according to the server
+     */
+    public function current_time() {
+        $this->sys->template->response = date('g:ia', time());
+        
+        $this->sys->template->parse($this->sys->config->timeclock_subdirectories . '_payperiod_response');
     }
 } //End timeclock_home
 
