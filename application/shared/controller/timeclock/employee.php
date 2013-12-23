@@ -228,9 +228,6 @@ class timeclock_employee extends controller {
             case 'total_hours':
                 $response = $this->model_payPeriod->total_hours_for_pay_period($employee[0]['employee_id'], $pay_period[0][0]);
                 break;
-            case 'current_time':
-                $response = date('g:ia', time());
-                break;
             default:
                 $response = NULL;
         }

@@ -1,3 +1,6 @@
+### 12/23/13 - Commit 2 ###
+* Moved time to /timeclock/current_time instead of being under the employee API
+
 ### 12/23/13 - Commit 1 ###
 * https://github.com/Ryuske/TimeClock/issues/33 <-- Fixed API errors
 * Added `uid` to employees API
