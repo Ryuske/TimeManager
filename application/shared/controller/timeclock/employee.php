@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 11/15/13
- * Date Modified: 12/18/13
+ * Date Modified: 12/23/13
  * Purpose: Employee controller
  * Version: 2.0
  */
@@ -184,11 +184,7 @@ class timeclock_employee extends controller {
         ", array(
             ':uid' => $uid
         ));
-        $pay_period_query = $this->sys->db->query("SELECT `time`,`date`,`operation` FROM `employee_punch` WHERE `employee_id`=:employee_id ORDER BY `employee_punch_id` DESC", array(
-            ':employee_id' => (int) $employee[0]['employee_id']
-        ));
         
-        $pay_period = $this->model_payPeriod->get_pay_period($pay_period);
         $response = 'Error';
         
         if (empty($employee)) {
@@ -197,10 +193,19 @@ class timeclock_employee extends controller {
             
             return False;
         }
+        
+        $pay_period_query = $this->sys->db->query("SELECT `time`,`date`,`operation` FROM `employee_punch` WHERE `employee_id`=:employee_id ORDER BY `employee_punch_id` DESC", array(
+            ':employee_id' => (int) $employee[0]['employee_id']
+        ));
+        
+        $pay_period = $this->model_payPeriod->get_pay_period($pay_period);
 
         switch ($data) {
             case 'name':
                 $response = $employee[0]['employee_firstname'] . ' ' . $employee[0]['employee_lastname'];
+                break;
+            case 'uid':
+                $response = $employee[0]['employee_uid'];
                 break;
             case 'role':
                 $response = $employee[0]['employee_role'];
@@ -222,6 +227,9 @@ class timeclock_employee extends controller {
                 break;
             case 'total_hours':
                 $response = $this->model_payPeriod->total_hours_for_pay_period($employee[0]['employee_id'], $pay_period[0][0]);
+                break;
+            case 'current_time':
+                $response = date('g:ia', time());
                 break;
             default:
                 $response = NULL;
