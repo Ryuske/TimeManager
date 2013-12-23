@@ -1,3 +1,11 @@
+### 12/23/13 - Commit 1 ###
+* https://github.com/Ryuske/TimeClock/issues/33 <-- Fixed API errors
+* Added `uid` to employees API
+* Added getting `current_time` to employees API
+
+### 12/19/13 - Commit 7 ###
+* Fixed some typos
+
 ### 12/19/13 - Commit 5-6 ###
 * Fixed printable version of jobs. Forgot to add the new hours breakdown.
 * Categories were being ordered wrong on the printable version
