@@ -1,3 +1,6 @@
+### 12/27/13 - Commit 1 ###
+* Fixed issue with payperiod API not showing `Error` when an incorrect ID was supplied
+
 ### 12/23/13 - Commit 2 ###
 * Moved time to /timeclock/current_time instead of being under the employee API
 
