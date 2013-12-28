@@ -59,7 +59,7 @@ class timeclock_payperiod extends controller {
         if ('Error' == $response) {
             $this->sys->template->response = $response;
         } else {
-            $this->sys->template->response = $employee[0]['employee_firstname'] . ', ' . $response[0] . ', ' . $response[1]['date'] . ', ' . $response[1]['time'];
+            $this->sys->template->response = $employee[0]['employee_firstname'] . ', ' . $response[0] . ', ' . $response[1]['date'] . ', ' . date('g:ia', $response[1]['time']);
         }
 
         $this->sys->template->parse($this->sys->config->timeclock_subdirectories . '_payperiod_response');
