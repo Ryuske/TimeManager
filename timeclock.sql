@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 18, 2013 at 08:54 AM
+-- Generation Time: Dec 31, 2013 at 11:20 AM
 -- Server version: 5.5.31-0+wheezy1
 -- PHP Version: 5.4.4-14+deb7u5
 
@@ -190,8 +190,8 @@ ALTER TABLE `employees`
 -- Constraints for table `employee_punch`
 --
 ALTER TABLE `employee_punch`
-  ADD CONSTRAINT `employee_punch_ibfk_1` FOREIGN KEY (`pay_period_id`) REFERENCES `pay_periods` (`pay_period_id`),
-  ADD CONSTRAINT `employee_punch_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`);
+  ADD CONSTRAINT `employee_punch_ibfk_2` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `employee_punch_ibfk_1` FOREIGN KEY (`pay_period_id`) REFERENCES `pay_periods` (`pay_period_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `jobs`
@@ -203,8 +203,8 @@ ALTER TABLE `jobs`
 -- Constraints for table `job_punch`
 --
 ALTER TABLE `job_punch`
-  ADD CONSTRAINT `job_punch_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`),
-  ADD CONSTRAINT `job_punch_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`);
+  ADD CONSTRAINT `job_punch_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `job_punch_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`) ON DELETE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

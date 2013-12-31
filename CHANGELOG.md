@@ -1,3 +1,6 @@
+### 12/31/13 - Commit 3 ###
+* https://github.com/Ryuske/TimeClock/issues/36 <-- Fixed foreign keys
+
 ### 12/31/13 - Commit 2 ###
 * https://github.com/Ryuske/TimeClock/issues/28 <-- Enforced types
 * Got rid of file versions, and now it's only in README.md
