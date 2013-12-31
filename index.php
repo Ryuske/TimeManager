@@ -2,10 +2,10 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/14/13
- * @Date Modified: 12/19/13
+ * @Date Modified: 12/31/13
  * @Purpose: Front Controller
  *
- * Front controller for TimeClock
+ * Front controller for Time Manager
  */
 
 /**
@@ -21,7 +21,7 @@ define('__PROJECT_ENVIRONMENT', 'dev');
  * Should look something like /var/www/framework (i.e. the framework *SHOULD NOT* be in a web accessible directory)
  * This is the only file that should be web accessible (aside from assets, like js/css/images)
  */
-define('__BASE_PATH', DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'www' . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'kenyon.sexypenguins.com' . DIRECTORY_SEPARATOR . 'timeclock' . DIRECTORY_SEPARATOR);
+define('__BASE_PATH', DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'www' . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'kenyon.sexypenguins.com' . DIRECTORY_SEPARATOR . 'timemanager' . DIRECTORY_SEPARATOR);
 
 /**
  * Define the path to the system directory
