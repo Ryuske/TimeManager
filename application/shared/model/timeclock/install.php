@@ -2,9 +2,8 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 11/26/13
- * Date Modified: 12/18/13
+ * Date Modified: 12/31/13
  * Purpose: Various functions that apply to installing timeclock
- * Version: 2.0
  */
 class model_timeclock_install {
     /**
@@ -66,9 +65,9 @@ class model_timeclock_install {
         }
         
         $add_user = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `category_id`, `employee_role`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', '', '1', 'admin', :firstname, :lastname, :username, :password)", array(
-            ':firstname' => $_POST['firstname'],
-            ':lastname' => $_POST['lastname'],
-            ':username' => $_POST['username'],
+            ':firstname' => ucwords(substr($_POST['firstname'], 0, 24)),
+            ':lastname' => ucwords(substr($_POST['lastname'], 0, 24)),
+            ':username' => substr($_POST['username'], 0, 28),
             ':password' => md5($_POST['password'])
         ));
         

@@ -2,9 +2,8 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 11/15/13
- * Date Modified: 12/23/13
+ * Date Modified: 12/31/13
  * Purpose: Employee controller
- * Version: 2.0
  */
 
 /**
@@ -166,7 +165,7 @@ class timeclock_employee extends controller {
         $this->load_dependencies(array('payPeriod', 'settings'));
         
         $check_employee_id = $this->sys->db->query("SELECT `employee_uid` FROM `employees` WHERE `employee_id`=:id", array(
-            ':id' => $uid
+            ':id' => (int) substr($uid, 0, 6)
         ));
         
         if (!empty($check_employee_id)) {
@@ -182,7 +181,7 @@ class timeclock_employee extends controller {
             WHERE `employee_uid`=:uid
             ORDER BY job.punch_id DESC
         ", array(
-            ':uid' => $uid
+            ':uid' => substr($uid, 0, 64)
         ));
         
         $response = 'Error';
@@ -195,7 +194,7 @@ class timeclock_employee extends controller {
         }
         
         $pay_period_query = $this->sys->db->query("SELECT `time`,`date`,`operation` FROM `employee_punch` WHERE `employee_id`=:employee_id ORDER BY `employee_punch_id` DESC", array(
-            ':employee_id' => (int) $employee[0]['employee_id']
+            ':employee_id' => (int) substr($employee[0]['employee_id'], 0, 6)
         ));
         
         $pay_period = $this->model_payPeriod->get_pay_period($pay_period);

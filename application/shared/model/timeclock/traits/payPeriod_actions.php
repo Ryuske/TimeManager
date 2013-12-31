@@ -2,9 +2,8 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/5/13
- * Date Modified: 12/18/13
+ * Date Modified: 12/31/13
  * Purpose: A trait for general payperiod actions
- * Version: 2.0
  */
 
 trait payPeriod_actions {
@@ -24,8 +23,8 @@ trait payPeriod_actions {
         }
         
         $check_pay_period = $this->sys->db->query("SELECT `pay_period_id` FROM `pay_periods` WHERE `pay_period_monday`=:monday AND `pay_period_sunday`=:sunday", array(
-            ':monday' => (int) $monday[0],
-            ':sunday' => (int) $sunday[0]
+            ':monday' => (int) substr($monday[0], 0, 20),
+            ':sunday' => (int) substr($sunday[0], 0, 20)
         ));
         
         if (!empty($check_pay_period)) {
@@ -33,13 +32,13 @@ trait payPeriod_actions {
         }
         
         $add_pay_period = $this->sys->db->query("INSERT INTO `pay_periods` (`pay_period_id`, `pay_period_monday`, `pay_period_sunday`) VALUES ('', :monday, :sunday)", array(
-            ':monday' => (int) $monday[0],
-            ':sunday' => (int) $sunday[0]
+            ':monday' => (int) substr($monday[0], 0, 20),
+            ':sunday' => (int) substr($sunday[0], 0, 20)
         ));
         
         $check_pay_period = $this->sys->db->query("SELECT `pay_period_id` FROM `pay_periods` WHERE `pay_period_monday`=:monday AND `pay_period_sunday`=:sunday", array(
-            ':monday' => (int) $monday[0],
-            ':sunday' => (int) $sunday[0]
+            ':monday' => (int) substr($monday[0], 0, 20),
+            ':sunday' => (int) substr($sunday[0], 0, 20)
         ));
         
         return $check_pay_period;
@@ -53,17 +52,17 @@ trait payPeriod_actions {
 
         if ((int) $pay_period[2] === (int) $_POST['id']) {
             $get_dates = $this->sys->db->query("SELECT `date` FROM `employee_punch` WHERE `pay_period_id`=:pay_period_id AND `employee_id`=:employee_id AND `date`=:date", array(
-                ':pay_period_id' => (int) $pay_period[2],
-                ':employee_id' => (int) $_POST['employee_id'],
-                ':date' => $_POST['date']
+                ':pay_period_id'    => (int) substr($pay_period[2], 0, 4),
+                ':employee_id'      => (int) substr($_POST['employee_id'], 0, 6),
+                ':date'             => substr($_POST['date'], 0, 8)
             ));
             
             //Used to determin if all the previous in/out slots have been filled before adding a new date
             if (is_int(count($get_dates)/6)) {
                 $add_date = $this->sys->db->query("INSERT INTO `employee_punch` (`employee_punch_id`, `pay_period_id`, `employee_id`, `time`, `date`, `operation`) VALUES ('', :pay_period_id, :employee_id, '', :date, 'in')", array(
-                    ':pay_period_id' => (int) $pay_period[2],
-                    ':employee_id' => (int) $_POST['employee_id'],
-                    ':date' => $_POST['date']
+                    ':pay_period_id'    => (int) substr($pay_period[2], 0, 4),
+                    ':employee_id'      => (int) substr($_POST['employee_id'], 0, 6),
+                    ':date'             => substr($_POST['date'], 0, 8)
                 ));
                 
                 return true;
@@ -106,8 +105,8 @@ trait payPeriod_actions {
         $current_pay_period = $this->get_pay_period();
         
         $check_pay_period = $this->sys->db->query("SELECT `pay_period_id` FROM `pay_periods` WHERE `pay_period_monday`=:monday AND `pay_period_sunday`=:sunday", array(
-            ':monday' => $current_pay_period[0][0],
-            ':sunday' => $current_pay_period[1][0]
+            ':monday' => (int) substr($current_pay_period[0][0], 0, 20),
+            ':sunday' => (int) substr($current_pay_period[1][0], 0, 20)
         ));
         
         if (empty($check_pay_period)) {
@@ -115,8 +114,8 @@ trait payPeriod_actions {
         }
         
         $last_operation = $this->sys->db->query("SELECT `operation` FROM `employee_punch` WHERE `employee_id`=:id AND `pay_period_id`=:pay_period_id ORDER BY `employee_punch_id` DESC LIMIT 0,1", array(
-            ':id' => (int) $employee_id,
-            ':pay_period_id' => (int) $check_pay_period[0]['pay_period_id']
+            ':id'               => (int) substr($employee_id, 0, 6),
+            ':pay_period_id'    => (int) substr($check_pay_period[0]['pay_period_id'], 0, 4)
         ));
         
         if (empty($last_operation)) {
@@ -133,10 +132,10 @@ trait payPeriod_actions {
         $date_time = array('date' => date($this->_dateFormat), 'time' => time());
         
         $punch_in = $this->sys->db->query("INSERT INTO `employee_punch` (`pay_period_id`, `employee_id`, `time`, `date`, `operation`) VALUES (:pay_period_id, :employee_id, :time, :date, 'in')", array(
-            ':pay_period_id' => (int) $pay_period_id,
-            ':employee_id' => (int) $employee_id,
-            ':time' => $date_time['time'],
-            ':date' => $date_time['date']
+            ':pay_period_id'    => (int) substr($pay_period_id, 0, 4),
+            ':employee_id'      => (int) substr($employee_id, 0, 6),
+            ':time'             => (int) substr($date_time['time'], 0, 20),
+            ':date'             => substr($date_time['date'], 0, 8)
         ));
         
         return array('in', $date_time);
@@ -149,10 +148,10 @@ trait payPeriod_actions {
         $date_time = array('date' => date($this->_dateFormat), 'time' => time());
         
         $punch_out = $this->sys->db->query("INSERT INTO `employee_punch` (`pay_period_id`, `employee_id`, `time`, `date`, `operation`) VALUES (:pay_period_id, :employee_id, :time, :date, 'out')", array(
-            ':pay_period_id' => (int) $pay_period_id,
-            ':employee_id' => (int) $employee_id,
-            ':time' => $date_time['time'],
-            ':date' => $date_time['date']
+            ':pay_period_id'    => (int) substr($pay_period_id, 0, 4),
+            ':employee_id'      => (int) substr($employee_id, 0, 6),
+            ':time'             => (int) substr($date_time['time'], 0, 20),
+            ':date'             => substr($date_time['date'], 0, 8)
         ));
         
         return array('out', $date_time);
