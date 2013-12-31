@@ -1,3 +1,7 @@
+### 12/31/13 - Commit 1 ###
+* https://github.com/Ryuske/TimeClock/issues/35 <- Fixed pagination
+* https://github.com/Ryuske/TimeClock/issues/29 <-- Renamed Jobs to Jobs - Quotes
+
 ### 12/27/13 - Commit 2 ###
 * Updated format on PayPeriod API to match wiki
 

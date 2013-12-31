@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 11/13/13
- * Date Modified: 12/18/13
+ * Date Modified: 12/31/13
  * Purpose: Used to load additional page stuff (like HTML headers and what not)
  * Version: 2.0
  */
@@ -78,13 +78,18 @@ class model_timeclock_renderPage {
                     $sys->template->link3  = (3 === $last_page) ? '<li><a href="' . $page . '3">3</a></li>' : '<li><a href="' . $page . '3">3 ...</a></li>';
                 }
                 break;
-            case $current_page >= ($last_page-2): //Use case 3 where "... 2" "3" "4"
+            case $current_page == ($last_page-1): //Use case 3 where "... 2" "3" "4"
+                $sys->template->link1 = (1 === ($page_link['previous'] - 1)) ? '<li><a href="' . $page . '1">1</a></li>' : '<li><a href="' . $page . ($page_link['previous']-1) . '">... ' . ($page_link['previous']-1) . '</a></li>';
+                $sys->template->link2 = '<li class="active"><a href="#">' . $current_page . '</a></li>';
+                $sys->template->link3  = '<li><a href="' . $page . $page_link['next'] .'">' . $page_link['next'] . '</a></li>';
+                break;
+            case $current_page == $last_page:
                 $sys->template->link1 = (1 === ($page_link['previous'] - 1)) ? '<li><a href="' . $page . '1">1</a></li>' : '<li><a href="' . $page . ($page_link['previous']-1) . '">... ' . ($page_link['previous']-1) . '</a></li>';
                 $sys->template->link2 = '<li><a href="' . $page . $page_link['previous'] . '">' . $page_link['previous'] . '</a></li>';
                 $sys->template->link3 = '<li class="active"><a href="#">' . $current_page . '</a></li>';
                 break;
             default: //Use casee where "... 2" "3" "4 ..."
-                $sys->template->link1 = '<li><a href="' . $page . $page_link['previous'] . '">' . $page_link['previous'] . ' ...</a></li>';
+                $sys->template->link1 = '<li><a href="' . $page . $page_link['previous'] . '">... ' . $page_link['previous'] . '</a></li>';
                 $sys->template->link2 = '<li class="active"><a href="#">' . $current_page . '</a></li>';
                 $sys->template->link3  = '<li><a href="' . $page . $page_link['next'] .'">' . $page_link['next'] . ' ...</a></li>';
         }

@@ -13,7 +13,7 @@
     <div class="col-sm-12">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title">Jobs</h3>
+                <h3 class="panel-title">Jobs - Quotes</h3>
             </div>
             <div class="panel-body">
                 <table class="table table-striped jobs">
