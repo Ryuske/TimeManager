@@ -38,21 +38,22 @@ class timemanager_jobs extends controller {
     protected function is_logged_in() {
         return $this->model_loggedIn->status();
     }
+    
     /**
-     * Purpose: Loads the home page for jobs
+     * Purpose: Loads the home page for jobs; Also has information about job quotes
      */
     public function index($page_id=1) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'jobs'));
         $this->login_failed();
 
         if ($this->is_logged_in()) {
-            $this->sys->template->admin         = $this->model_settings->is_admin();
-            $this->sys->template->title         = 'Time Manager | Jobs';
-            $this->sys->template->jobs_active   = 'class="active"';
-            $this->sys->template->page_id       = (int) $page_id;
-            $this->sys->template->paginate_by   = $this->model_settings->paginate_by;
-            $this->sys->template->jobs          = $this->model_jobs->get();
-            $this->sys->template->pagination    = $this->model_renderPage->generate_pagination('jobs/home', 'jobs', (int) $page_id);
+            $this->sys->template->admin                 = $this->model_settings->is_admin();
+            $this->sys->template->title                 = 'Time Manager | Jobs | Quotes';
+            $this->sys->template->jobs_quoting_active   = 'class="active"';
+            $this->sys->template->page_id               = (int) $page_id;
+            $this->sys->template->paginate_by           = $this->model_settings->paginate_by;
+            $this->sys->template->jobs                  = $this->model_jobs->get();
+            $this->sys->template->pagination            = $this->model_renderPage->generate_pagination('jobs/home', 'jobs', (int) $page_id);
             
             $parse = ($this->sys->template->admin) ? 'admin_jobs_home' : 'jobs_home';
             $full_page = True;
@@ -65,6 +66,35 @@ class timemanager_jobs extends controller {
         //Parses the HTML from the view
         $this->model_renderPage->parse($parse, $full_page);
     }
+    
+    /**
+     * Purpose: Loads page that has information about job tracking
+     */
+    public function tracking($page_id=1) {
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'jobs'));
+        $this->login_failed();
+
+        if ($this->is_logged_in()) {
+            $this->sys->template->admin                 = $this->model_settings->is_admin();
+            $this->sys->template->title                 = 'Time Manager | Jobs | Tracking';
+            $this->sys->template->jobs_tracking_active  = 'class="active"';
+            $this->sys->template->page_id               = (int) $page_id;
+            $this->sys->template->paginate_by           = $this->model_settings->paginate_by;
+            $this->sys->template->jobs                  = $this->model_jobs->get();
+            $this->sys->template->pagination            = $this->model_renderPage->generate_pagination('jobs/home', 'jobs', (int) $page_id);
+            
+            $parse = ($this->sys->template->admin) ? 'admin_jobs_tracking' : 'jobs_tracking';
+            $full_page = True;
+        } else {
+            $this->sys->template->title = 'Time Manager | Sign In';
+            $parse = 'login';
+            $full_page = False;
+        }
+
+        //Parses the HTML from the view
+        $this->model_renderPage->parse($parse, $full_page);
+    }
+    
     /**
      * Purpose: Load add jobs page
      */

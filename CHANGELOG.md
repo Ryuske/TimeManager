@@ -1,3 +1,6 @@
+### 12/31/13 - Commit 6 ###
+* https://github.com/Ryuske/TimeManager/issues/30 <-- Added job tracking information
+
 ### 12/31/13 - Commit 5 ###
 * https://github.com/Ryuske/TimeManager/issues/39 <-- Updated jobs delete view table
 * https://github.com/Ryuske/TimeManager/issues/38 <-- Fixed Display As when deleting an employee

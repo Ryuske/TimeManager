@@ -7,7 +7,9 @@ jQuery(document).ready(function() {
         altField: '.date_to_add',
         gotoCurrent: true
     });
+    
+    jQuery('.inline_date').datepicker();
 
-    jQuery('.date').datepicker('option', 'dateFormat', 'mm/dd/y');
-    jQuery('.date').datepicker('option', 'altFormat', 'mm/dd/y');
+    jQuery('.date, .inline_date').datepicker('option', 'dateFormat', 'mm/dd/y');
+    jQuery('.date, .inline_date').datepicker('option', 'altFormat', 'mm/dd/y');
 });

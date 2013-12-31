@@ -67,6 +67,15 @@ class model_timemanager_jobs implements general_actions {
             if (!array_key_exists('job_name', $_POST) || '' === $_POST['job_name']) {
                 $error .= '<p>Please enter a job name.</p>';
             }
+            if (!array_key_exists('job_quantity', $_POST) || '' === $_POST['job_quantity']) {
+                $error .= '<p>Please enter a quantity.</p>';
+            }
+            if (!array_key_exists('job_start_date', $_POST) || '' === $_POST['job_start_date']) {
+                $error .= '<p>Please enter a start date for the job.</p>';
+            }
+            if (!array_key_exists('job_due_date', $_POST) || '' === $_POST['job_due_date']) {
+                $error .= '<p>Please enter a due date for the job.</p>';
+            }
             if ((!array_key_exists('uid', $_POST) || '' === $_POST['uid']) && !array_key_exists('generate_uid', $_POST)) {
                 $error .= '<p>Please either enter a UID or select \'Generate ID.\'</p>';
             }
@@ -173,11 +182,14 @@ class model_timemanager_jobs implements general_actions {
     public function add() {
         $error = $this->check_input('add');
 
-        $this->sys->db->query("INSERT INTO `jobs` (`job_id`, `job_uid`, `job_name`, `client`, `status`, `quoted_time`) VALUES (NULL, :id, :name, :client, 'na', :quote)", array(
-            ':id'       => substr($_POST['uid'], 0, 256),
-            ':name'     => ucwords(strtolower(substr($_POST['job_name'], 0, 256))),
-            ':client'   => (int) substr($_POST['client'], 0, 6),
-            ':quote'    => $_POST['quote']
+        $this->sys->db->query("INSERT INTO `jobs` (`job_id`, `job_uid`, `job_name`, `client`, `job_quantity`, `job_start_date`, `job_due_date`, `status`, `quoted_time`) VALUES (NULL, :id, :name, :client, :quantity, :start_date, :due_date, 'na', :quote)", array(
+            ':id'           => substr($_POST['uid'], 0, 256),
+            ':name'         => ucwords(strtolower(substr($_POST['job_name'], 0, 256))),
+            ':client'       => (int) substr($_POST['client'], 0, 6),
+            ':quantity'     => (int) substr($_POST['job_quantity'], 0, 6),
+            ':start_date'   => substr($_POST['job_start_date'], 0, 8),
+            ':due_date'     => substr($_POST['job_due_date'], 0, 8),
+            ':quote'        => $_POST['quote']
         ));
         
         if (!$error) {
@@ -195,13 +207,16 @@ class model_timemanager_jobs implements general_actions {
     public function edit() {
         $error = $this->check_input('edit');
         
-        $this->sys->db->query("UPDATE `jobs` SET `job_uid`=:uid, `job_name`=:name, `client`=:client, `status`=:status, `quoted_time`=:quote WHERE `job_id`=:id", array(
-            ':id'       => (int) substr($_POST['id'], 0, 10),
-            ':uid'      => substr($_POST['uid'], 0, 256),
-            ':name'     => ucwords(strtolower(substr($_POST['job_name'], 0, 256))),
-            ':client'   => (int) substr($_POST['client'], 0, 6),
-            ':status'   => $_POST['status'],
-            ':quote'    => $_POST['quote']
+        $this->sys->db->query("UPDATE `jobs` SET `job_uid`=:uid, `job_name`=:name, `client`=:client, `job_quantity`=:quantity, `job_start_date`=:start_date, `job_due_date`=:due_date, `status`=:status, `quoted_time`=:quote WHERE `job_id`=:id", array(
+            ':id'           => (int) substr($_POST['id'], 0, 10),
+            ':uid'          => substr($_POST['uid'], 0, 256),
+            ':name'         => ucwords(strtolower(substr($_POST['job_name'], 0, 256))),
+            ':client'       => (int) substr($_POST['client'], 0, 6),
+            ':quantity'     => (int) substr($_POST['job_quantity'], 0, 6),
+            ':start_date'   => substr($_POST['job_start_date'], 0, 8),
+            ':due_date'     => substr($_POST['job_due_date'], 0, 8),
+            ':status'       => $_POST['status'],
+            ':quote'        => $_POST['quote']
         ));
         
         if (!$error) {
@@ -392,6 +407,19 @@ class model_timemanager_jobs implements general_actions {
         
         $total_load = (0 === $zero_load) ? 100 : $total_load;
         return $total_load;
+    }
+    
+    /**
+     * Purpose: Used to figure out what the last category worked on a job was
+     */
+    public function last_operation($job_id) {
+        $last_category = $this->sys->db->query("SELECT category.category_name FROM `job_punch` AS job LEFT JOIN `categories` AS category on category.category_id=job.category_id WHERE job.job_id=:id ORDER BY job.time ASC LIMIT 0,1", array(
+            ':id' => (int) $job_id
+        ));
+        
+        $response = (!empty($last_category)) ? $last_category[0]['category_name'] : 'n/a';
+        
+        return $response;
     }
  }
 

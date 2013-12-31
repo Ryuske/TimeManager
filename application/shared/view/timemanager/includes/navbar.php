@@ -13,6 +13,7 @@
       <ul class="nav navbar-nav">
         <li {home_active}><a href="{timemanager_root}main">Home</a></li>
         <li {jobs_active}><a href="{timemanager_root}jobs">Jobs - Quotes</a></li>
+        <li {jobs_tracking_active}><a href="{timemanager_root}jobs/tracking">Jobs - Tracking</a></li>
         <li {about_active}><a href="{timemanager_root}about">About</a></li>
         <li><a href="{timemanager_root}logout">Logout</a></l>
       </ul>

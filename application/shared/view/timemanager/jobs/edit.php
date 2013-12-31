@@ -34,6 +34,9 @@
             </div>
             <div class="group">
                 <input class="form-control" name="job_name" type="text" value="{job['job_name']}" required="required" />
+                <input class="form-control" name="job_quantity" type="text" value="{job['job_quantity']}" required="required" />
+                <input class="form-control inline_date" name="job_start_date" type="text" value="{job['job_start_date']}" required="required" />
+                <input class="form-control inline_date" name="job_due_date" type="text" value="{job['job_due_date']}" required="required" />
             </div>
             <div class="group">
                 <label>Status</label>

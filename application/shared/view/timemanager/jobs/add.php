@@ -32,6 +32,9 @@
             </div>
             <div class="group">
                 <input class="form-control" name="job_name" type="text" placeholder="Job Name" required="required" />
+                <input class="form-control" name="job_quantity" type="text" placeholder="Quantity" required="required" />
+                <input class="form-control inline_date" name="job_start_date" type="text" placeholder="Start Date" required="required" />
+                <input class="form-control inline_date" name="job_due_date" type="text" placeholder="Due Date" required="required" />
             </div>
             <div class="group">
                 <label>Quote</label>
