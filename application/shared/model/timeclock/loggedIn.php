@@ -2,9 +2,8 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 11/13/13
- * Date Modified: 12/18/13
+ * Date Modified: 12/31/13
  * Purpose: Various functions that apply to logged in users (or not logged in)
- * Version: 2.0
  */
 
 class model_timeclock_loggedIn {
@@ -49,7 +48,7 @@ class model_timeclock_loggedIn {
         if (isset($_POST['login'])) {
             $result = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_username`=:username AND `employee_password`=:password",
                 array(
-                    ':username' => $_POST['username'],
+                    ':username' => substr($_POST['username'], 0, 28),
                     ':password' => md5($_POST['password'])
                 ));
             

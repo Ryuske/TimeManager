@@ -2,9 +2,8 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 11/15/13
- * Date Modified: 12/18/13
+ * Date Modified: 12/31/13
  * Purpose: Logout controller
- * Version: 2.0
  */
 
 /**

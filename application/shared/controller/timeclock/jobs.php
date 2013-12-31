@@ -2,9 +2,8 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/09/13
- * Date Modified: 12/19/13
+ * Date Modified: 12/31/13
  * Purpose: Controller for Jobs/Job Tracking
- * Version: 2.0
  */
 
 class timeclock_jobs extends controller {
@@ -240,7 +239,7 @@ class timeclock_jobs extends controller {
             WHERE job.job_uid=:job_uid
             ORDER BY punch.punch_id DESC
         ", array(
-            ':job_uid'      => $job_uid
+            ':job_uid' => substr($job_uid, 0, 256)
         ));
         
         if (!empty($check_ids)) {
@@ -283,7 +282,7 @@ class timeclock_jobs extends controller {
         $response = 'Error';
         
         $check_employee_id = $this->sys->db->query("SELECT `employee_uid` FROM `employees` WHERE `employee_id`=:id", array(
-            ':id' => $employee_uid
+            ':id' => (int) substr($employee_uid, 0, 6)
         ));
         
         if (!empty($check_employee_id)) {
@@ -296,8 +295,8 @@ class timeclock_jobs extends controller {
             FROM `jobs` AS job JOIN `employees` AS employee on employee.employee_uid=:employee_uid
             WHERE job.job_uid=:job_uid
         ", array(
-            ':job_uid'      => $job_uid,
-            ':employee_uid' => $employee_uid
+            ':job_uid'      => substr($job_uid, 0, 256),
+            ':employee_uid' => substr($employee_uid, 0, 64)
         ));
 
         if (!empty($check_ids)) {

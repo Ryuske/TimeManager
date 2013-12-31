@@ -2,9 +2,8 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/09/13
- * Date Modified: 12/18/13
+ * Date Modified: 12/31/13
  * Purpose: Used as a wrapper for various methods surrounding clients
- * Version: 2.0
  */
 
 global $sys;
@@ -16,7 +15,7 @@ class model_timeclock_clients implements general_actions {
         $this->sys = &$sys;
         
         $is_admin = $this->sys->db->query("SELECT `employee_role` FROM `employees` WHERE `employee_id`=:id", array(
-            ':id' => (int) $this->sys->session['user']
+            ':id' => (int) substr($this->sys->session['user'], 0, 6)
         ));
         
         if (!empty($is_admin)) {
@@ -59,7 +58,7 @@ class model_timeclock_clients implements general_actions {
                     $error = '<p>Something wrong with the client ID.</p>';
                 } else {
                     $client = (!$error) ? $this->sys->db->query("SELECT `client_id` FROM `clients` WHERE `client_id`=:id", array(
-                        ':id' => (int) $_POST['client_id']
+                        ':id' => (int) substr($_POST['client_id'], 0, 6)
                     )) : '';
                     
                     $error .= '<p>Client Doesn\'t Exist.</p>';
@@ -90,7 +89,7 @@ class model_timeclock_clients implements general_actions {
         
         if (!$error) {
             $this->sys->db->query("INSERT INTO `clients` (`client_id`, `client_name`) VALUES (NULL, :name)", array(
-                ':name' => $_POST['client_name']
+                ':name' => ucwords(strtolower(substr($_POST['client_name'], 0, 256)))
             ));
             
             $this->sys->template->response = '<div class="form_success">Client Added Successfully</div>';
@@ -108,8 +107,8 @@ class model_timeclock_clients implements general_actions {
         
         if (!$error) {
             $this->sys->db->query("UPDATE `clients` SET `client_name`=:name WHERE `client_id`=:id", array(
-                ':name' => $_POST['client_name'],
-                ':id'   => (int) $_POST['client_id']
+                ':name' => ucwords(strtolower(substr($_POST['client_name'], 0, 256))),
+                ':id'   => (int) substr($_POST['client_id'], 0, 6)
             ));
 
             $this->sys->template->response = '<div class="form_success">Client Updated Successfully</div>';
@@ -127,7 +126,7 @@ class model_timeclock_clients implements general_actions {
         
         if (!$error) {
             $this->sys->db->query("DELETE FROM `clients` WHERE `client_id`=:id", array(
-                ':id' => (int) $_POST['client_id']
+                ':id' => (int) substr($_POST['client_id'], 0, 6)
             ));
             
             $this->sys->template->response = '<div class="form_success">Client Removed Successfully</div>';

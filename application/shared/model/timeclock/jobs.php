@@ -2,9 +2,8 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/09/13
- * Date Modified: 12/19/13
+ * Date Modified: 12/31/13
  * Purpose: Used as a wrapper for various methods surrounding jobs
- * Version: 2.0
  */
 
 global $sys;
@@ -23,7 +22,7 @@ class model_timeclock_jobs implements general_actions {
         $this->sys = &$sys;
         
         $is_admin = $this->sys->db->query("SELECT `employee_role` FROM `employees` WHERE `employee_id`=:id", array(
-            ':id' => (int) $this->sys->session['user']
+            ':id' => (int) substr($this->sys->session['user'], 0, 6)
         ));
         
         if (!empty($is_admin)) {
@@ -77,13 +76,13 @@ class model_timeclock_jobs implements general_actions {
                     $_POST['uid'] = mt_rand(0, 99999);
                     
                     $query = $this->sys->db->query("SELECT `job_id` FROM `jobs` WHERE `job_uid`=:id", array(
-                        ':id' => $_POST['uid']
+                        ':id' => substr($_POST['uid'], 0, 256)
                     ));
                 } while (!empty($query));
                 
             } else {
                 $client = $this->sys->db->query("SELECT client.client_name, job.job_name FROM `clients` AS client LEFT JOIN `jobs` AS job on job.job_uid=:uid WHERE client.client_id=job.client", array(
-                    ':uid' => $_POST['uid']
+                    ':uid' => substr($_POST['uid'], 0, 256)
                 ));
                 
                 if (!empty($check_job)) {
@@ -122,7 +121,7 @@ class model_timeclock_jobs implements general_actions {
             case 'edit':
                 if (array_key_exists('id', $_POST)) {
                     $check_job = $this->sys->db->query("SELECT `job_uid` FROM `jobs` WHERE `job_id`=:id", array(
-                        ':id' => (int) $_POST['id']
+                        ':id' => (int) substr($_POST['id'], 0, 10)
                     ));
                     
                     if (empty($check_job)) {
@@ -146,7 +145,7 @@ class model_timeclock_jobs implements general_actions {
             case 'remove':
                 if (array_key_exists('job_id', $_POST)) {
                     $check_job = $this->sys->db->query("SELECT `job_id` FROM `jobs` WHERE `job_id`=:id", array(
-                        ':id' => (int) $_POST['job_id']
+                        ':id' => (int) substr($_POST['job_id'], 0, 10)
                     ));
                     
                     if (empty($check_job)) {
@@ -175,9 +174,9 @@ class model_timeclock_jobs implements general_actions {
         $error = $this->check_input('add');
 
         $this->sys->db->query("INSERT INTO `jobs` (`job_id`, `job_uid`, `job_name`, `client`, `status`, `quoted_time`) VALUES (NULL, :id, :name, :client, 'na', :quote)", array(
-            ':id'       => $_POST['uid'],
-            ':name'     => $_POST['job_name'],
-            ':client'   => $_POST['client'],
+            ':id'       => substr($_POST['uid'], 0, 256),
+            ':name'     => ucwords(strtolower(substr($_POST['job_name'], 0, 256))),
+            ':client'   => (int) substr($_POST['client'], 0, 6),
             ':quote'    => $_POST['quote']
         ));
         
@@ -197,10 +196,10 @@ class model_timeclock_jobs implements general_actions {
         $error = $this->check_input('edit');
         
         $this->sys->db->query("UPDATE `jobs` SET `job_uid`=:uid, `job_name`=:name, `client`=:client, `status`=:status, `quoted_time`=:quote WHERE `job_id`=:id", array(
-            ':id'       => (int) $_POST['id'],
-            ':uid'      => $_POST['uid'],
-            ':name'     => $_POST['job_name'],
-            ':client'   => $_POST['client'],
+            ':id'       => (int) substr($_POST['id'], 0, 10),
+            ':uid'      => substr($_POST['uid'], 0, 256),
+            ':name'     => ucwords(strtolower(substr($_POST['job_name'], 0, 256))),
+            ':client'   => (int) substr($_POST['client'], 0, 6),
             ':status'   => $_POST['status'],
             ':quote'    => $_POST['quote']
         ));
@@ -222,7 +221,7 @@ class model_timeclock_jobs implements general_actions {
         
         if (!$error) {
             $this->sys->db->query("DELETE FROM `jobs` WHERE `job_id`=:id", array(
-                ':id' => (int) $_POST['job_id']
+                ':id' => (int) substr($_POST['job_id'], 0, 10)
             ));
         }
         
@@ -261,7 +260,7 @@ class model_timeclock_jobs implements general_actions {
                 WHERE jobs.job_uid=:id
                 ORDER BY $sort_by $limit
             ", array(
-                ':id' => $action
+                ':id' => substr($action, 0, 256)
             ));
 
             if (!empty($jobs)) {
@@ -286,11 +285,11 @@ class model_timeclock_jobs implements general_actions {
     public function find_dates($job_id, $date_to_get) {
         if ('start' === $date_to_get) {
             $query = $this->sys->db->query("SELECT `date` FROM `job_punch` WHERE `job_id`=:id ORDER BY `date` LIMIT 1", array(
-                ':id' => $job_id
+                ':id' => (int) substr($job_id, 0, 10)
             ));
         } else { //end
             $query = $this->sys->db->query("SELECT `date` FROM `job_punch` WHERE `job_id`=:id ORDER BY `date` DESC LIMIT 1", array(
-                ':id' => $job_id
+                ':id' => (int) substr($job_id, 0, 10)
             ));
         }
         
@@ -306,7 +305,7 @@ class model_timeclock_jobs implements general_actions {
             SELECT * FROM `job_punch` AS punch
                 JOIN `employees` AS employees on employees.employee_id=punch.employee_id
                 LEFT JOIN `categories` AS categories on categories.category_id=employees.category_id
-            WHERE punch.job_id=:id ORDER BY punch.date", array(':id' => $job_id));
+            WHERE punch.job_id=:id ORDER BY punch.date", array(':id' => (int) substr($job_id, 0, 10)));
         $job_info = array();
         
         foreach ($job_query as $temp) {
@@ -364,7 +363,7 @@ class model_timeclock_jobs implements general_actions {
         
         foreach ($load_time as $category=>$time) {
             $category_employees = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `category_id`=:category_id", array(
-                ':category_id' => $category
+                ':category_id' => (int) substr($category, 0, 4)
             ));
             
             $employees[$category] = count($category_employees);

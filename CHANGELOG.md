@@ -1,3 +1,7 @@
+### 12/31/13 - Commit 2 ###
+* https://github.com/Ryuske/TimeClock/issues/28 <-- Enforced types
+* Got rid of file versions, and now it's only in README.md
+
 ### 12/31/13 - Commit 1 ###
 * https://github.com/Ryuske/TimeClock/issues/35 <- Fixed pagination
 * https://github.com/Ryuske/TimeClock/issues/29 <-- Renamed Jobs to Jobs - Quotes

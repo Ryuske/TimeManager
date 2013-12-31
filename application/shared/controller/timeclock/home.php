@@ -2,9 +2,8 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 11/13/13
- * Date Modified: 12/23/13
+ * Date Modified: 12/31/13
  * Purpose: Default controller - used for top level pages (home, about, settings, etc)
- * Version: 2.0
  */
 
 class timeclock_home extends controller {

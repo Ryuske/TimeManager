@@ -2,9 +2,8 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/10/13
- * Date Modified: 12/19/13
+ * Date Modified: 12/31/13
  * Purpose: Used as a wrapper for various methods surrounding employee categories
- * Version: 2.0
  */
 
 global $sys;
@@ -16,7 +15,7 @@ $sys->router->load_helpers('interfaces', 'general', 'timeclock');
         $this->sys = &$sys;
         
         $is_admin = $this->sys->db->query("SELECT `employee_role` FROM `employees` WHERE `employee_id`=:id", array(
-            ':id' => (int) $this->sys->session['user']
+            ':id' => (int) substr($this->sys->session['user'], 0, 6)
         ));
         
         if (!empty($is_admin)) {
@@ -59,7 +58,7 @@ $sys->router->load_helpers('interfaces', 'general', 'timeclock');
                     $error = '<p>Something wrong with the category ID.</p>';
                 } else {
                     $category = $this->sys->db->query("SELECT `category_id` FROM `categories` WHERE `category_id`=:id", array(
-                        ':id' => (int) $_POST['category_id']
+                        ':id' => (int) substr($_POST['category_id'], 0, 4)
                     ));
                     
                     if (empty($category)) {
@@ -93,7 +92,7 @@ $sys->router->load_helpers('interfaces', 'general', 'timeclock');
         
         if (!$error) {
             $this->sys->db->query("INSERT INTO `categories` (`category_id`, `category_name`) VALUES (NULL, :name)", array(
-                ':name' => $_POST['category_name']
+                ':name' => ucwords(strtolower(substr($_POST['category_name'], 0, 256)))
             ));
             
             $this->sys->template->response = '<div class="form_success">Category Added Successfully</div>';
@@ -109,8 +108,8 @@ $sys->router->load_helpers('interfaces', 'general', 'timeclock');
         
         if (!$error) {
             $this->sys->db->query("UPDATE `categories` SET `category_name`=:name WHERE `category_id`=:id", array(
-                ':name' => $_POST['category_name'],
-                ':id'   => (int) $_POST['category_id']
+                ':name' => ucwords(strtolower(substr($_POST['category_name'], 0, 256))),
+                ':id'   => (int) substr($_POST['category_id'], 0, 4)
             ));
             
             $this->sys->template->response = '<div class="form_success">Category Updated Successfully</div>';
@@ -129,7 +128,7 @@ $sys->router->load_helpers('interfaces', 'general', 'timeclock');
         
         if (!$error) {
             $this->sys->db->query("DELETE FROM `categories` WHERE `category_id`=:id", array(
-                ':id' => (int) $_POST['category_id']
+                ':id' => (int) substr($_POST['category_id'], 0, 4)
             ));
             
             $this->sys->template->response = '<div class="form_success">Category Removed Successfully</div>';

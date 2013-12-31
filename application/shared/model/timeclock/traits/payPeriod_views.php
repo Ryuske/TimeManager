@@ -2,9 +2,8 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/5/13
- * Date Modified: 12/18/13
+ * Date Modified: 12/31/13
  * Purpose: A trait for general payperiod views
- * Version: 2.0
  */
 
 trait payPeriod_views {
@@ -96,7 +95,7 @@ trait payPeriod_views {
     public function generate_previous_pay_periods_table($employee_id, $selected_pay_period) {
         $pay_periods = $this->get_pay_period('all', True);
         $employees_pay_periods = $this->sys->db->query("SELECT `pay_period_id` FROM `employee_punch` WHERE `employee_id`=:employee_id", array(
-            ':employee_id' => (int) $employee_id
+            ':employee_id' => (int) substr($employee_id, 0, 6)
         ));
         
         if (empty($employees_pay_periods)) {

@@ -2,9 +2,8 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 11/15/13
- * Date Modified: 12/19/13
+ * Date Modified: 12/31/13
  * Purpose: Used to pull the employees from the database and use the results in a view
- * Version: 2.0
  */
 
 global $sys;
@@ -19,7 +18,7 @@ class model_timeclock_employees implements general_actions {
         $this->sys = &$sys;
 
         $is_admin = $this->sys->db->query("SELECT `employee_role` FROM `employees` WHERE `employee_id`=:id", array(
-            ':id' => (int) $this->sys->session['user']
+            ':id' => (int) substr($this->sys->session['user'], 0, 6)
         ));
         
         if (!empty($is_admin)) {
@@ -77,12 +76,12 @@ class model_timeclock_employees implements general_actions {
                     $_POST['uid'] = implode(' ', $_POST['uid']);
                 
                     $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_uid`=:uid", array(
-                        ':uid' => $_POST['uid']
+                        ':uid' => substr($_POST['uid'], 0, 64)
                     ));
                 } while (!empty($query));
             } else {
                 $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_uid`=:uid", array(
-                    ':uid' => $_POST['uid']
+                    ':uid' => substr($_POST['uid'], 0, 64)
                 ));
                 
                 if (
@@ -106,7 +105,7 @@ class model_timeclock_employees implements general_actions {
                 
                 if ('' !== $_POST['username']) {
                     $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_username`=:username", array(
-                        ':username' => $_POST['username']
+                        ':username' => substr($_POST['username'], 0, 28)
                     ));
                         
                     if (
@@ -128,7 +127,7 @@ class model_timeclock_employees implements general_actions {
             case 'edit':
                 if (array_key_exists('employee_id', $_POST)) {
                     $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_id`=:id", array(
-                        ':id' => $_POST['employee_id']
+                        ':id' => (int) substr($_POST['employee_id'], 0, 6)
                     ));
                     
                     if (empty($query)) {
@@ -140,7 +139,7 @@ class model_timeclock_employees implements general_actions {
 
                 if ('' !== $_POST['username'] && $_POST['password'] === '') {
                     $query = $this->sys->db->query("SELECT `employee_password` FROM `employees` WHERE `employee_username`=:username", array(
-                        ':username' => $_POST['username']
+                        ':username' => substr($_POST['username'], 0, 28)
                     ));
 
                     if (!empty($query) && '' !== $query[0]['employee_password']) {
@@ -153,7 +152,7 @@ class model_timeclock_employees implements general_actions {
             case 'remove':
                 if (array_key_exists('employee_id', $_POST)) {
                     $query = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `employee_id`=:id", array(
-                        ':id' => (int) $_POST['employee_id']
+                        ':id' => (int) substr($_POST['employee_id'], 0, 6)
                     ));
                     
                     if (empty($query)) {
@@ -183,12 +182,12 @@ class model_timeclock_employees implements general_actions {
 
         if (!$error) {
             $query = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `category_id`, `employee_role`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', :uid, :category, :role, :firstname, :lastname, :username, :password)", array(
-                ':uid'          => $_POST['uid'],
-                ':category'     => (int) $_POST['category'],
+                ':uid'          => substr($_POST['uid'], 0, 64),
+                ':category'     => (int) substr($_POST['category'], 0, 4),
                 ':role'         => $_POST['role'],
-                ':firstname'    => $_POST['firstname'],
-                ':lastname'     => $_POST['lastname'],
-                ':username'     => $_POST['username'],
+                ':firstname'    => ucwords(substr($_POST['firstname'], 0, 24)),
+                ':lastname'     => ucwords(substr($_POST['lastname'], 0, 24)),
+                ':username'     => substr($_POST['username'], 0, 28),
                 ':password'     => $_POST['password']
             ));
 
@@ -209,13 +208,13 @@ class model_timeclock_employees implements general_actions {
 
         if (!$error) {
             $query = $this->sys->db->query("UPDATE `employees` SET `employee_uid`=:uid, `category_id`=:category, `employee_role`=:role, `employee_firstname`=:firstname, `employee_lastname`=:lastname, `employee_username`=:username, `employee_password`=:password WHERE `employee_id`=:id", array(
-                ':id'           => (int) $_POST['employee_id'],
-                ':uid'          => $_POST['uid'],
+                ':id'           => (int) substr($_POST['employee_id'], 0, 6),
+                ':uid'          => substr($_POST['uid'], 0, 64),
                 ':role'         => $_POST['role'],
-                ':category'     => (int) $_POST['category'],
-                ':firstname'    => $_POST['firstname'],
-                ':lastname'     => $_POST['lastname'],
-                ':username'     => $_POST['username'],
+                ':category'     => (int) substr($_POST['category'], 0, 4),
+                ':firstname'    => ucwords(substr($_POST['firstname'], 0, 24)),
+                ':lastname'     => ucwords(substr($_POST['lastname'], 0, 24)),
+                ':username'     => substr($_POST['username'], 0, 28),
                 ':password'     => $_POST['password']
             ));
             
@@ -236,7 +235,7 @@ class model_timeclock_employees implements general_actions {
         
         if (!$error) {
             $this->sys->db->query("DELETE FROM `employees` WHERE `employee_id`=:id", array(
-                ':id' => (int) $_POST['employee_id']
+                ':id' => (int) substr($_POST['employee_id'], 0, 6)
             ));
         }
         

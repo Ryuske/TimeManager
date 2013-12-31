@@ -2,9 +2,8 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 11/21/13
- * Date Modified: 12/18/13
+ * Date Modified: 12/31/13
  * Purpose: Used to get and set settings
- * Version: 2.0
  */
 
 class model_timeclock_settings {
@@ -37,18 +36,18 @@ class model_timeclock_settings {
         
         if (array_key_exists($key, $this->_settings)) {
             $sys->db->query("UPDATE `settings` SET `setting_value`=:value WHERE `setting_name`=:key", array(
-                ':key' => $key,
-                ':value' => $value
+                ':key' => substr($key, 0, 64),
+                ':value' => substr($value, 128)
             ));
         } else {
             $sys->db->query("INSERT INTO `settings` (`setting_id`, `setting_name`, `setting_value`) VALUES (NULL, :key, :value)", array(
-                ':key' => $key,
-                ':value' => $value
+                ':key' => substr($key, 0, 64),
+                ':value' => substr($value, 0, 128)
             ));
         }
         
         $setting = $sys->db->query("SELECT `setting_name`, `setting_value` FROM `settings` WHERE `setting_name`=:key", array(
-            ':key' => $key
+            ':key' => substr($key, 0, 64)
         ));
         
         $this->_settings[$setting[0]['setting_name']] = $setting[0]['setting_value'];
@@ -100,7 +99,7 @@ class model_timeclock_settings {
         global $sys;
         
         $is_admin = $sys->db->query("SELECT `employee_role` FROM `employees` WHERE `employee_id`=:id", array(
-            ':id' => (int) $sys->session['user']
+            ':id' => (int) substr($sys->session['user'], 0, 6)
         ));
         
         if (empty($is_admin)) {

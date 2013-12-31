@@ -4,7 +4,6 @@
  * @Date Created: 11/14/13
  * @Date Modified: 12/19/13
  * @Purpose: Front Controller
- * @Version: 2.5
  *
  * Front controller for TimeClock
  */

@@ -2,9 +2,8 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/10/13
- * Date Modified: 12/18/13
+ * Date Modified: 12/31/13
  * Purpose: A trait for general job operations
- * Version: 2.0
  */
 
 trait job_timecard {
@@ -50,7 +49,7 @@ trait job_timecard {
      */
     public function quoted_hours($job_id) {
         $job = $this->sys->db->query("SELECT `quoted_time` FROM `jobs` WHERE `job_id`=:id", array(
-            ':id' => (int) $job_id
+            ':id' => (int) substr($job_id, 0, 10)
         ));
         
         if (!empty($job)) {
@@ -77,7 +76,7 @@ trait job_timecard {
             WHERE `job_id`=:job_id
             ORDER BY `date`, `punch_id` ASC
             ", array(
-            ':job_id' => $job_id,
+            ':job_id' => (int) substr($job_id, 0, 10),
         ));
         
         $return_hours = array();
@@ -158,11 +157,11 @@ trait job_timecard {
         $date_time = array('date' => date($this->_dateFormat), 'time' => time());
         $operation = '';
         $last_job = $this->sys->db->query("SELECT `punch_id`, `time`, `operation` FROM `job_punch` WHERE `job_id`=:job_id AND `employee_id`=:employee_id", array(
-            ':job_id'       => $job_id,
-            ':employee_id'  => (int) $employee_id
+            ':job_id'       => (int) substr($job_id, 0, 10),
+            ':employee_id'  => (int) substr($employee_id, 0, 6)
         ));
         $employee = $this->sys->db->query("SELECT `category_id` FROM `employees` WHERE `employee_id`=:id", array(
-            ':id' => (int) $employee_id
+            ':id' => (int) substr($employee_id, 0, 6)
         ));
 
         $temp_times = $last_job;
@@ -172,29 +171,29 @@ trait job_timecard {
             $operation = 'in';
             
             $this->sys->db->query("INSERT INTO `job_punch` (`punch_id`, `job_id`, `employee_id`, `category_id`, `date`, `time`, `operation`) VALUES (NULL, :job_id, :employee_id, :category_id, :date, :time, 'in')", array(
-                ':job_id'       => $job_id,
-                ':employee_id'  => (int) $employee_id,
-                ':category_id'  => (int) $employee[0]['category_id'],
-                ':date'         => $date_time['date'],
-                ':time'         => $date_time['time']
+                ':job_id'       => (int) substr($job_id, 0, 10),
+                ':employee_id'  => (int) substr($employee_id, 0, 6),
+                ':category_id'  => (int) substr($employee[0]['category_id'], 0, 4),
+                ':date'         => substr($date_time['date'], 0, 8),
+                ':time'         => (int) substr($date_time['time'], 0, 20)
             ));
             $this->sys->db->query("INSERT INTO `job_punch` (`punch_id`, `job_id`, `employee_id`, `category_id`, `date`, `time`, `operation`) VALUES (NULL, :job_id, :employee_id, :category_id, :date, '', 'out')", array(
-                ':job_id'       => $job_id,
-                ':employee_id'  => (int) $employee_id,
-                ':category_id'  => (int) $employee[0]['category_id'],
-                ':date'         => $date_time['date']
+                ':job_id'       => (int) substr($job_id, 0, 10),
+                ':employee_id'  => (int) substr($employee_id, 0, 6),
+                ':category_id'  => (int) substr($employee[0]['category_id'], 0, 4),
+                ':date'         => substr($date_time['date'], 0, 8)
             ));
         } else {
             $operation = 'out';
             
             $this->sys->db->query("UPDATE `job_punch` SET `time`=:time WHERE `punch_id`=:id", array(
-                ':id'       => (int) $last_out['punch_id'],
-                ':time'         => $date_time['time']
+                ':id'       => (int) substr($last_out['punch_id'], 0, 20),
+                ':time'     => (int) substr($date_time['time'], 0, 20)
             ));
         }
         
         $this->sys->db->query("UPDATE `jobs` SET `status`='wip' WHERE `job_uid`=:id", array(
-            ':id' => $job_id
+            ':id' => substr($job_id, 0, 10)
         ));
         
         return array($operation, $date_time);
@@ -210,21 +209,21 @@ trait job_timecard {
             
             //Make sure punch_if exists
             $check_job = $this->sys->db->query("SELECT * FROM `job_punch` WHERE `punch_id`=:id", array(
-                ':id' => (int) $_POST['id']
+                ':id' => (int) substr($_POST['id'], 0, 20)
             ));
             
             if (!empty($check_job)) {
                 if (!array_key_exists('time', $_POST) || (array_key_exists('time', $_POST) && '' === $_POST['time'])) {
                     $this->sys->db->query("DELETE FROM `job_punch` WHERE `punch_id`=:id", array(
-                        ':id'           => (int) $check_job[0]['punch_id']
+                        ':id' => (int) substr($check_job[0]['punch_id'], 0, 20)
                     ));
                     
                     return true;
                 }
                 
                 $this->sys->db->query("UPDATE `job_punch` SET `time`=:time WHERE `punch_id`=:id AND `operation`=:operation", array(
-                    ':time'         => strtotime($time),
-                    ':id'           => (int) $_POST['id'],
+                    ':time'         => (int) substr(strtotime($time), 0, 20),
+                    ':id'           => (int) substr($_POST['id'], 0, 20),
                     ':operation'    => $operation
                 ));
                 
@@ -233,7 +232,7 @@ trait job_timecard {
                 $id = (is_integer((int) $_POST['id']/2)) ? (int) $_POST['id']-1 : (int) $_POST['id']+1;
                 $time = (array_key_exists('time', $_POST)) ? $_POST['time'] : '';
                 $job_info = $this->sys->db->query("SELECT * FROM `job_punch` WHERE `punch_id`=:id", array(
-                    ':id' => $id
+                    ':id' => (int) substr($id, 0, 20)
                 ));
                 
                 switch ($job_info[0]['operation']) {
@@ -249,12 +248,12 @@ trait job_timecard {
                         (`punch_id`, `job_id`, `employee_id`, `category_id`, `date`, `time`, `operation`)
                         VALUES (:punch_id, :job_id, :employee_id, :category_id, :date, :time, :operation)
                     ", array(
-                    ':punch_id'     => (int) $_POST['id'],
-                    ':job_id'       => $job_info[0]['job_id'],
-                    ':employee_id'  => $job_info[0]['employee_id'],
-                    ':category_id'  => $job_info[0]['category_id'],
-                    ':date'         => $job_info[0]['date'],
-                    ':time'         => strtotime($time),
+                    ':punch_id'     => (int) substr($_POST['id'], 0, 20),
+                    ':job_id'       => (int) substr($job_info[0]['job_id'], 0, 10),
+                    ':employee_id'  => (int) substr($job_info[0]['employee_id'], 0, 6),
+                    ':category_id'  => (int) substr($job_info[0]['category_id'], 0, 4),
+                    ':date'         => substr($job_info[0]['date'], 0, 8),
+                    ':time'         => (int) substr(strtotime($time), 0, 20),
                     ':operation'    => $operation
                 ));
                 
@@ -273,14 +272,14 @@ trait job_timecard {
             
         foreach ($id as $job) {
             $check_job = $this->sys->db->query("SELECT `punch_id` FROM `job_punch` WHERE `punch_id`=:id", array(
-                ':id' => $job
+                ':id' => (int) substr($job, 0, 20)
             ));
             
             if (!empty($check_job)) {
                 $this->sys->db->query("UPDATE `job_punch` SET `employee_id`=:employee_id, `category_id`=:category_id WHERE `punch_id`=:punch_id", array(
-                    ':employee_id'  => (int) $_POST['employee'],
-                    ':category_id'  => (int) $_POST['category'],
-                    ':punch_id'     => $job
+                    ':employee_id'  => (int) substr($_POST['employee'], 0, 4),
+                    ':category_id'  => (int) substr($_POST['category'], 0, 6),
+                    ':punch_id'     => (int) substr($job, 0, 20)
                 ));
             }
         }
@@ -295,29 +294,32 @@ trait job_timecard {
         if ((array_key_exists('id', $_POST) && '' !== $_POST['id']) && (array_key_exists('employee', $_POST) && '' !== $_POST['employee'])) {
             //Check to see if job_id exists
             $check_job = $this->sys->db->query("SELECT `job_uid` FROM `jobs` WHERE `job_uid`=:id", array(
-                ':id' => $_POST['id']
+                ':id' => substr($_POST['id'], 0, 256)
             ));
             
             //Check to see if employee exists
             $check_employee = $this->sys->db->query("SELECT `category_id` FROM `employees` WHERE `employee_id`=:id", array(
-                ':id' => (int) $_POST['employee']
+                ':id' => (int) substr($_POST['employee'], 0, 6)
             ));
 
             if (!empty($check_job) && !empty($check_employee)) {
+                //Punch in
                 $this->sys->db->query("INSERT INTO `job_punch` (`punch_id`, `job_id`, `employee_id`, `category_id`, `date`, `time`, `operation`) VALUES (NULL, :job_id, :employee_id, :category_id, :date, '', 'in')", array(
-                    ':job_id'       => $_POST['id'],
-                    ':employee_id'  => (int) $_POST['employee'],
-                    ':category_id'  => (int) $check_employee[0]['category_id'],
-                    ':date'         => $_POST['date']
+                    ':job_id'       => (int) substr($_POST['id'], 0, 10),
+                    ':employee_id'  => (int) substr($_POST['employee'], 0, 6),
+                    ':category_id'  => (int) substr($check_employee[0]['category_id'], 0, 4),
+                    ':date'         => substr($_POST['date'], 0, 8)
                 ));
+                
+                //Punch out
                 $this->sys->db->query("INSERT INTO `job_punch` (`punch_id`, `job_id`, `employee_id`, `category_id`, `date`, `time`, `operation`) VALUES (NULL, :job_id, :employee_id, :category_id, :date, '', 'out')", array(
-                    ':job_id'       => $_POST['id'],
-                    ':employee_id'  => (int) $_POST['employee'],
-                    ':category_id'  => (int) $check_employee[0]['category_id'],
-                    ':date'         => $_POST['date']
+                    ':job_id'       => (int) substr($_POST['id'], 0, 10),
+                    ':employee_id'  => (int) substr($_POST['employee'], 0, 6),
+                    ':category_id'  => (int) substr($check_employee[0]['category_id'], 0, 4),
+                    ':date'         => substr($_POST['date'], 0, 8)
                 ));
                 $this->sys->db->query("UPDATE `jobs` SET `status`='wip' WHERE `job_uid`=:id", array(
-                    ':id' => $_POST['id']
+                    ':id' => substr($_POST['id'], 0, 256)
                 ));
                 
                 return true;
