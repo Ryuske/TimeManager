@@ -1,4 +1,8 @@
-### 12/13/13 - Commit 4 ###
+### 12/31/13 - Commit 5 ###
+* https://github.com/Ryuske/TimeManager/issues/39 <-- Updated jobs delete view table
+* https://github.com/Ryuske/TimeManager/issues/38 <-- Fixed Display As when deleting an employee
+
+### 12/31/13 - Commit 4 ###
 * Forgot to remove version from interface
 * https://github.com/Ryuske/TimeClock/issues/31 <-- Renamed project
 * Pushed to Version 2.5

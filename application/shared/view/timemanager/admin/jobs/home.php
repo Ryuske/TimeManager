@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-sm-8">
             <div class="well">
-                <p>This system is designed as a management panel for external timemanager hardware.</p>
+                <p>This system is designed as a management panel for external hardware.</p>
                 <a href="{timemanager_root}about" class="btn btn-primary btn-lg" role="button">Learn more &raquo;</a>
             </div>
         </div>

@@ -48,9 +48,9 @@ class timemanager_employee extends controller {
                 return true;
             }
             
-            $this->sys->template->admin = $this->model_settings->is_admin();
-            $this->sys->template->title = 'Time Manager | Employee | Add';
-            $this->sys->template->categories = $this->model_categories->get();
+            $this->sys->template->admin         = $this->model_settings->is_admin();
+            $this->sys->template->title         = 'Time Manager | Employee | Add';
+            $this->sys->template->categories    = $this->model_categories->get();
             
             $parse = 'employee_add';
         } else {
@@ -66,9 +66,10 @@ class timemanager_employee extends controller {
     public function edit($employee_id) {
         $this->sys->template->response = '';
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'categories', 'settings'));
-        $this->sys->template->employees_by_id = $this->model_employees->get(true);
-        $this->sys->template->employee_id = (int) $employee_id;
-        $this->sys->template->categories = $this->model_categories->get();
+
+        $this->sys->template->employees_by_id   = $this->model_employees->get(true);
+        $this->sys->template->employee_id       = (int) $employee_id;
+        $this->sys->template->categories        = $this->model_categories->get();
         
         if ($this->is_logged_in() && array_key_exists($this->sys->template->employee_id, $this->sys->template->employees_by_id)) {
             if (!$this->model_settings->is_admin()) {
@@ -91,6 +92,7 @@ class timemanager_employee extends controller {
      */
     public function remove($employee_id) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'settings'));
+        
         $this->sys->template->employees_by_id = $this->model_employees->get(true);
         $this->sys->template->employee_id = (int) $employee_id;
             
@@ -100,14 +102,15 @@ class timemanager_employee extends controller {
                 return true;
             }
             
-            $this->sys->template->admin = $this->model_settings->is_admin();
-            $this->sys->template->page_id = 1;
-            $this->sys->template->paginate_by = $this->model_settings->paginate_by;
-            $this->sys->template->employees = $this->model_employees->get();
-            $this->sys->template->pagination = $this->model_renderPage->generate_pagination('main', 'employees', 1);
+            $this->sys->template->admin             = $this->model_settings->is_admin();
+            $this->sys->template->page_id           = 1;
+            $this->sys->template->paginate_by       = $this->model_settings->paginate_by;
+            $this->model_employees->get_employees_for_view();
+            $this->sys->template->list_employees_as = $this->model_settings->list_employees_as;
+            $this->sys->template->pagination        = $this->model_renderPage->generate_pagination('main', 'employees', 1);
 
-            $this->sys->template->title = 'Time Manager | Employee | Remove';
-            $this->sys->template->home_active = 'class="active"';
+            $this->sys->template->title             = 'Time Manager | Employee | Remove';
+            $this->sys->template->home_active       = 'class="active"';
             $parse = 'employee_remove';
         } else {
             $this->load_home();
@@ -122,9 +125,10 @@ class timemanager_employee extends controller {
      */
     public function view($employee_id, $pay_period='current', $page_id = 1) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'settings', 'payPeriod'));
-        $this->sys->template->page_id = (int) $page_id;
-        $this->sys->template->paginate_by = $this->model_settings->paginate_by;
-        $this->sys->template->employee_id = (int) $employee_id;
+        
+        $this->sys->template->page_id       = (int) $page_id;
+        $this->sys->template->paginate_by   = $this->model_settings->paginate_by;
+        $this->sys->template->employee_id   = (int) $employee_id;
         
         if ('current' === $pay_period) {
             $this->pay_period = $this->model_payPeriod->get_pay_period();
@@ -132,23 +136,22 @@ class timemanager_employee extends controller {
             $this->pay_period = $this->model_payPeriod->get_pay_period($pay_period);
         }
         
-        $this->sys->template->pay_period_id = $this->pay_period[2];
+        $this->sys->template->pay_period_id     = $this->pay_period[2];
         $this->sys->template->pay_period_monday = $this->pay_period[0][0];
         $this->sys->template->pay_period_sunday = $this->pay_period[1][0];
-        $this->sys->template->pay_period_table = $this->model_payPeriod->generate_pay_period_table($this->sys->template->employee_id, $this->pay_period[0]);
+        $this->sys->template->pay_period_table  = $this->model_payPeriod->generate_pay_period_table($this->sys->template->employee_id, $this->pay_period[0]);
         
-        $this->sys->template->previous_pay_periods_table = $this->model_payPeriod->generate_previous_pay_periods_table($this->sys->template->employee_id, $this->pay_period[2]);
-        $this->sys->template->total_hours = $this->model_payPeriod->total_hours_for_pay_period($this->sys->template->employee_id, $this->pay_period[0]);
-        
-        $this->sys->template->add_date_response = $this->model_payPeriod->add_date_response();
+        $this->sys->template->previous_pay_periods_table    = $this->model_payPeriod->generate_previous_pay_periods_table($this->sys->template->employee_id, $this->pay_period[2]);
+        $this->sys->template->total_hours                   = $this->model_payPeriod->total_hours_for_pay_period($this->sys->template->employee_id, $this->pay_period[0]);
+        $this->sys->template->add_date_response             = $this->model_payPeriod->add_date_response();
         
         if ($this->is_logged_in()) {
-            $this->sys->template->admin = $this->model_settings->is_admin();
-            $this->sys->template->employees_by_id = $this->model_employees->get(true);
-            $this->sys->template->pagination = $this->model_renderPage->generate_pagination('employee/view/' . (int) $employee_id . '/' . $pay_period, 'payperiods', (int) $page_id);
+            $this->sys->template->admin             = $this->model_settings->is_admin();
+            $this->sys->template->employees_by_id   = $this->model_employees->get(true);
+            $this->sys->template->pagination        = $this->model_renderPage->generate_pagination('employee/view/' . (int) $employee_id . '/' . $pay_period, 'payperiods', (int) $page_id);
 
-            $this->sys->template->title = 'Time Manager | Employee | View';
-            $this->sys->template->home_active = 'class="active"';
+            $this->sys->template->title         = 'Time Manager | Employee | View';
+            $this->sys->template->home_active   = 'class="active"';
             $parse = ($this->sys->template->admin) ? 'admin_employee_view' : 'employee_view';
         } else {
             $this->load_home();
