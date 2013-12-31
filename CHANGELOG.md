@@ -1,3 +1,8 @@
+### 12/13/13 - Commit 4 ###
+* Forgot to remove version from interface
+* https://github.com/Ryuske/TimeClock/issues/31 <-- Renamed project
+* Pushed to Version 2.5
+
 ### 12/31/13 - Commit 3 ###
 * https://github.com/Ryuske/TimeClock/issues/36 <-- Fixed foreign keys
 
