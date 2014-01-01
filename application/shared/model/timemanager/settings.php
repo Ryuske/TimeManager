@@ -37,7 +37,7 @@ class model_timemanager_settings {
         if (array_key_exists($key, $this->_settings)) {
             $sys->db->query("UPDATE `settings` SET `setting_value`=:value WHERE `setting_name`=:key", array(
                 ':key' => substr($key, 0, 64),
-                ':value' => substr($value, 128)
+                ':value' => substr($value, 0, 128)
             ));
         } else {
             $sys->db->query("INSERT INTO `settings` (`setting_id`, `setting_name`, `setting_value`) VALUES (NULL, :key, :value)", array(

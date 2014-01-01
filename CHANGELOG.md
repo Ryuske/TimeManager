@@ -1,3 +1,8 @@
+### xx/xx/xx - Commit X ###
+* Fixed issue with updating password (wasn't md5 hashing)
+* Fixed issue where trying to update settings deleted all settings
+* Fixed divsion by zero error in pagination if paginate by was set to 0
+
 ### 12/31/13 - Commit 6 ###
 * https://github.com/Ryuske/TimeManager/issues/30 <-- Added job tracking information
 

@@ -58,6 +58,7 @@ class model_timemanager_renderPage {
                 return false;
         }
         $query = $sys->db->query("SELECT * FROM `$table`");
+        $sys->template->paginate_by = (0 == $sys->template->paginate_by) ? 1 : $sys->template->paginate_by;
         $last_page = (int) ceil((count($query) / $sys->template->paginate_by));
         
         $sys->template->previous = (1 === $current_page) ? '<li class="disabled"><a href="#">&laquo;</a></li>' : '<li><a href="' . $page . ($current_page-1) . '">&laquo;</a></li>';

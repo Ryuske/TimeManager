@@ -141,12 +141,14 @@ class model_timemanager_employees implements general_actions {
                     $query = $this->sys->db->query("SELECT `employee_password` FROM `employees` WHERE `employee_username`=:username", array(
                         ':username' => substr($_POST['username'], 0, 28)
                     ));
-
+                    
                     if (!empty($query) && '' !== $query[0]['employee_password']) {
                         $_POST['password'] = $query[0]['employee_password'];
                     } else {
                         $error .= '<p>If you pick a username, you must enter a password.</p>';
                     }
+                } else if ('' !== $_POST['username'] && $_POST['password'] !== '') {
+                    $_POST['password'] = md5($_POST['password']);
                 }
                 break;
             case 'remove':
