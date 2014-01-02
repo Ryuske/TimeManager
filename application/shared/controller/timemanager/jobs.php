@@ -40,6 +40,15 @@ class timemanager_jobs extends controller {
     }
     
     /**
+     * Purpose: Used to get attachments (can be used in ajax call)
+     */
+    public function get_attachments($job_id) {
+        $this->load_dependencies(array('jobs'));
+        
+        echo json_encode($this->model_jobs->get_attachments($job_id));
+    }
+    
+    /**
      * Purpose: Loads the home page for jobs; Also has information about job quotes
      */
     public function index($page_id=1) {
@@ -54,6 +63,7 @@ class timemanager_jobs extends controller {
             $this->sys->template->paginate_by           = $this->model_settings->paginate_by;
             $this->sys->template->jobs                  = $this->model_jobs->get();
             $this->sys->template->pagination            = $this->model_renderPage->generate_pagination('jobs/home', 'jobs', (int) $page_id);
+            $this->sys->template->response              = ('' !== $this->sys->template->response) ? $this->sys->template->response : '';
             
             $parse = ($this->sys->template->admin) ? 'admin_jobs_home' : 'jobs_home';
             $full_page = True;
@@ -82,6 +92,7 @@ class timemanager_jobs extends controller {
             $this->sys->template->paginate_by           = $this->model_settings->paginate_by;
             $this->sys->template->jobs                  = $this->model_jobs->get('tracking');
             $this->sys->template->pagination            = $this->model_renderPage->generate_pagination('jobs/tracking', 'jobs', (int) $page_id);
+            $this->sys->template->response              = ('' !== $this->sys->template->response) ? $this->sys->template->response : '';
             
             $parse = ($this->sys->template->admin) ? 'admin_jobs_tracking' : 'jobs_tracking';
             $full_page = True;

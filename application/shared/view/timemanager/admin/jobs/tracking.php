@@ -42,7 +42,7 @@
                             <th>Due Date</th>
                             <th>Last Operation</th>
                             <th>Status</th>
-                            <th>Manage</th>
+                            <th>Attachments</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -64,18 +64,17 @@
                             }
                             ?>
                             <tr>
-                            <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['job_uid']}</td>
-                            <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['client_name']}</td>
-                            <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['job_name']}</td>
-                            <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['job_quantity']}</td>
-                            <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['job_start_date']}</td>
-                            <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['job_due_date']}</td>
-                            <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')"><?php echo $this->model_jobs->last_operation($this->sys->template->jobs[$i]['job_id']); ?></td>
-                            <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')"><div class="<?php echo $status[0]; ?>"><?php echo $status[1]; ?></div></td>
+                                <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['job_uid']}</td>
+                                <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['client_name']}</td>
+                                <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['job_name']}</td>
+                                <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['job_quantity']}</td>
+                                <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['job_start_date']}</td>
+                                <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['job_due_date']}</td>
+                                <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')"><?php echo $this->model_jobs->last_operation($this->sys->template->jobs[$i]['job_id']); ?></td>
+                                <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')"><div class="<?php echo $status[0]; ?>"><?php echo $status[1]; ?></div></td>
                                 <td>
                                     <ul class="icons">
-                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil" onclick="jobTableClicked('edit', '{jobs[<?php echo $i; ?>]['job_uid']}')"></span></li>
-                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash" onclick="jobTableClicked('trash', '{jobs[<?php echo $i; ?>]['job_uid']}')"></span></li>
+                                        <li class="ui-state-default ui-corner-all" title=".ui-icon-folder-open"><span class="ui-icon ui-icon-folder-open" onclick="jobTableClicked('attachments', '{jobs[<?php echo $i; ?>]['job_uid']}')"></span></li>
                                     </ul>
                                 </td>
                             </tr>
@@ -93,7 +92,7 @@
                             <th>Due Date</th>
                             <th>Last Operation</th>
                             <th>Status</th>
-                            <th>Manage</th>
+                            <th>Attachments</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -101,4 +100,28 @@
             </div>
         </div>
     </div>
+</div>
+<?php
+if ('' !== $this->sys->template->response) {
+    ?>
+    <script type="text/javascript">
+        jQuery('document').ready(function() {
+            jobTableClicked('attachments', '<?php echo $this->sys->template->job_id; ?>')
+        });
+    </script>
+    <?php
+}
+?>
+<div class="job_attachments_dialog">
+    <div class="right">
+        <form name="job_attachments" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="job_id" value="xyz" autofocus="autofocus" />
+            <input type="hidden" name="upload_attachment" value="true" />
+            <input type="file" name="attachment" />
+            <button class="btn btn-primary btn-xs" onclick="jQuery(this).submit();">Add</button>
+        </form>
+        <div class="center">{response}</div>
+    </div>
+    <ul class="attachments">
+    </ul>
 </div>

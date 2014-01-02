@@ -8,3 +8,5 @@ system/*
 .htaccess
 
 configuration/shared.php
+uploads
+uploads/*

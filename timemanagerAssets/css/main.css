@@ -12,6 +12,10 @@ body {
     text-align: center
 }
 
+.right {
+    text-align: right;
+}
+
 .bold {
     font-weight: bold;
 }
@@ -200,4 +204,8 @@ form .group {
 
 .green {
     color: #006400;
+}
+
+.attachments a {
+    color: #428bca;
 }

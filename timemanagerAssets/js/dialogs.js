@@ -216,6 +216,17 @@ jQuery(document).ready(function() {
             }
         }
     });
+    jQuery('.job_attachments_dialog').dialog({
+        autoOpen: false,
+        width: 345,
+        title: 'Job Attachments',
+        modal: true,
+        buttons: {
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
     /**
      * END jobs dialogs
      */

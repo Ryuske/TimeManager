@@ -25,6 +25,18 @@ function jobTableClicked(action, job_id) {
         case 'trash':
             window.location = web_root + 'jobs/remove/' + job_id;
             break;
+        case 'attachments':
+            jQuery('.job_attachments_dialog input[name=job_id]').attr('value', job_id);
+            jQuery('.attachments').html('');
+            jQuery.ajax(web_root + 'jobs/get_attachments/' + job_id).done(function(msg) {
+                var json = jQuery.parseJSON(msg);
+                
+                jQuery.each(json, function(name, link) {
+                    jQuery('.attachments').append('<li><a href="' + link + '" target="_blank">' + name + '</a></li>');
+                });
+            });
+            jQuery('.job_attachments_dialog').dialog('open');
+            break;
         default:
             break;
     }

@@ -49,6 +49,9 @@ class model_timemanager_jobs implements general_actions {
         if (array_key_exists('update_info', $_POST) && $is_admin) {
             $this->update_time_info();
         }
+        if (array_key_exists('upload_attachment', $_POST) && $is_admin) {
+            $this->upload_attachment();
+        }
     }
     
     /**
@@ -235,12 +238,93 @@ class model_timemanager_jobs implements general_actions {
         $error = $this->check_input('remove');
         
         if (!$error) {
+            $files = $this->sys->db->query("SELECT `file_path` FROM `files` WHERE `job_id`=:id", array(
+                ':id' => (int) substr($_POST['job_id'], 0, 10)
+            ));
+            $directory = dirname($_SERVER["SCRIPT_FILENAME"]) . '/uploads/';
+            
+            foreach ($files as $file) {
+                unlink($directory . $file['file_path']);
+            }
+
             $this->sys->db->query("DELETE FROM `jobs` WHERE `job_id`=:id", array(
                 ':id' => (int) substr($_POST['job_id'], 0, 10)
             ));
         }
         
-        header('Location: ' . $this->sys->config->timemanager_root . 'jobs');
+        Header('Location: ' . $this->sys->config->timemanager_root . 'jobs');
+    }
+    
+    /**
+     * Purpose: Used to upload files
+     */
+    public function upload_attachment() {
+        $finfo = new finfo(FILEINFO_MIME_TYPE, "/usr/share/misc/magic");
+        $this->sys->template->response = '';
+        $allowed_files = array(
+            'image/gif',
+            'image/jpeg',
+            'image/jpg',
+            'image/pjpeg',
+            'image/x-png',
+            'image/png',
+            'image/x-autocad',
+            'image/x-dwg',
+            'drawing/x-dxf',
+            'application/pdf',
+            'application/octet-stream',
+            'application/acad',
+            'application/x-autocad',
+            'application/dxf',
+            'application/x-dxf',
+            'application/zip',
+            'multipart/x-zip'
+        );
+
+        if (!array_key_exists('job_id', $_POST) || '' === $_POST['job_id']) {
+            $this->sys->template->response .= '<p>Unknown job ID.</p>';
+        }
+
+        if ('' === $this->sys->template->response) {
+            $job = $this->sys->db->query("SELECT `job_id`, `job_uid` FROM `jobs` WHERE `job_uid`=:job_id", array(
+                ':job_id' => (int) substr($_POST['job_id'], 0, 5)
+            ));
+
+            if (empty($job)) {
+                $this->sys->template->response .= '<p>Unknown job ID.</p>';
+            } else {
+                $this->sys->template->job_id .= $job[0]['job_uid']; 
+                $_POST['job_id'] = $job[0]['job_id'];
+            }
+            
+            if (0 === $_FILES['attachment']['error'] && '' === $this->sys->template->response) {
+                if (in_array($finfo->file($_FILES['attachment']['tmp_name']), $allowed_files)) {
+                    $extension = pathinfo($_FILES['attachment']['name']);
+                    $extension = '.' . $extension['extension'];
+                    $directory = dirname($_SERVER["SCRIPT_FILENAME"]) . '/uploads/';
+                    $file = '';
+                    
+                    do {
+                        $file = substr(md5(rand(0, 9999)), 0, 5);
+                        $file .= $extension;
+                    } while (is_file($directory . $file));
+                    
+                    move_uploaded_file($_FILES['attachment']['tmp_name'], $directory . $file);
+
+                    $this->sys->db->query("INSERT INTO `files` (`file_id`, `job_id`, `file_path`, `file_name`) VALUES (NULL, :job_id, :path, :name)", array(
+                        ':job_id'   => (int) substr($_POST['job_id'], 0, 10),
+                        ':path'     => $file,
+                        ':name'     => substr($_FILES['attachment']['name'], 0, 100)
+                    ));
+                    
+                    $this->sys->template->response .= '<p>Uploaded Successfully</p>';
+                } else {
+                    $this->sys->template->response .= '<p>Unsupported filetype.</p>';
+                }
+            } else {
+                $this->sys->template->response .= '<p>Error uploading file.</p>';
+            }
+        }
     }
     /**
      * END: Database Modification Block
@@ -306,6 +390,27 @@ class model_timemanager_jobs implements general_actions {
         }
 
         return $jobs;
+    }
+    
+    /**
+     * Purpose: Used to get attachments associated to a job
+     */
+    public function get_attachments($job_id) {
+        $attachments = $this->sys->db->query("
+            SELECT file.file_name, file.file_path
+            FROM `files` as file
+                JOIN `jobs` as job ON job.job_uid=:job_id
+            WHERE file.job_id=job.job_id",
+        array(
+            ':job_id' => substr($job_id, 0, 256)
+        ));
+        $files = array();
+        
+        foreach ($attachments as $attachment) {
+            $files[$attachment['file_name']] = $this->sys->config->timemanager_uploads . $attachment['file_path'];
+        }
+        
+        return $files;
     }
     
     /**
