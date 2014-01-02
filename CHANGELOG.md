@@ -1,4 +1,7 @@
-### xx/xx/xx - Commit X ###
+### 1/2/14 - Commit 1 ###
+* Updated configuration, apparently I forgot about it
+
+### 12/31/13 - Commit 7 ###
 * Fixed issue with updating password (wasn't md5 hashing)
 * Fixed issue where trying to update settings deleted all settings
 * Fixed divsion by zero error in pagination if paginate by was set to 0
