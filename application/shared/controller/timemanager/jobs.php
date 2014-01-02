@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/09/13
- * Date Modified: 12/31/13
+ * Date Modified: 1/2/14
  * Purpose: Controller for Jobs/Job Tracking
  */
 
@@ -80,8 +80,8 @@ class timemanager_jobs extends controller {
             $this->sys->template->jobs_tracking_active  = 'class="active"';
             $this->sys->template->page_id               = (int) $page_id;
             $this->sys->template->paginate_by           = $this->model_settings->paginate_by;
-            $this->sys->template->jobs                  = $this->model_jobs->get();
-            $this->sys->template->pagination            = $this->model_renderPage->generate_pagination('jobs/home', 'jobs', (int) $page_id);
+            $this->sys->template->jobs                  = $this->model_jobs->get('tracking');
+            $this->sys->template->pagination            = $this->model_renderPage->generate_pagination('jobs/tracking', 'jobs', (int) $page_id);
             
             $parse = ($this->sys->template->admin) ? 'admin_jobs_tracking' : 'jobs_tracking';
             $full_page = True;
@@ -223,6 +223,7 @@ class timemanager_jobs extends controller {
         //Parses the HTML from the view
         $this->model_renderPage->parse($parse, true);
     }
+    
     /**
      * Purpose: Used to generate a printer friendly version of a jobs time
      */
@@ -251,6 +252,28 @@ class timemanager_jobs extends controller {
         //Parses the HTML from the view
         $this->model_renderPage->parse($parse, false);
     }
+    
+    /**
+     *
+     */
+    public function print_tracking() {
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'categories', 'jobs', 'settings'));
+        
+        if ($this->is_logged_in()) {
+            $this->sys->template->title                 = 'Time Manager | Jobs | Tracking | Print';
+            $this->sys->template->jobs_tracking_active  = 'class="active"';
+            $this->sys->template->paginate_by           = $this->model_settings->paginate_by;
+            $this->sys->template->jobs                  = $this->model_jobs->get('tracking');
+            
+            $parse = 'jobs_print-tracking';
+        } else {
+            $this->load_home();
+        }
+
+        //Parses the HTML from the view
+        $this->model_renderPage->parse($parse, false);
+    }
+    
     /**
      * Purpose: Used to recieve information about a job
      */

@@ -151,7 +151,6 @@ class timemanager_employee extends controller {
             $this->sys->template->pagination        = $this->model_renderPage->generate_pagination('employee/view/' . (int) $employee_id . '/' . $pay_period, 'payperiods', (int) $page_id);
 
             $this->sys->template->title         = 'Time Manager | Employee | View';
-            $this->sys->template->home_active   = 'class="active"';
             $parse = ($this->sys->template->admin) ? 'admin_employee_view' : 'employee_view';
         } else {
             $this->load_home();

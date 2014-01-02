@@ -23,7 +23,12 @@
     <div class="col-sm-12">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title">Jobs - Quotes</h3>
+                <h3 class="panel-title row">
+                    <div class="title col-sm-6">Jobs - Tracking</div>
+                    <div class="col-sm-1 col-sm-offset-5">
+                        <a href="{timemanager_root}jobs/print_tracking/" target="_blank" class="btn btn-primary btn-sm" role="button">Print</a>
+                    </div>
+                </h3>
             </div>
             <div class="panel-body">
                 <table class="table table-striped jobs">

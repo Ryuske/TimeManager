@@ -1,6 +1,12 @@
+### 1/2/14 - Commit 3 ###
+* Fixed some typos in job - tracking
+* Changed job tracking so it only shows jobs that are not started or in process
+* Added printable version of job tracking
+* Sorting job tracking by due dates
+* Don't highlight Home when viewing an employee
+
 ### 1/2/14 - Commit 2 ###
 * Updated SQL file with the correct database for supporting job tracking
-
 
 ### 1/2/14 - Commit 1 ###
 * Updated configuration, apparently I forgot about it

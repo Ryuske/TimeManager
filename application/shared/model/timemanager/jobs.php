@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/09/13
- * Date Modified: 12/31/13
+ * Date Modified: 1/2/14
  * Purpose: Used as a wrapper for various methods surrounding jobs
  */
 
@@ -268,7 +268,18 @@ class model_timemanager_jobs implements general_actions {
             default: //job_id
                 $sort_by = 'jobs.job_uid, jobs.job_name';
         }
-        if ('all' !== $action) {
+        
+        if ('tracking' === $action) {
+            $jobs = $this->sys->db->query("
+                SELECT *
+                FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client
+                WHERE jobs.status <> 'c'
+                ORDER BY jobs.job_due_date DESC, $sort_by $limit");
+
+            foreach ($jobs as &$job) {
+                $job['quoted_time'] = json_decode($job['quoted_time'], true);
+            }
+        } else if ('all' !== $action) {
             $jobs = $this->sys->db->query("
                 SELECT *
                 FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client
@@ -285,7 +296,10 @@ class model_timemanager_jobs implements general_actions {
                 return false;
             }
         } else {
-            $jobs = $this->sys->db->query("SELECT * FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client ORDER BY $sort_by $limit");
+            $jobs = $this->sys->db->query("
+                SELECT *
+                FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client
+                ORDER BY $sort_by $limit");
             foreach ($jobs as &$job) {
                 $job['quoted_time'] = json_decode($job['quoted_time'], true);
             }
