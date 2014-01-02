@@ -6,3 +6,5 @@ system
 system/*
 
 .htaccess
+
+configuration/shared.php

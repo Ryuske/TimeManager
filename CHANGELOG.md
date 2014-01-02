@@ -1,3 +1,7 @@
+### 1/2/14 - Commit 2 ###
+* Updated SQL file with the correct database for supporting job tracking
+
+
 ### 1/2/14 - Commit 1 ###
 * Updated configuration, apparently I forgot about it
 
