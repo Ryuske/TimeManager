@@ -1,3 +1,6 @@
+### 1/2/14 - Commit 6 ###
+* Fixing configuration/shared.php
+
 ### 1/2/14 - Commit 5 ###
 * https://github.com/Ryuske/TimeManager/issues/41 <-- Added attachments to jobs
 
