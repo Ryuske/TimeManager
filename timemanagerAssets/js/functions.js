@@ -31,8 +31,8 @@ function jobTableClicked(action, job_id) {
             jQuery.ajax(web_root + 'jobs/get_attachments/' + job_id).done(function(msg) {
                 var json = jQuery.parseJSON(msg);
                 
-                jQuery.each(json, function(name, link) {
-                    jQuery('.attachments').append('<li><a href="' + link + '" target="_blank">' + name + '</a></li>');
+                jQuery.each(json, function(id, object) {
+                    jQuery('.attachments').append('<tr id="' + id + '"><td><a href="' + object.path + '" target="_blank">' + object.name + '</a></td><td><span class="ui-icon ui-icon-trash" onclick="removeAttachment(' + id + ')"></span></td></tr>');
                 });
             });
             jQuery('.job_attachments_dialog').dialog('open');
@@ -40,6 +40,14 @@ function jobTableClicked(action, job_id) {
         default:
             break;
     }
+}
+
+function removeAttachment(attachment_id) {
+    jQuery.ajax(web_root + 'jobs/remove_attachment/' + attachment_id).done(function(msg) {
+        if (msg == 'true') {
+            jQuery('#' + attachment_id).html('');
+        }
+    });
 }
 
 function updateTime(date, time_index, time_operation) {

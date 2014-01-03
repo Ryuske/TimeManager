@@ -102,6 +102,20 @@
     </div>
 </div>
 <div class="job_attachments_dialog">
-    <ul class="attachments">
-    </ul>
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody class="attachments">
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
 </div>

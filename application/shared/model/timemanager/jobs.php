@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/09/13
- * Date Modified: 1/2/14
+ * Date Modified: 1/3/14
  * Purpose: Used as a wrapper for various methods surrounding jobs
  */
 
@@ -256,7 +256,7 @@ class model_timemanager_jobs implements general_actions {
     }
     
     /**
-     * Purpose: Used to upload files
+     * Purpose: Used to upload files/attachments to jobs
      */
     public function upload_attachment() {
         $finfo = new finfo(FILEINFO_MIME_TYPE, "/usr/share/misc/magic");
@@ -325,7 +325,29 @@ class model_timemanager_jobs implements general_actions {
                 $this->sys->template->response .= '<p>Error uploading file.</p>';
             }
         }
+    } //End upload_attachment
+    
+    /**
+     * Purpose: Used to remove attachments
+     */
+    public function remove_attachment($attachment_id) {
+        $attachment = $this->sys->db->query("SELECT `file_path` FROM `files` WHERE `file_id`=:file_id", array(
+            ':file_id' => (int) substr($attachment_id, 0, 20)
+        ));
+        if (empty($attachment)) {
+            return 'false';
+        }
+        
+        $this->sys->db->query("DELETE FROM `files` WHERE `file_id`=:file_id", array(
+            ':file_id' => (int) substr($attachment_id, 0, 20)
+        ));
+        
+        $directory = dirname($_SERVER["SCRIPT_FILENAME"]) . '/uploads/';
+        unlink($directory . $attachment[0]['file_path']);
+        
+        return 'true';
     }
+    
     /**
      * END: Database Modification Block
      */
@@ -397,7 +419,7 @@ class model_timemanager_jobs implements general_actions {
      */
     public function get_attachments($job_id) {
         $attachments = $this->sys->db->query("
-            SELECT file.file_name, file.file_path
+            SELECT file.file_id, file.file_name, file.file_path
             FROM `files` as file
                 JOIN `jobs` as job ON job.job_uid=:job_id
             WHERE file.job_id=job.job_id",
@@ -407,7 +429,10 @@ class model_timemanager_jobs implements general_actions {
         $files = array();
         
         foreach ($attachments as $attachment) {
-            $files[$attachment['file_name']] = $this->sys->config->timemanager_uploads . $attachment['file_path'];
+            $files[$attachment['file_id']] = array(
+                'name' => $attachment['file_name'],
+                'path' => $this->sys->config->timemanager_uploads . $attachment['file_path']
+            );
         }
         
         return $files;

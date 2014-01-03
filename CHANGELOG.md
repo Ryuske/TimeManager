@@ -1,3 +1,6 @@
+### 1/3/14 - Commit 1 ###
+* https://github.com/Ryuske/TimeManager/issues/42 <-- You can now delete attachments
+
 ### 1/2/14 - Commit 7 ###
 * Added /timemanager/categories API field
 * You can now specify a [optional] category with the job punch API /job_id/employee_uid/category_id

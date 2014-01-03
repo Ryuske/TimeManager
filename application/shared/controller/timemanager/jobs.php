@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/09/13
- * Date Modified: 1/2/14
+ * Date Modified: 1/3/14
  * Purpose: Controller for Jobs/Job Tracking
  */
 
@@ -43,9 +43,24 @@ class timemanager_jobs extends controller {
      * Purpose: Used to get attachments (can be used in ajax call)
      */
     public function get_attachments($job_id) {
-        $this->load_dependencies(array('jobs'));
+        $this->load_dependencies(array('loggedIn', 'jobs'));
         
-        echo json_encode($this->model_jobs->get_attachments($job_id));
+        if ($this->is_logged_in()) {
+            echo json_encode($this->model_jobs->get_attachments($job_id));
+        }
+    }
+    
+    /**
+     * Purpose: Used to remove attachments (can be used in ajax call)
+     */
+    public function remove_attachment($attachment_id) {
+        $this->load_dependencies(array('loggedIn', 'settings', 'jobs'));
+        
+        if ($this->is_logged_in() && $this->model_settings->is_admin()) {
+            echo $this->model_jobs->remove_attachment($attachment_id);
+        } else {
+            echo 'false';
+        }
     }
     
     /**

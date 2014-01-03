@@ -119,6 +119,20 @@ if ('' !== $this->sys->template->response) {
         </form>
         <div class="center">{response}</div>
     </div>
-    <ul class="attachments">
-    </ul>
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody class="attachments">
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
 </div>
