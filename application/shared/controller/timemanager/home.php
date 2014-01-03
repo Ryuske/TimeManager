@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 11/13/13
- * Date Modified: 12/31/13
+ * Date Modified: 1/3/14
  * Purpose: Default controller - used for top level pages (home, about, settings, etc)
  */
 
@@ -178,12 +178,12 @@ class timemanager_home extends controller {
     }
     
     /**
-     * Purpose: Returns all the categories in json format
+     * Purpose: Returns all the departments in json format
      */
-    public function categories() {
-        $this->load_dependencies(array('categories'));
+    public function departments() {
+        $this->load_dependencies(array('departments'));
         
-        echo json_encode($this->model_categories->get(true, false));
+        echo json_encode($this->model_departments->get(true, false));
     }
 } //End timemanager_home
 

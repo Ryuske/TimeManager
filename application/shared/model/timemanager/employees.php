@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 11/15/13
- * Date Modified: 12/31/13
+ * Date Modified: 1/3/14
  * Purpose: Used to pull the employees from the database and use the results in a view
  */
 
@@ -59,8 +59,8 @@ class model_timemanager_employees implements general_actions {
             if ((!array_key_exists('uid', $_POST) || '' === $_POST['uid']) && !array_key_exists('generate_uid', $_POST)) {
                 $error .= '<p>You either need to enter a UID or check \'Generate 4-byte hex UID\'.</p>';
             }
-            if (!array_key_exists('category', $_POST) || '' === $_POST['category']) {
-                $error .= '<p>Please select a category.</p>';
+            if (!array_key_exists('department', $_POST) || '' === $_POST['department']) {
+                $error .= '<p>Please select a department.</p>';
             }
             if (!array_key_exists('role', $_POST) || !in_array($_POST['role'], array('none', 'admin', 'management'))) {
                 $error .= '<p>Please select a role.</p>';
@@ -183,9 +183,9 @@ class model_timemanager_employees implements general_actions {
         $error = $this->check_input('add');
 
         if (!$error) {
-            $query = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `category_id`, `employee_role`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', :uid, :category, :role, :firstname, :lastname, :username, :password)", array(
+            $query = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `department_id`, `employee_role`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', :uid, :department, :role, :firstname, :lastname, :username, :password)", array(
                 ':uid'          => substr($_POST['uid'], 0, 64),
-                ':category'     => (int) substr($_POST['category'], 0, 4),
+                ':department'   => (int) substr($_POST['department'], 0, 4),
                 ':role'         => $_POST['role'],
                 ':firstname'    => ucwords(substr($_POST['firstname'], 0, 24)),
                 ':lastname'     => ucwords(substr($_POST['lastname'], 0, 24)),
@@ -209,11 +209,11 @@ class model_timemanager_employees implements general_actions {
         $error = $this->check_input('edit');
 
         if (!$error) {
-            $query = $this->sys->db->query("UPDATE `employees` SET `employee_uid`=:uid, `category_id`=:category, `employee_role`=:role, `employee_firstname`=:firstname, `employee_lastname`=:lastname, `employee_username`=:username, `employee_password`=:password WHERE `employee_id`=:id", array(
+            $query = $this->sys->db->query("UPDATE `employees` SET `employee_uid`=:uid, `department_id`=:department, `employee_role`=:role, `employee_firstname`=:firstname, `employee_lastname`=:lastname, `employee_username`=:username, `employee_password`=:password WHERE `employee_id`=:id", array(
                 ':id'           => (int) substr($_POST['employee_id'], 0, 6),
                 ':uid'          => substr($_POST['uid'], 0, 64),
                 ':role'         => $_POST['role'],
-                ':category'     => (int) substr($_POST['category'], 0, 4),
+                ':department'   => (int) substr($_POST['department'], 0, 4),
                 ':firstname'    => ucwords(substr($_POST['firstname'], 0, 24)),
                 ':lastname'     => ucwords(substr($_POST['lastname'], 0, 24)),
                 ':username'     => substr($_POST['username'], 0, 28),
@@ -270,7 +270,7 @@ class model_timemanager_employees implements general_actions {
             $limit = '';
         }
         
-        $result = $this->sys->db->query("SELECT * FROM `employees` AS employees JOIN `categories` AS categories on categories.category_id = employees.category_id ORDER BY $sort_employees_by $limit");
+        $result = $this->sys->db->query("SELECT * FROM `employees` AS employees JOIN `departments` AS departments on departments.department_id = employees.department_id ORDER BY $sort_employees_by $limit");
         $return = array();
         foreach ($result as $employee_key=>$employee_value) {
             foreach ($employee_value as $key=>$value) {

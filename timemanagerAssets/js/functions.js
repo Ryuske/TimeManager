@@ -85,15 +85,15 @@ function updateJobTime(id, object, operation) {
     jQuery('.update_time_dialog').dialog('open');
 }
 
-function updateJobInfo(job_id, employee_id, category_id) {
+function updateJobInfo(job_id, employee_id, department_id) {
     jQuery('input[name=job_id]').attr('value', job_id);
     jQuery("select[name=employee]").children().each(function() {
         if (jQuery(this).val() == employee_id) {
             jQuery(this).attr("selected", "selected");
         }
     });
-    jQuery("select[name=category]").children().each(function() {
-        if (jQuery(this).val() == category_id) {
+    jQuery("select[name=department]").children().each(function() {
+        if (jQuery(this).val() == department_id) {
             jQuery(this).attr("selected", "selected");
         }
     });
@@ -152,21 +152,21 @@ function client_operations(operation) {
     }
 }
 
-function category_operations(operation) {
+function department_operations(operation) {
     switch (operation) {
         case 'add':
-            jQuery('.category_add_dialog').dialog('open');
+            jQuery('.department_add_dialog').dialog('open');
             break;
         case 'edit':
-            jQuery('.category_edit_dialog').dialog('open');
-            jQuery('.category_name').text(jQuery('select[name=category] option[value=' + jQuery('select[name=category]').val() + ']').text());
-            jQuery('input[name=category_name]').val(jQuery('select[name=category] option[value=' + jQuery('select[name=category]').val() + ']').text());
-            jQuery('input[name=category_id]').val(jQuery('select[name=category] option[value=' + jQuery('select[name=category]').val() + ']').val());
+            jQuery('.department_edit_dialog').dialog('open');
+            jQuery('.department_name').text(jQuery('select[name=department] option[value=' + jQuery('select[name=department]').val() + ']').text());
+            jQuery('input[name=department_name]').val(jQuery('select[name=department] option[value=' + jQuery('select[name=department]').val() + ']').text());
+            jQuery('input[name=department_id]').val(jQuery('select[name=department] option[value=' + jQuery('select[name=department]').val() + ']').val());
             break;
         case 'remove':
-            jQuery('.category_remove_dialog').dialog('open');
-            jQuery('.category_name').text(jQuery('select[name=category] option[value=' + jQuery('select[name=category]').val() + ']').text());
-            jQuery('input[name=category_id]').val(jQuery('select[name=category] option[value=' + jQuery('select[name=category]').val() + ']').val());
+            jQuery('.department_remove_dialog').dialog('open');
+            jQuery('.department_name').text(jQuery('select[name=department] option[value=' + jQuery('select[name=department]').val() + ']').text());
+            jQuery('input[name=department_id]').val(jQuery('select[name=department] option[value=' + jQuery('select[name=department]').val() + ']').val());
             break;
         default:
             //None

@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 11/26/13
- * Date Modified: 12/31/13
+ * Date Modified: 1/3/14
  * Purpose: Various functions that apply to installing timemanager
  */
 class model_timemanager_install {
@@ -64,7 +64,7 @@ class model_timemanager_install {
             }
         }
         
-        $add_user = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `category_id`, `employee_role`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', '', '1', 'admin', :firstname, :lastname, :username, :password)", array(
+        $add_user = $this->sys->db->query("INSERT INTO `employees` (`employee_id`, `employee_uid`, `department_id`, `employee_role`, `employee_firstname`, `employee_lastname`, `employee_username`, `employee_password`) VALUES ('', '', '1', 'admin', :firstname, :lastname, :username, :password)", array(
             ':firstname' => ucwords(substr($_POST['firstname'], 0, 24)),
             ':lastname' => ucwords(substr($_POST['lastname'], 0, 24)),
             ':username' => substr($_POST['username'], 0, 28),

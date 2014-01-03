@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 11/15/13
- * Date Modified: 12/31/13
+ * Date Modified: 1/3/14
  * Purpose: Employee controller
  */
 
@@ -40,7 +40,7 @@ class timemanager_employee extends controller {
      */
     public function add() {
         $this->sys->template->response = '';
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'categories', 'employees'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'departments', 'employees'));
 
         if ($this->is_logged_in()) {
             if (!$this->model_settings->is_admin()) {
@@ -50,7 +50,7 @@ class timemanager_employee extends controller {
             
             $this->sys->template->admin         = $this->model_settings->is_admin();
             $this->sys->template->title         = 'Time Manager | Employee | Add';
-            $this->sys->template->categories    = $this->model_categories->get();
+            $this->sys->template->departments   = $this->model_departments->get();
             
             $parse = 'employee_add';
         } else {
@@ -65,11 +65,11 @@ class timemanager_employee extends controller {
      */
     public function edit($employee_id) {
         $this->sys->template->response = '';
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'categories', 'settings'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'departments', 'settings'));
 
         $this->sys->template->employees_by_id   = $this->model_employees->get(true);
         $this->sys->template->employee_id       = (int) $employee_id;
-        $this->sys->template->categories        = $this->model_categories->get();
+        $this->sys->template->departments       = $this->model_departments->get();
         
         if ($this->is_logged_in() && array_key_exists($this->sys->template->employee_id, $this->sys->template->employees_by_id)) {
             if (!$this->model_settings->is_admin()) {
@@ -177,7 +177,7 @@ class timemanager_employee extends controller {
         $employee = $this->sys->db->query("
             SELECT *
             FROM `employees` AS employee
-                JOIN `categories` AS category on category.category_id=employee.category_id
+                JOIN `departments` AS department on department.department_id=employee.department_id
                 LEFT JOIN `job_punch` AS job on job.employee_id=employee.employee_id
                 LEFT JOIN `jobs` AS jobs on jobs.job_uid=job.job_id
             WHERE `employee_uid`=:uid
@@ -211,8 +211,8 @@ class timemanager_employee extends controller {
             case 'role':
                 $response = $employee[0]['employee_role'];
                 break;
-            case 'category':
-                $response = $employee[0]['category_name'];
+            case 'department':
+                $response = $employee[0]['department_name'];
                 break;
             case 'last_job':
                 $response = $employee[0]['job_name'];

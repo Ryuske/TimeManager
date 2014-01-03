@@ -23,7 +23,7 @@
                             <th>ID</th>
                             <th>UID</th>
                             <th>Role</th>
-                            <th>Category</th>
+                            <th>Department</th>
                             <th>Username</th>
                         </tr>
                     </thead>
@@ -40,7 +40,7 @@
                             <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['id']}</td>
                             <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['uid']}</td>
                             <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['role']}</td>
-                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['category_name']}</td>
+                            <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['department_name']}</td>
                             <td onclick="employeeTableClicked('view', '{employees[<?php echo $i; ?>]['id']}')">{employees[<?php echo $i; ?>]['username']}</td>
                             </tr>
                             <?php
@@ -53,7 +53,7 @@
                             <th>ID</th>
                             <th>UID</th>
                             <th>Role</th>
-                            <th>Category</th>
+                            <th>Department</th>
                             <th>Username</th>
                         </tr>
                     </tfoot>

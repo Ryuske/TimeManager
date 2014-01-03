@@ -125,7 +125,7 @@ class timemanager_jobs extends controller {
      * Purpose: Load add jobs page
      */
     public function add() {
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'clients', 'jobs', 'categories'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'clients', 'jobs', 'departments'));
 
         if (!isset($this->sys->template->response)) {
             $this->sys->template->response = '';
@@ -137,11 +137,11 @@ class timemanager_jobs extends controller {
                 return true;
             }
             
-            $this->sys->template->categories = $this->model_categories->get();
-            $this->sys->template->admin = $this->model_settings->is_admin();
-            $this->sys->template->title = 'Time Manager | Jobs | Add';
-            $this->sys->template->jobs_active = 'class="active"';
-            $this->sys->template->clients = $this->model_clients->get();
+            $this->sys->template->departments   = $this->model_departments->get();
+            $this->sys->template->admin         = $this->model_settings->is_admin();
+            $this->sys->template->title         = 'Time Manager | Jobs | Add';
+            $this->sys->template->jobs_active   = 'class="active"';
+            $this->sys->template->clients       = $this->model_clients->get();
             
             $parse = 'jobs_add';
             $full_page = True;
@@ -156,7 +156,7 @@ class timemanager_jobs extends controller {
      * Purpose: Load edit jobs page
      */
     public function edit($job_id) {
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'clients', 'settings', 'jobs', 'categories'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'clients', 'settings', 'jobs', 'departments'));
         $this->sys->template->job = $this->model_jobs->get($job_id, false);
         
         if (!isset($this->sys->template->response)) {
@@ -169,11 +169,11 @@ class timemanager_jobs extends controller {
                 return true;
             }
             
-            $this->sys->template->categories = $this->model_categories->get();
-            $this->sys->template->admin = $this->model_settings->is_admin();
-            $this->sys->template->title = 'Time Manager | Jobs | Edit';
-            $this->sys->template->jobs_active = 'class="active"';
-            $this->sys->template->clients = $this->model_clients->get();
+            $this->sys->template->departments   = $this->model_departments->get();
+            $this->sys->template->admin         = $this->model_settings->is_admin();
+            $this->sys->template->title         = 'Time Manager | Jobs | Edit';
+            $this->sys->template->jobs_active   = 'class="active"';
+            $this->sys->template->clients       = $this->model_clients->get();
             
             $parse = (false !== $this->sys->template->job) ? 'jobs_edit' : 'jobs_home';
             $full_page = True;
@@ -219,25 +219,25 @@ class timemanager_jobs extends controller {
      * Purpose: Used to view an existing jobs time card
      */
     public function view($job_uid, $page_id = 1) {
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'categories', 'jobs', 'settings'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'departments', 'jobs', 'settings'));
         $this->sys->template->page_id       = (int) $page_id;
         $this->sys->template->paginate_by   = $this->model_settings->paginate_by;
         $this->sys->template->job_id        = $job_uid;
         
         if ($this->is_logged_in()) {
-            $this->sys->template->admin             = $this->model_settings->is_admin();
-            $this->sys->template->job               = $this->model_jobs->get($job_uid, false);
-            $this->sys->template->job_table         = $this->model_jobs->generate_job_table($job_uid);
-            $this->sys->template->start_date        = $this->model_jobs->find_dates($job_uid, 'start');
-            $this->sys->template->last_date         = $this->model_jobs->find_dates($job_uid, 'end');
-            $this->sys->template->add_date_response = '';
-            $this->sys->template->pagination        = $this->model_renderPage->generate_pagination('jobs/view/' . $job_uid . '', (int) $page_id);
-            $this->sys->template->employees         = $this->model_employees->get();
-            $this->sys->template->categories        = $this->model_categories->get(true);
-            $this->sys->template->total_hours       = $this->model_jobs->total_hours($job_uid, false);
-            $this->sys->template->hours_by_category = $this->model_jobs->total_hours($job_uid, true);
-            $this->sys->template->worked_load       = $this->model_jobs->work_load($job_uid, false, true);
-            $this->sys->template->quoted_load       = $this->model_jobs->work_load($job_uid, true, true);
+            $this->sys->template->admin                 = $this->model_settings->is_admin();
+            $this->sys->template->job                   = $this->model_jobs->get($job_uid, false);
+            $this->sys->template->job_table             = $this->model_jobs->generate_job_table($job_uid);
+            $this->sys->template->start_date            = $this->model_jobs->find_dates($job_uid, 'start');
+            $this->sys->template->last_date             = $this->model_jobs->find_dates($job_uid, 'end');
+            $this->sys->template->add_date_response     = '';
+            $this->sys->template->pagination            = $this->model_renderPage->generate_pagination('jobs/view/' . $job_uid . '', (int) $page_id);
+            $this->sys->template->employees             = $this->model_employees->get();
+            $this->sys->template->departments           = $this->model_departments->get(true);
+            $this->sys->template->total_hours           = $this->model_jobs->total_hours($job_uid, false);
+            $this->sys->template->hours_by_department   = $this->model_jobs->total_hours($job_uid, true);
+            $this->sys->template->worked_load           = $this->model_jobs->work_load($job_uid, false, true);
+            $this->sys->template->quoted_load           = $this->model_jobs->work_load($job_uid, true, true);
             
             $this->sys->template->title = 'Time Manager | Jobs | View';
             $this->sys->template->jobs_active = 'class="active"';
@@ -254,20 +254,20 @@ class timemanager_jobs extends controller {
      * Purpose: Used to generate a printer friendly version of a jobs time
      */
     public function print_friendly($job_uid) {
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'categories', 'jobs', 'settings'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'departments', 'jobs', 'settings'));
         $this->sys->template->job_id = $job_uid;
         
         if ($this->is_logged_in()) {
-            $this->sys->template->job               = $this->model_jobs->get($job_uid, false);
-            $this->sys->template->job_table         = $this->model_jobs->generate_job_table($job_uid);
-            $this->sys->template->start_date        = $this->model_jobs->find_dates($job_uid, 'start');
-            $this->sys->template->last_date         = $this->model_jobs->find_dates($job_uid, 'end');
-            $this->sys->template->employees         = $this->model_employees->get();
-            $this->sys->template->categories        = $this->model_categories->get(true);
-            $this->sys->template->total_hours       = $this->model_jobs->total_hours($job_uid, false);
-            $this->sys->template->hours_by_category = $this->model_jobs->total_hours($job_uid, true);
-            $this->sys->template->worked_load       = $this->model_jobs->work_load($job_uid, false, true);
-            $this->sys->template->quoted_load       = $this->model_jobs->work_load($job_uid, true, true);
+            $this->sys->template->job                   = $this->model_jobs->get($job_uid, false);
+            $this->sys->template->job_table             = $this->model_jobs->generate_job_table($job_uid);
+            $this->sys->template->start_date            = $this->model_jobs->find_dates($job_uid, 'start');
+            $this->sys->template->last_date             = $this->model_jobs->find_dates($job_uid, 'end');
+            $this->sys->template->employees             = $this->model_employees->get();
+            $this->sys->template->departments           = $this->model_departments->get(true);
+            $this->sys->template->total_hours           = $this->model_jobs->total_hours($job_uid, false);
+            $this->sys->template->hours_by_department   = $this->model_jobs->total_hours($job_uid, true);
+            $this->sys->template->worked_load           = $this->model_jobs->work_load($job_uid, false, true);
+            $this->sys->template->quoted_load           = $this->model_jobs->work_load($job_uid, true, true);
             
             $this->sys->template->title = 'Time Manager | Jobs | Print';
             $parse = 'jobs_print';
@@ -283,7 +283,7 @@ class timemanager_jobs extends controller {
      *
      */
     public function print_tracking() {
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'categories', 'jobs', 'settings'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'departments', 'jobs', 'settings'));
         
         if ($this->is_logged_in()) {
             $this->sys->template->title                 = 'Time Manager | Jobs | Tracking | Print';
@@ -314,7 +314,7 @@ class timemanager_jobs extends controller {
                 JOIN `job_punch` AS punch on punch.job_id=:job_uid
                 LEFT JOIN `employees` AS employee on employee.employee_id=punch.employee_id
                 LEFT JOIN `clients` AS client on client.client_id=job.client
-                LEFT JOIN `categories` AS category on category.category_id=punch.category_id
+                LEFT JOIN `departments` AS department on department.department_id=punch.department_id
             WHERE job.job_uid=:job_uid
             ORDER BY punch.punch_id DESC
         ", array(
@@ -335,8 +335,8 @@ class timemanager_jobs extends controller {
                 case 'last_date':
                     $response = $check_ids[0]['date'];
                     break;
-                case 'last_category':
-                    $response = $check_ids[0]['category_name'];;
+                case 'last_department':
+                    $response = $check_ids[0]['department_name'];;
                     break;
                 case 'last_employee':
                     $response = $check_ids[0]['employee_firstname'] . ' ' . $check_ids[0]['employee_lastname'];
@@ -356,7 +356,7 @@ class timemanager_jobs extends controller {
     /**
      * Purpose: Used to punch in/out on a job
      */
-    public function tx($job_uid, $employee_uid, $category='default') {
+    public function tx($job_uid, $employee_uid, $department='default') {
         $this->load_dependencies(array('jobs'));
         $response = 'Error';
         
@@ -379,7 +379,7 @@ class timemanager_jobs extends controller {
         ));
 
         if (!empty($check_ids)) {
-            $response = $this->model_jobs->punch($check_ids[0]['job_uid'], $check_ids[0]['employee_id'], $category);
+            $response = $this->model_jobs->punch($check_ids[0]['job_uid'], $check_ids[0]['employee_id'], $department);
             $response = $check_ids[0]['employee_firstname'] . ' ' . $check_ids[0]['employee_lastname'] . ', ' . $check_ids[0]['job_uid'] . ', ' . $check_ids[0]['job_name'] . ', ' . $response[0] . ', ' . $response[1]['time'];
         }
         

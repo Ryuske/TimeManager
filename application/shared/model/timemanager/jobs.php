@@ -103,25 +103,25 @@ class model_timemanager_jobs implements general_actions {
             }
             
             if (array_key_exists('quote', $_POST)) {
-                $categories_query = $this->sys->db->query("SELECT * FROM `categories`");
-                $categories = array();
+                $departments_query = $this->sys->db->query("SELECT * FROM `departments`");
+                $departments = array();
                 
-                foreach ($categories_query as $category) {
-                    $categories[$category['category_id']] = $category;
+                foreach ($departments_query as $department) {
+                    $departments[$department['department_id']] = $department;
                 }
                 
-                $categories_query = array();
+                $departments_query = array();
                 
                 foreach ($_POST['quote'] as $id=>&$time) {
-                    if (array_key_exists($id, $categories)) {
+                    if (array_key_exists($id, $departments)) {
                         if ('' === $time) {
                             $time = 0;
                         }
                         
-                        $categories_query[$id] = $time;
+                        $departments_query[$id] = $time;
                     }
                 }
-                $_POST['quote'] = json_encode($categories_query);
+                $_POST['quote'] = json_encode($departments_query);
             } else {
                 $error .= '<p>Please enter quoted times.</p>';
             }
@@ -463,7 +463,7 @@ class model_timemanager_jobs implements general_actions {
         $job_query = $this->sys->db->query("
             SELECT * FROM `job_punch` AS punch
                 JOIN `employees` AS employees on employees.employee_id=punch.employee_id
-                LEFT JOIN `categories` AS categories on categories.category_id=employees.category_id
+                LEFT JOIN `departments` AS departments on departments.department_id=employees.department_id
             WHERE punch.job_id=:id ORDER BY punch.date", array(':id' => (int) substr($job_id, 0, 10)));
         $job_info = array();
         
@@ -493,8 +493,8 @@ class model_timemanager_jobs implements general_actions {
                     $return .= '<td>' . $hour['date'] . '</td>';
                     $return .= '<td onclick="updateJobTime(\'' . $id['in'] . '\', jQuery(this), \'in\')">' . $in . '</td>';
                     $return .= '<td onclick="updateJobTime(\'' . $id['out'] . '\', jQuery(this), \'out\')">' . $out . '</td>';
-                    $return .= '<td onclick="updateJobInfo(\'' . $id['in'] . '\', ' . $job_info[$hour['employee']]['employee_id'] . ', ' . $hour['category_id'] . ')">' . $job_info[$hour['employee']]['employee_firstname'] . ', ' . $job_info[$hour['employee']]['employee_lastname'] . '</td>';
-                    $return .= '<td onclick="updateJobInfo(\'' . $id['in'] . '\', ' . $job_info[$hour['employee']]['employee_id'] . ', ' . $hour['category_id'] . ')">' . $hour['category_name'] . '</td>';
+                    $return .= '<td onclick="updateJobInfo(\'' . $id['in'] . '\', ' . $job_info[$hour['employee']]['employee_id'] . ', ' . $hour['department_id'] . ')">' . $job_info[$hour['employee']]['employee_firstname'] . ', ' . $job_info[$hour['employee']]['employee_lastname'] . '</td>';
+                    $return .= '<td onclick="updateJobInfo(\'' . $id['in'] . '\', ' . $job_info[$hour['employee']]['employee_id'] . ', ' . $hour['department_id'] . ')">' . $hour['department_name'] . '</td>';
                     $return .= '<td>' . $hour['total_hours'] . '</td>';
                     $return .= '</tr>';
                 }
@@ -507,7 +507,7 @@ class model_timemanager_jobs implements general_actions {
     /**
      * Purpose: Used to calculate the load a job;
      */
-    public function work_load($job_uid, $quoted_load=true, $by_category=false) {
+    public function work_load($job_uid, $quoted_load=true, $by_department=false) {
         $load_time = ($quoted_load) ? $this->get($job_uid, false) : $this->total_hours($job_uid, true);
         $zero_load = 0;
         
@@ -520,30 +520,30 @@ class model_timemanager_jobs implements general_actions {
         $load = array();
         $employees = array();
         
-        foreach ($load_time as $category=>$time) {
-            $category_employees = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `category_id`=:category_id", array(
-                ':category_id' => (int) substr($category, 0, 4)
+        foreach ($load_time as $department=>$time) {
+            $department_employees = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `department_id`=:department_id", array(
+                ':department_id' => (int) substr($department, 0, 4)
             ));
             
-            $employees[$category] = count($category_employees);
-            if (0 < $employees[$category]) {
-                $load[$category] = round($time/($employees[$category]*8), 2);
+            $employees[$department] = count($department_employees);
+            if (0 < $employees[$department]) {
+                $load[$department] = round($time/($employees[$department]*8), 2);
             } else {
-                $load[$category] = 0;
+                $load[$department] = 0;
             }
         }
         
-        if ($by_category) {
-            foreach ($load as &$category_load) {
-                if (0 === $category_load) {
-                    $category_load = 100;
+        if ($by_department) {
+            foreach ($load as &$department_load) {
+                if (0 === $department_load) {
+                    $department_load = 100;
                 }
             }
             return $load;
         }
         
-        foreach ($load as $category_load) {
-            $total_load += $category_load;
+        foreach ($load as $department_load) {
+            $total_load += $department_load;
             if (0 < $total_load) {
                 $zero_load = 1;
             }
@@ -554,14 +554,14 @@ class model_timemanager_jobs implements general_actions {
     }
     
     /**
-     * Purpose: Used to figure out what the last category worked on a job was
+     * Purpose: Used to figure out what the last department worked on a job was
      */
     public function last_operation($job_id) {
-        $last_category = $this->sys->db->query("SELECT category.category_name FROM `job_punch` AS job LEFT JOIN `categories` AS category on category.category_id=job.category_id WHERE job.job_id=:id ORDER BY job.time ASC LIMIT 0,1", array(
+        $last_department = $this->sys->db->query("SELECT department.department_name FROM `job_punch` AS job LEFT JOIN `departments` AS department on department.department_id=job.department_id WHERE job.job_id=:id ORDER BY job.time ASC LIMIT 0,1", array(
             ':id' => (int) $job_id
         ));
         
-        $response = (!empty($last_category)) ? $last_category[0]['category_name'] : 'n/a';
+        $response = (!empty($last_department)) ? $last_department[0]['department_name'] : 'n/a';
         
         return $response;
     }

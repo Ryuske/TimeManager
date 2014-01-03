@@ -1,3 +1,6 @@
+### 1/3/14 - Commit 2 ###
+* https://github.com/Ryuske/TimeManager/issues/44 <-- Renamed categories to departments
+
 ### 1/3/14 - Commit 1 ###
 * https://github.com/Ryuske/TimeManager/issues/42 <-- You can now delete attachments
 

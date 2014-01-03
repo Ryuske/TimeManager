@@ -41,7 +41,7 @@ $date_format = 'm/d/y';
                                 <th>In</th>
                                 <th>Out</th>
                                 <th>Employee Name</th>
-                                <th>Category</th>
+                                <th>Department</th>
                                 <th>Total Hours</th>
                             </tr>
                         </thead>
@@ -54,7 +54,7 @@ $date_format = 'm/d/y';
                                 <th>In</th>
                                 <th>Out</th>
                                 <th>Employee Name</th>
-                                <th>Category</th>
+                                <th>Department</th>
                                 <th>Total Hours</th>
                             </tr>
                         </tfoot>
@@ -75,7 +75,7 @@ $date_format = 'm/d/y';
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Category</th>
+                                        <th>Department</th>
                                         <th>Worked Load</th>
                                         <th>Quoted Load</th>
                                         <th>Worked Hours</th>
@@ -85,25 +85,25 @@ $date_format = 'm/d/y';
                                 </thead>
                                 <tbody>
                                     <?php
-                                    foreach ($this->sys->template->job['quoted_time'] as $category=>$time) {
+                                    foreach ($this->sys->template->job['quoted_time'] as $department=>$time) {
                                         if (0 < $time) {
                                             echo '<tr>';
-                                                echo '<td>' . $this->sys->template->categories[$category]['category_name'] . '</td>';
+                                                echo '<td>' . $this->sys->template->departments[$department]['department_name'] . '</td>';
                                                 
-                                                if (array_key_exists($category, $this->sys->template->worked_load)) {
-                                                    echo '<td>' . $this->sys->template->worked_load[$category] . '%</td>';
+                                                if (array_key_exists($department, $this->sys->template->worked_load)) {
+                                                    echo '<td>' . $this->sys->template->worked_load[$department] . '%</td>';
                                                 } else {
                                                     echo '<td>0%</td>';
                                                 }
-                                                if (array_key_exists($category, $this->sys->template->quoted_load)) {
-                                                    echo '<td>' . $this->sys->template->quoted_load[$category] . '%</td>';
+                                                if (array_key_exists($department, $this->sys->template->quoted_load)) {
+                                                    echo '<td>' . $this->sys->template->quoted_load[$department] . '%</td>';
                                                 } else {
                                                     echo '<td>0%</td>';
                                                 }
                                                 
-                                                if (array_key_exists($category, $this->sys->template->hours_by_category)) {
-                                                    $worked = $this->sys->template->hours_by_category[$category];
-                                                    echo '<td>' . $this->sys->template->hours_by_category[$category] . '</td>';
+                                                if (array_key_exists($department, $this->sys->template->hours_by_department)) {
+                                                    $worked = $this->sys->template->hours_by_department[$department];
+                                                    echo '<td>' . $this->sys->template->hours_by_department[$department] . '</td>';
                                                 } else {
                                                     $worked = 0;
                                                     echo '<td>0</td>';
@@ -123,7 +123,7 @@ $date_format = 'm/d/y';
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th>Category</th>
+                                        <th>Department</th>
                                         <th>Worked Load</th>
                                         <th>Quoted Load</th>
                                         <th>Worked Hours</th>

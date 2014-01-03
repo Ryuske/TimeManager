@@ -144,18 +144,18 @@ jQuery(document).ready(function() {
      */
     
     /**
-     * Category dialogs
+     * Department dialogs
      */
-    jQuery('.category_add_dialog').dialog({
+    jQuery('.department_add_dialog').dialog({
         resizable: false,
         autoOpen: false,
         height: 200,
         width: 300,
-        title: 'Add Category',
+        title: 'Add Department',
         modal: true,
         buttons: {
-            'Add Category': function() {
-                jQuery('.add_category_form').submit();
+            'Add Department': function() {
+                jQuery('.add_department_form').submit();
             },
             'Cancel': function() {
                 jQuery(this).dialog('close');
@@ -163,16 +163,16 @@ jQuery(document).ready(function() {
         }
     });
     
-    jQuery('.category_edit_dialog').dialog({
+    jQuery('.department_edit_dialog').dialog({
         resizable: false,
         autoOpen: false,
         height: 200,
         width: 300,
-        title: 'Edit Category',
+        title: 'Edit Department',
         modal: true,
         buttons: {
-            'Edit Category': function() {
-                jQuery('.edit_category_form').submit();
+            'Edit Department': function() {
+                jQuery('.edit_department_form').submit();
             },
             'Cancel': function() {
                 jQuery(this).dialog('close');
@@ -180,14 +180,14 @@ jQuery(document).ready(function() {
         }
     });
     
-    jQuery('.category_remove_dialog').dialog({
+    jQuery('.department_remove_dialog').dialog({
         resizable: false,
         autoOpen: false,
-        title: 'Remove Category',
+        title: 'Remove Department',
         modal: true,
         buttons: {
-            'Remove Category': function() {
-                jQuery('.remove_category_form').submit();
+            'Remove': function() {
+                jQuery('.remove_department_form').submit();
             },
             'Cancel': function() {
                 jQuery(this).dialog('close');
@@ -195,7 +195,7 @@ jQuery(document).ready(function() {
         }
     });
     /**
-     * END category dialogs
+     * END department dialogs
      */
     
     /**

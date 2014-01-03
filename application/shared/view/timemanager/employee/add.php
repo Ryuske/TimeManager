@@ -12,16 +12,16 @@
                 </div>
                 <div class="group">
                     <label>
-                        Category &raquo;
-                        <span class="ui-icon ui-icon-plus form_label_icon" onclick="category_operations('add')"></span>
-                        <span class="ui-icon ui-icon-pencil form_label_icon" onclick="category_operations('edit')"></span>
-                        <span class="ui-icon ui-icon-trash form_label_icon" onclick="category_operations('remove')"></span>
+                        Department &raquo;
+                        <span class="ui-icon ui-icon-plus form_label_icon" onclick="department_operations('add')"></span>
+                        <span class="ui-icon ui-icon-pencil form_label_icon" onclick="department_operations('edit')"></span>
+                        <span class="ui-icon ui-icon-trash form_label_icon" onclick="department_operations('remove')"></span>
                     </label>
-                    <select class="form-control" name="category">
+                    <select class="form-control" name="department">
                         <?php
-                        for ($i=0; $i<count($this->sys->template->categories); $i++) {
+                        for ($i=0; $i<count($this->sys->template->departments); $i++) {
                             ?>
-                            <option value="{categories[<?php echo $i; ?>]['category_id']}">{categories[<?php echo $i; ?>]['category_name']}</option>
+                            <option value="{departments[<?php echo $i; ?>]['department_id']}">{departments[<?php echo $i; ?>]['department_name']}</option>
                             <?php
                         }
                         ?>
@@ -52,37 +52,37 @@
         </div>
     </div>
 </div>
-<div class="category_add_dialog">
+<div class="department_add_dialog">
     <div class="dialog_text bold">
-        Category to Add
+        Department to Add
     </div>
-    <form class="add_category_form" method="post" action="">
+    <form class="add_department_form" method="post" action="">
         <div class="dialog_input">
-            <input type="text" name="category_name" placeholder="Categories' Name" />
+            <input type="text" name="department_name" placeholder="Departments' Name" />
         </div>
-        <input type="hidden" name="add_category" value="add_category" />
+        <input type="hidden" name="add_department" value="add_department" />
     </form>
-</div> <!-- END category_add_dialog -->
+</div> <!-- END department_add_dialog -->
 
-<div class="category_edit_dialog">
+<div class="department_edit_dialog">
     <div class="dialog_text">
-        Editing: <span class="bold category_name"></span>
+        Editing: <span class="bold department_name"></span>
     </div>
-    <form class="edit_category_form" method="post" action="">
+    <form class="edit_department_form" method="post" action="">
         <div class="dialog_input">
-            <input type="text" name="category_name" value="" />
+            <input type="text" name="department_name" value="" />
         </div>
-        <input type="hidden" name="category_id" value="" />
-        <input type="hidden" name="edit_category" value="edit_category" />
+        <input type="hidden" name="department_id" value="" />
+        <input type="hidden" name="edit_department" value="edit_department" />
     </form>
-</div> <!-- END category_edit_dialog -->
+</div> <!-- END department_edit_dialog -->
 
-<div class="category_remove_dialog">
+<div class="department_remove_dialog">
     <div class="dialog_text">
-        Are you sure you want to remove category <span class="bold category_name"></span>?
+        Are you sure you want to remove department <span class="bold department_name"></span>?
     </div>
-    <form class="remove_category_form" method="post" action="">
-        <input type="hidden" name="category_id" value="" />
-        <input type="hidden" name="remove_category" value="remove_category" />
+    <form class="remove_department_form" method="post" action="">
+        <input type="hidden" name="department_id" value="" />
+        <input type="hidden" name="remove_department" value="remove_department" />
     </form>
-</div> <!-- END category_remove_dialog -->
+</div> <!-- END department_remove_dialog -->
