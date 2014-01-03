@@ -2,7 +2,7 @@
 /**
  * @Author: Kenyon Haliwell
  * @Date Created: 11/14/13
- * @Date Modified: 12/31/13
+ * @Date Modified: 1/2/14
  * @Purpose: Front Controller
  *
  * Front controller for Time Manager
@@ -14,6 +14,12 @@
  * "dev" for Development
  * "pro" for Productions
  */
+
+ /**
+  * Used to create consistency. Change to the timezone of where people will be clocking in/out
+  */
+ date_default_timezone_set('America/Los_Angeles');
+ 
 define('__PROJECT_ENVIRONMENT', 'dev');
 
 /**

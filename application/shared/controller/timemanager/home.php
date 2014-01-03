@@ -176,6 +176,15 @@ class timemanager_home extends controller {
         
         $this->sys->template->parse($this->sys->config->timemanager_subdirectories . '_payperiod_response');
     }
+    
+    /**
+     * Purpose: Returns all the categories in json format
+     */
+    public function categories() {
+        $this->load_dependencies(array('categories'));
+        
+        echo json_encode($this->model_categories->get(true, false));
+    }
 } //End timemanager_home
 
 //End File

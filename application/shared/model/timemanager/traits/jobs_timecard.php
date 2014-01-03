@@ -153,7 +153,7 @@ trait job_timecard {
     /**
      * Purpose: Used to punch in/out of a job
      */
-    public function punch($job_id, $employee_id) {
+    public function punch($job_id, $employee_id, $category='default') {
         $date_time = array('date' => date($this->_dateFormat), 'time' => time());
         $operation = '';
         $last_job = $this->sys->db->query("SELECT `punch_id`, `time`, `operation` FROM `job_punch` WHERE `job_id`=:job_id AND `employee_id`=:employee_id", array(
@@ -163,6 +163,20 @@ trait job_timecard {
         $employee = $this->sys->db->query("SELECT `category_id` FROM `employees` WHERE `employee_id`=:id", array(
             ':id' => (int) substr($employee_id, 0, 6)
         ));
+        
+        if ('default' !== $category) {
+            $check_category = $this->sys->db->query("SELECT `category_id` FROM `categories` WHERE `category_id`=:category_id", array(
+                ':category_id' => (int) substr($category, 0, 4)
+            ));
+            
+            if (empty($check_category)) {
+                $category = $employee[0]['category_id'];
+            } else {
+                $category = $check_category[0]['category_id'];
+            }
+        } else {
+            $category = $employee[0]['category_id'];
+        }
 
         $temp_times = $last_job;
         $last_out = array_pop($temp_times);
@@ -173,14 +187,14 @@ trait job_timecard {
             $this->sys->db->query("INSERT INTO `job_punch` (`punch_id`, `job_id`, `employee_id`, `category_id`, `date`, `time`, `operation`) VALUES (NULL, :job_id, :employee_id, :category_id, :date, :time, 'in')", array(
                 ':job_id'       => (int) substr($job_id, 0, 10),
                 ':employee_id'  => (int) substr($employee_id, 0, 6),
-                ':category_id'  => (int) substr($employee[0]['category_id'], 0, 4),
+                ':category_id'  => (int) substr($category, 0, 4),
                 ':date'         => substr($date_time['date'], 0, 8),
                 ':time'         => (int) substr($date_time['time'], 0, 20)
             ));
             $this->sys->db->query("INSERT INTO `job_punch` (`punch_id`, `job_id`, `employee_id`, `category_id`, `date`, `time`, `operation`) VALUES (NULL, :job_id, :employee_id, :category_id, :date, '', 'out')", array(
                 ':job_id'       => (int) substr($job_id, 0, 10),
                 ':employee_id'  => (int) substr($employee_id, 0, 6),
-                ':category_id'  => (int) substr($employee[0]['category_id'], 0, 4),
+                ':category_id'  => (int) substr($category, 0, 4),
                 ':date'         => substr($date_time['date'], 0, 8)
             ));
         } else {

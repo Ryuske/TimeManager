@@ -341,7 +341,7 @@ class timemanager_jobs extends controller {
     /**
      * Purpose: Used to punch in/out on a job
      */
-    public function tx($job_uid, $employee_uid) {
+    public function tx($job_uid, $employee_uid, $category='default') {
         $this->load_dependencies(array('jobs'));
         $response = 'Error';
         
@@ -364,7 +364,7 @@ class timemanager_jobs extends controller {
         ));
 
         if (!empty($check_ids)) {
-            $response = $this->model_jobs->punch($check_ids[0]['job_uid'], $check_ids[0]['employee_id']);
+            $response = $this->model_jobs->punch($check_ids[0]['job_uid'], $check_ids[0]['employee_id'], $category);
             $response = $check_ids[0]['employee_firstname'] . ' ' . $check_ids[0]['employee_lastname'] . ', ' . $check_ids[0]['job_uid'] . ', ' . $check_ids[0]['job_name'] . ', ' . $response[0] . ', ' . $response[1]['time'];
         }
         

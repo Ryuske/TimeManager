@@ -1,3 +1,8 @@
+### 1/2/14 - Commit 7 ###
+* Added /timemanager/categories API field
+* You can now specify a [optional] category with the job punch API /job_id/employee_uid/category_id
+* Added default timezone for Los_Angeles
+
 ### 1/2/14 - Commit 6 ###
 * Fixing configuration/shared.php
 
