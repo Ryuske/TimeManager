@@ -187,7 +187,7 @@ class timemanager_jobs extends controller {
     /**
      * Purpose: Load remove jobs page
      */
-    public function remove($job_id) {
+    public function remove($page_id, $job_id) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'jobs'));
         $this->sys->template->job = $this->model_jobs->get($job_id, false);
 
@@ -200,7 +200,7 @@ class timemanager_jobs extends controller {
             $this->sys->template->admin         = $this->model_settings->is_admin();
             $this->sys->template->title         = 'Time Manager | Jobs | Remove';
             $this->sys->template->jobs_active   = 'class="active"';
-            $this->sys->template->page_id       = 1;
+            $this->sys->template->page_id       = (int) $page_id;
             $this->sys->template->paginate_by   = $this->model_settings->paginate_by;
             $this->sys->template->jobs          = $this->model_jobs->get();
             $this->sys->template->pagination    = $this->model_renderPage->generate_pagination('jobs/home', 'jobs', 1);

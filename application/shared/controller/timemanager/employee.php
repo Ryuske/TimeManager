@@ -90,7 +90,7 @@ class timemanager_employee extends controller {
     /**
      * Purpose: Used to remove an existing employee (employee/remove/x)
      */
-    public function remove($employee_id) {
+    public function remove($page_id, $employee_id) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'settings'));
         
         $this->sys->template->employees_by_id = $this->model_employees->get(true);
@@ -103,7 +103,7 @@ class timemanager_employee extends controller {
             }
             
             $this->sys->template->admin             = $this->model_settings->is_admin();
-            $this->sys->template->page_id           = 1;
+            $this->sys->template->page_id           = (int) $page_id;
             $this->sys->template->paginate_by       = $this->model_settings->paginate_by;
             $this->model_employees->get_employees_for_view();
             $this->sys->template->list_employees_as = $this->model_settings->list_employees_as;

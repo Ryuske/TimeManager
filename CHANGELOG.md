@@ -1,3 +1,6 @@
+### 1/3/14 - Commit 3 ###
+* https://github.com/Ryuske/TimeManager/issues/40 <-- Now retains job ID when deleting an employee or job
+
 ### 1/3/14 - Commit 2 ###
 * https://github.com/Ryuske/TimeManager/issues/44 <-- Renamed categories to departments
 

@@ -1,4 +1,4 @@
-function employeeTableClicked(action, employee_id) {
+function employeeTableClicked(action, employee_id, page_id) {
     switch (action) {
         case 'view':
             window.location = web_root + 'employee/view/' + employee_id;
@@ -7,14 +7,14 @@ function employeeTableClicked(action, employee_id) {
             window.location = web_root + 'employee/edit/' + employee_id;
             break;
         case 'trash':
-            window.location = web_root + 'employee/remove/' + employee_id;
+            window.location = web_root + 'employee/remove/' + page_id + '/' + employee_id;
             break;
         default:
             break;
     }
 }
 
-function jobTableClicked(action, job_id) {
+function jobTableClicked(action, job_id, page_id) {
     switch (action) {
         case 'view':
             window.location = web_root + 'jobs/view/' + job_id;
@@ -23,7 +23,7 @@ function jobTableClicked(action, job_id) {
             window.location = web_root + 'jobs/edit/' + job_id;
             break;
         case 'trash':
-            window.location = web_root + 'jobs/remove/' + job_id;
+            window.location = web_root + 'jobs/remove/' + page_id + '/' + job_id;
             break;
         case 'attachments':
             jQuery('.job_attachments_dialog input[name=job_id]').attr('value', job_id);

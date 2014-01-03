@@ -70,7 +70,7 @@
                                 <td>
                                     <ul class="icons">
                                         <li class="ui-state-default ui-corner-all" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil" onclick="jobTableClicked('edit', '{jobs[<?php echo $i; ?>]['job_uid']}')"></span></li>
-                                        <li class="ui-state-default ui-corner-all" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash" onclick="jobTableClicked('trash', '{jobs[<?php echo $i; ?>]['job_uid']}')"></span></li>
+                                        <li class="ui-state-default ui-corner-all" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash" onclick="jobTableClicked('trash', '{jobs[<?php echo $i; ?>]['job_uid']}', '{page_id}')"></span></li>
                                         <li class="ui-state-default ui-corner-all" title=".ui-icon-folder-open"><span class="ui-icon ui-icon-folder-open" onclick="jobTableClicked('attachments', '{jobs[<?php echo $i; ?>]['job_uid']}')"></span></li>
                                     </ul>
                                 </td>

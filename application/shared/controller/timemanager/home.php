@@ -63,15 +63,15 @@ class timemanager_home extends controller {
         $this->login_failed();
 
         if ($this->is_logged_in()) {
-            $this->sys->template->admin = $this->model_settings->is_admin();
-            $this->sys->template->page_id = (1 > $page_id) ? 1 : (int) $page_id;
-            $this->sys->template->paginate_by = $this->model_settings->paginate_by;
+            $this->sys->template->admin         = $this->model_settings->is_admin();
+            $this->sys->template->page_id       = (1 > $page_id) ? 1 : (int) $page_id;
+            $this->sys->template->paginate_by   = $this->model_settings->paginate_by;
             $this->employees();
             $this->sys->template->list_employees_as = $this->model_settings->list_employees_as;
-            $this->sys->template->pagination = $this->model_renderPage->generate_pagination('main', 'employees', (int) $page_id);
+            $this->sys->template->pagination        = $this->model_renderPage->generate_pagination('main', 'employees', (int) $page_id);
 
-            $this->sys->template->title = 'Time Manager | Home';
-            $this->sys->template->home_active = 'class="active"';
+            $this->sys->template->title         = 'Time Manager | Home';
+            $this->sys->template->home_active   = 'class="active"';
             
             $parse = ($this->sys->template->admin) ? 'admin_home' : 'home';
             $full_page = True;
