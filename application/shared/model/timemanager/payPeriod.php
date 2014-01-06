@@ -127,7 +127,7 @@ class model_timemanager_payPeriod {
     public function get_hours($employee_id, $pay_period) {
         $pay_period = $this->get_pay_period($pay_period);
         
-        $hours = $this->sys->db->query("SELECT `date`, `time`, `operation` FROM `employee_punch` WHERE `pay_period_id`=:pay_period_id AND `employee_id`=:employee_id ORDER BY `date`, `employee_punch_id` ASC", array(
+        $hours = $this->sys->db->query("SELECT `date`, `time`, `operation` FROM `employee_punch` WHERE `pay_period_id`=:pay_period_id AND `employee_id`=:employee_id ORDER BY convert(date, date), `employee_punch_id` ASC", array(
             ':pay_period_id'    => (int) substr($pay_period[2], 0, 4),
             ':employee_id'      => (int) substr($employee_id, 0, 6)
         ));

@@ -1,3 +1,9 @@
+### 1/6/14 - Commit 1 ###
+* Fixed sorting dates on pay periods and job punches
+
+### 1/5/14 - Commit 1 ###
+* Updated README.md
+
 ### 1/3/14 - Commit 3 ###
 * https://github.com/Ryuske/TimeManager/issues/40 <-- Now retains job ID when deleting an employee or job
 

@@ -74,7 +74,7 @@ trait job_timecard {
             SELECT *
             FROM `job_punch` AS jobs JOIN `departments` AS departments on departments.department_id=jobs.department_id
             WHERE `job_id`=:job_id
-            ORDER BY `date`, `punch_id` ASC
+            ORDER BY convert(date, date), `punch_id` ASC
             ", array(
             ':job_id' => (int) substr($job_id, 0, 10),
         ));
