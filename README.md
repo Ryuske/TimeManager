@@ -10,6 +10,6 @@ The original idea was that it would be used with an RFID scanner for punching in
 the development it was abstracted using a RESTFUL API and can be used by anything that can make a web
 call.
 
-Live Example: (http://kenyonhaliwell.com/timeclock)
+Live Example: (http://kenyonhaliwell.com/timemanager)
 User: demo
 Pass: demo
