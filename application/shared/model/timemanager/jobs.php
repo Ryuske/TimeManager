@@ -380,7 +380,7 @@ class model_timemanager_jobs implements general_actions {
                 SELECT *
                 FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client
                 WHERE jobs.status <> 'c'
-                ORDER BY jobs.job_due_date DESC, $sort_by $limit");
+                ORDER BY convert(jobs.job_due_date, date) DESC, $sort_by $limit");
 
             foreach ($jobs as &$job) {
                 $job['quoted_time'] = json_decode($job['quoted_time'], true);

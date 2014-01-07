@@ -25,11 +25,13 @@ trait job_timecard {
                     $hour['total_hours'] = 0;
                 }
                 
-                if (!array_key_exists($hour['department_id'], $return_hours)) {
-                    $return_hours[$hour['department_id']] = 0;
+                if (array_key_exists('department_id', $hour)) {
+                    if (!array_key_exists($hour['department_id'], $return_hours)) {
+                        $return_hours[$hour['department_id']] = 0;
+                    }
+                    
+                    $return_hours[$hour['department_id']] += $hour['total_hours'];
                 }
-                
-                $return_hours[$hour['department_id']] += $hour['total_hours'];
             }
         } else {
             foreach ($hours as $hour) {

@@ -1,3 +1,9 @@
+### 1/7/14 - Commit 1 ###
+* Fixed issue where `department_id` key doesn't exist when removing a time from a job
+* Resized editing department dialog to make it a little bigger
+* Fixed sorting my due date on jobs - tracking
+* Updated about page
+
 ### 1/6/14 - Commit 1 ###
 * Fixed sorting dates on pay periods and job punches
 

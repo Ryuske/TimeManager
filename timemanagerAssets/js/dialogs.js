@@ -166,7 +166,7 @@ jQuery(document).ready(function() {
     jQuery('.department_edit_dialog').dialog({
         resizable: false,
         autoOpen: false,
-        height: 200,
+        height: 225,
         width: 300,
         title: 'Edit Department',
         modal: true,
