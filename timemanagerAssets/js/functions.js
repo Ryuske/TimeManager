@@ -19,6 +19,9 @@ function jobTableClicked(action, job_id, page_id) {
         case 'view':
             window.location = web_root + 'jobs/view/' + job_id;
             break;
+        case 'quote':
+            window.location = web_root + 'jobs/quote/' + job_id;
+            break;
         case 'edit':
             window.location = web_root + 'jobs/edit/' + job_id;
             break;

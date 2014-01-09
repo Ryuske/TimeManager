@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/09/13
- * Date Modified: 1/3/14
+ * Date Modified: 1/8/14
  * Purpose: Controller for Jobs/Job Tracking
  */
 
@@ -137,11 +137,11 @@ class timemanager_jobs extends controller {
                 return true;
             }
             
-            $this->sys->template->departments   = $this->model_departments->get();
-            $this->sys->template->admin         = $this->model_settings->is_admin();
-            $this->sys->template->title         = 'Time Manager | Jobs | Add';
-            $this->sys->template->jobs_active   = 'class="active"';
-            $this->sys->template->clients       = $this->model_clients->get();
+            $this->sys->template->departments           = $this->model_departments->get();
+            $this->sys->template->admin                 = $this->model_settings->is_admin();
+            $this->sys->template->title                 = 'Time Manager | Jobs | Add';
+            $this->sys->template->jobs_quoting_active   = 'class="active"';
+            $this->sys->template->clients               = $this->model_clients->get();
             
             $parse = 'jobs_add';
             $full_page = True;
@@ -216,6 +216,25 @@ class timemanager_jobs extends controller {
     }
     
     /**
+     * Purpose: Used to view/modify the quote of a job
+     */
+    public function quote($job_uid) {
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'jobs', 'settings'));
+        $this->sys->template->job_uid = $job_uid;
+        
+        if ($this->is_logged_in()) {
+            $this->sys->template->admin                 = $this->model_settings->is_admin();
+            $this->sys->template->job                   = $this->model_jobs->get($job_uid, false);
+            $this->sys->template->title                 = 'Time Manager | Jobs | Quote';
+            $this->sys->template->jobs_quoting_active   = 'class="active"';
+            
+            $this->model_renderPage->parse('jobs_quote', true);
+        } else {
+            $this->load_home();
+        }
+    }
+    
+    /**
      * Purpose: Used to view an existing jobs time card
      */
     public function view($job_uid, $page_id = 1) {
@@ -240,7 +259,6 @@ class timemanager_jobs extends controller {
             $this->sys->template->quoted_load           = $this->model_jobs->work_load($job_uid, true, true);
             
             $this->sys->template->title = 'Time Manager | Jobs | View';
-            $this->sys->template->jobs_active = 'class="active"';
             $parse = ($this->sys->template->admin) ? 'admin_jobs_view' : 'jobs_view';
         } else {
             $this->load_home();

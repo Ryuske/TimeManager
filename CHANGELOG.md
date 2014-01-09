@@ -1,3 +1,7 @@
+### 1/9/14 - Commit 2 ###
+* Finished graphical representation for quotes.
+* Fixed issue with variables on the navbar
+
 ### 1/7/14 - Commit 1 ###
 * Fixed issue where `department_id` key doesn't exist when removing a time from a job
 * Resized editing department dialog to make it a little bigger
