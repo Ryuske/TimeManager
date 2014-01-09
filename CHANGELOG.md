@@ -1,3 +1,6 @@
+### 1/9/14 - Commit 1 ###
+* Refactored what is open-source
+
 ### 1/7/14 - Commit 1 ###
 * Fixed issue where `department_id` key doesn't exist when removing a time from a job
 * Resized editing department dialog to make it a little bigger

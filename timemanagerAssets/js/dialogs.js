@@ -197,37 +197,4 @@ jQuery(document).ready(function() {
     /**
      * END department dialogs
      */
-    
-    /**
-     * Jobs dialogs
-     */
-    jQuery('.remove_job_dialog').dialog({
-        resizable: false,
-        autoOpen: true,
-        height: 200,
-        title: 'Remove Job',
-        modal: true,
-        buttons: {
-            'Remove Job': function() {
-                jQuery('.remove_job_form').submit();
-            },
-            'Cancel': function() {
-                jQuery(this).dialog('close');
-            }
-        }
-    });
-    jQuery('.job_attachments_dialog').dialog({
-        autoOpen: false,
-        width: 345,
-        title: 'Job Attachments',
-        modal: true,
-        buttons: {
-            'Cancel': function() {
-                jQuery(this).dialog('close');
-            }
-        }
-    });
-    /**
-     * END jobs dialogs
-     */
 });

@@ -14,42 +14,6 @@ function employeeTableClicked(action, employee_id, page_id) {
     }
 }
 
-function jobTableClicked(action, job_id, page_id) {
-    switch (action) {
-        case 'view':
-            window.location = web_root + 'jobs/view/' + job_id;
-            break;
-        case 'edit':
-            window.location = web_root + 'jobs/edit/' + job_id;
-            break;
-        case 'trash':
-            window.location = web_root + 'jobs/remove/' + page_id + '/' + job_id;
-            break;
-        case 'attachments':
-            jQuery('.job_attachments_dialog input[name=job_id]').attr('value', job_id);
-            jQuery('.attachments').html('');
-            jQuery.ajax(web_root + 'jobs/get_attachments/' + job_id).done(function(msg) {
-                var json = jQuery.parseJSON(msg);
-                
-                jQuery.each(json, function(id, object) {
-                    jQuery('.attachments').append('<tr id="' + id + '"><td><a href="' + object.path + '" target="_blank">' + object.name + '</a></td><td><span class="ui-icon ui-icon-trash" onclick="removeAttachment(' + id + ')"></span></td></tr>');
-                });
-            });
-            jQuery('.job_attachments_dialog').dialog('open');
-            break;
-        default:
-            break;
-    }
-}
-
-function removeAttachment(attachment_id) {
-    jQuery.ajax(web_root + 'jobs/remove_attachment/' + attachment_id).done(function(msg) {
-        if (msg == 'true') {
-            jQuery('#' + attachment_id).html('');
-        }
-    });
-}
-
 function updateTime(date, time_index, time_operation) {
     var multiplier;
     
@@ -74,31 +38,6 @@ function updateTime(date, time_index, time_operation) {
     jQuery('.update_time_dialog input[name=time_index]').attr('value', time_index);
     jQuery('.update_time_dialog input[name=time_operation]').attr('value', time_operation);
     jQuery('.update_time_dialog').dialog('open');
-}
-
-function updateJobTime(id, object, operation) {
-    jQuery('.dialog_input[name=time]').attr('value', object.text());
-    jQuery('.dialog_title').text(object.parent().children('td').eq(0).html());
-    
-    jQuery('.update_time_dialog input[name=id]').attr('value', id);
-    jQuery('.update_time_dialog input[name=operation]').attr('value', operation);
-    jQuery('.update_time_dialog').dialog('open');
-}
-
-function updateJobInfo(job_id, employee_id, department_id) {
-    jQuery('input[name=job_id]').attr('value', job_id);
-    jQuery("select[name=employee]").children().each(function() {
-        if (jQuery(this).val() == employee_id) {
-            jQuery(this).attr("selected", "selected");
-        }
-    });
-    jQuery("select[name=department]").children().each(function() {
-        if (jQuery(this).val() == department_id) {
-            jQuery(this).attr("selected", "selected");
-        }
-    });
-
-    jQuery('.update_info_dialog').dialog('open');
 }
 
 function loadPayPeriod(employee_id, pay_period) {
