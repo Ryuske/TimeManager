@@ -1,7 +1,7 @@
 # README #
 Author: [Kenyon Haliwell](https://google.com/+KenyonHaliwell)
-Documentation: https://github.com/Ryuske/TimeClock/wiki
-Version: 2.5
+Documentation: https://github.com/Ryuske/TimeManager/wiki
+Version: 2.7
 
 
 Time Manager was developed as an open-source time/project management & quoting system that can interface with nearly anything.

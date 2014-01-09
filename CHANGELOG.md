@@ -1,3 +1,6 @@
+### 1/9/14 - Commit 2 ###
+* Updated README.md
+
 ### 1/9/14 - Commit 1 ###
 * Refactored what is open-source
 
