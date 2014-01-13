@@ -13,6 +13,7 @@
                     <h3 class="panel-title">Job Mangement</h3>
                 </div>
                 <div class="panel-body center">
+                    <p><a href="#">Quoting Defaults</a></p>
                     <p><a href="{timemanager_root}jobs/add">Add New Job</a></p>
                 </div>
             </div>

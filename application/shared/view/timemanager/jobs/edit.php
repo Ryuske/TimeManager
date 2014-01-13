@@ -62,51 +62,6 @@
                     <option value="c" <?php echo $status[2]; ?>>Completed</option>
                 </select>
             </div>
-            <div class="group">
-                <label>Quote</label>
-                <table class="table">
-                    <?php
-                    $substr_end = 12;
-                    $time = array('', '', '');
-                    for ($i = 0; $i < count($this->sys->template->departments); $i=$i+3) {
-                        $time[0] = (array_key_exists($this->sys->template->departments[$i]['department_id'], $this->sys->template->job['quoted_time'])) ? $this->sys->template->job['quoted_time'][$this->sys->template->departments[$i]['department_id']] : '0';
-
-                        echo '<tr>';
-                        echo '
-                            <td>
-                                <label>' . substr(ucwords(strtolower($this->sys->template->departments[$i]['department_name'])), 0, $substr_end) . '</label>
-                                <input class="form-control" name="quote[' . $this->sys->template->departments[$i]['department_id'] . ']" type="text" value="' . $time[0] . '" />
-                            </td>
-                        ';
-                        if (array_key_exists(($i+1), $this->sys->template->departments)) {
-                            $time[1] = (array_key_exists($this->sys->template->departments[$i+1]['department_id'], $this->sys->template->job['quoted_time'])) ? $this->sys->template->job['quoted_time'][$this->sys->template->departments[$i+1]['department_id']] : '0';
-                            
-                            echo '
-                                <td>
-                                    <label>' . substr(ucwords(strtolower($this->sys->template->departments[$i+1]['department_name'])), 0, $substr_end) . '</label>
-                                    <input class="form-control" name="quote[' . $this->sys->template->departments[$i+1]['department_id'] . ']" type="text" value="' . $time[1] . '" />
-                                </td>
-                            ';
-                        } else {
-                            echo '<td></td>';
-                        }
-                        if (array_key_exists(($i+2), $this->sys->template->departments)) {
-                            $time[2] = (array_key_exists($this->sys->template->departments[$i+2]['department_id'], $this->sys->template->job['quoted_time'])) ? $this->sys->template->job['quoted_time'][$this->sys->template->departments[$i+2]['department_id']] : '0';
-                            
-                            echo '
-                                <td>
-                                    <label>' . substr(ucwords(strtolower($this->sys->template->departments[$i+2]['department_name'])), 0, $substr_end) . '</label>
-                                    <input class="form-control" name="quote[' . $this->sys->template->departments[$i+2]['department_id'] . ']" type="text" value="' . $time[2] . '" />
-                                </td>
-                            ';
-                        } else {
-                            echo '<td></td>';
-                        }
-                        echo '</tr>';
-                    }
-                    ?>
-                </table>
-            </div>
             {response}
             <input class="form-control" name="edit_job" type="submit" value="Edit Job" />
             </form>

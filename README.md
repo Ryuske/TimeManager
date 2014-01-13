@@ -1,6 +1,6 @@
 # README #
 Author: [Kenyon Haliwell](https://google.com/+KenyonHaliwell)
-Documentation: https://github.com/Ryuske/TimeClock/wiki
+Documentation: https://github.com/Ryuske/TimeManager-dev/wiki
 Version: 2.5
 
 

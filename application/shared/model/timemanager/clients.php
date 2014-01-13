@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/09/13
- * Date Modified: 12/31/13
+ * Date Modified: 1/9/14
  * Purpose: Used as a wrapper for various methods surrounding clients
  */
 
@@ -57,11 +57,13 @@ class model_timemanager_clients implements general_actions {
                 if (!array_key_exists('client_id', $_POST)) {
                     $error = '<p>Something wrong with the client ID.</p>';
                 } else {
-                    $client = (!$error) ? $this->sys->db->query("SELECT `client_id` FROM `clients` WHERE `client_id`=:id", array(
+                    $client = $this->sys->db->query("SELECT `client_id` FROM `clients` WHERE `client_id`=:id", array(
                         ':id' => (int) substr($_POST['client_id'], 0, 6)
-                    )) : '';
+                    ));
                     
-                    $error .= '<p>Client Doesn\'t Exist.</p>';
+                    if (empty($client)) {
+                        $error .= '<p>Client Doesn\'t Exist.</p>';
+                    }
                 }
                 break;
             case 'remove':
@@ -92,7 +94,7 @@ class model_timemanager_clients implements general_actions {
                 ':name' => ucwords(strtolower(substr($_POST['client_name'], 0, 256)))
             ));
             
-            $this->sys->template->response = '<div class="form_success">Client Added Successfully</div>';
+            $this->sys->template->response = '<div id="response" class="form_success">Client Added Successfully</div>';
             return true;
         }
         
@@ -111,7 +113,7 @@ class model_timemanager_clients implements general_actions {
                 ':id'   => (int) substr($_POST['client_id'], 0, 6)
             ));
 
-            $this->sys->template->response = '<div class="form_success">Client Updated Successfully</div>';
+            $this->sys->template->response = '<div id="response" class="form_success">Client Updated Successfully</div>';
             return true;
         }
         
@@ -129,7 +131,7 @@ class model_timemanager_clients implements general_actions {
                 ':id' => (int) substr($_POST['client_id'], 0, 6)
             ));
             
-            $this->sys->template->response = '<div class="form_success">Client Removed Successfully</div>';
+            $this->sys->template->response = '<div id="response" class="form_success">Client Removed Successfully</div>';
             return true;
         }
         

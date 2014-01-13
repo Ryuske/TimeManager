@@ -69,8 +69,9 @@
                             <td onclick="jobTableClicked('view', '{jobs[<?php echo $i; ?>]['job_uid']}')"><div class="<?php echo $status[0]; ?>"><?php echo $status[1]; ?></div></td>
                                 <td>
                                     <ul class="icons">
-                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil" onclick="jobTableClicked('edit', '{jobs[<?php echo $i; ?>]['job_uid']}')"></span></li>
-                                    <li class="ui-state-default ui-corner-all" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash" onclick="jobTableClicked('trash', '{jobs[<?php echo $i; ?>]['job_uid']}')"></span></li>
+                                        <li class="ui-state-default ui-corner-all" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil" onclick="jobTableClicked('edit', '{jobs[<?php echo $i; ?>]['job_uid']}')"></span></li>
+                                        <li class="ui-state-default ui-corner-all" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash" onclick="jobTableClicked('trash', '{jobs[<?php echo $i; ?>]['job_uid']}')"></span></li>
+                                        <li class="ui-state-default ui-corner-all" title=".ui-icon-folder-open"><span class="ui-icon ui-icon-folder-open" onclick="jobTableClicked('attachments', '{jobs[<?php echo $i; ?>]['job_uid']}')"></span></li>
                                     </ul>
                                 </td>
                             </tr>
@@ -109,4 +110,42 @@
         <input type="hidden" name="job_id" value="{job['job_id']}" />
         <input type="hidden" name="remove_job" value="remove_job" />
     </form>
+</div>
+<?php
+if ('' !== $this->sys->template->response) {
+    ?>
+    <script type="text/javascript">
+        jQuery('document').ready(function() {
+            jobTableClicked('attachments', '<?php echo $this->sys->template->job_id; ?>')
+        });
+    </script>
+    <?php
+}
+?>
+<div class="job_attachments_dialog">
+    <div class="right">
+        <form name="job_attachments" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="job_id" value="xyz" autofocus="autofocus" />
+            <input type="hidden" name="upload_attachment" value="true" />
+            <input type="file" name="attachment" />
+            <button class="btn btn-primary btn-xs" onclick="jQuery(this).submit();">Add</button>
+        </form>
+        <div class="center">{response}</div>
+    </div>
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody class="attachments">
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
 </div>

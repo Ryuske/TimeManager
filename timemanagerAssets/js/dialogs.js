@@ -230,4 +230,85 @@ jQuery(document).ready(function() {
     /**
      * END jobs dialogs
      */
+    
+    /**
+     * Quotes dialogs
+     */
+    jQuery('.quote_hourly_value_update_dialog').dialog({
+        autoOpen: false,
+        width: 345,
+        title: 'Update Hourly Value',
+        modal: true,
+        buttons: {
+            'Update': function() {
+                jQuery('.time_hourly_value_' + quoteId).eq(0).html(jQuery('.quote_hourly_value_update_dialog .dialog_input').val());
+                jQuery('.time_hourly_value_' + quoteId).eq(1).val(jQuery('.quote_hourly_value_update_dialog .dialog_input').val());
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.quote_initial_time_update_dialog').dialog({
+        autoOpen: false,
+        width: 345,
+        title: 'Update Initial Time',
+        modal: true,
+        buttons: {
+            'Update': function() {
+                jQuery('.time_initial_time_' + quoteId).eq(0).html(jQuery('.quote_initial_time_update_dialog .dialog_input').val());
+                jQuery('.time_initial_time_' + quoteId).eq(1).val(jQuery('.quote_initial_time_update_dialog .dialog_input').val());
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.quote_repeat_time_update_dialog').dialog({
+        autoOpen: false,
+        width: 345,
+        title: 'Update Repeat Time',
+        modal: true,
+        buttons: {
+            'Update': function() {
+                jQuery('.time_repeat_time_' + quoteId).eq(0).html(jQuery('.quote_repeat_time_update_dialog .dialog_input').val());
+                jQuery('.time_repeat_time_' + quoteId).eq(1).val(jQuery('.quote_repeat_time_update_dialog .dialog_input').val());
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.quote_add_material_dialog').dialog({
+        autoOpen: false,
+        width: 345,
+        title: 'Add Material',
+        modal: true,
+        buttons: {
+            'Add': function() {
+                jQuery('#collapseMaterialsQuote table tbody').append(
+                    '<tr>' +
+                    '<td><span class="quoted_material_description_' + quoted_material_id + '">' + jQuery('.quote_add_material_dialog .dialog_input').val() + '</span> <input class="quoted_material_description_' + quoted_material_id + '" name="quotes[material][' + quoted_material_id + '][description]" type="hidden" value="' + jQuery('.quote_add_material_dialog .dialog_input[name=description]').val() + '" /></td>' +
+                    '<td><span class="quoted_material_vendor_' + quoted_material_id + '">' + jQuery('.quote_add_material_dialog .dialog_input[name=vendor]').val() + '</span> <input class="quoted_material_vendor_' + quoted_material_id + '" name="quotes[material][' + quoted_material_id + '][vendor]" type="hidden" value="' + jQuery('.quote_add_material_dialog .dialog_input[name=vendor]').val() + '" /></td>' +
+                    '<td><span class="quoted_material_individual_quantity_' + quoted_material_id + '">' + jQuery('.quote_add_material_dialog .dialog_input[name=individual_quantity]').val() + '</span> <input class="quoted_material_individual_quantity_' + quoted_material_id + '" name="quotes[material][' + quoted_material_id + '][individual_quantity]" type="hidden" value="' + jQuery('.quote_add_material_dialog .dialog_input[name=individual_quantity]').val() + '" /></td>' +
+                    '<td></td>' +
+                    '<td>$<span class="quoted_material_cost_' + quoted_material_id + '">' + jQuery('.quote_add_material_dialog .dialog_input[name=cost]').val() + '</span> <input class="quoted_material_cost_' + quoted_material_id + '" name="quotes[material][' + quoted_material_id + '][cost]" type="hidden" value="' + jQuery('.quote_add_material_dialog .dialog_input[name=cost]').val() + '" /></td>' +
+                    '<td><span class="quoted_material_markup_' + quoted_material_id + '">' + jQuery('.quote_add_material_dialog .dialog_input[name=markup]').val() + '</span>% <input class="quoted_material_markup_' + quoted_material_id + '" name="quotes[material][' + quoted_material_id + '][markup]" type="hidden" value="' + jQuery('.quote_add_material_dialog .dialog_input[name=markup]').val() + '" /></td>' +
+                    '<td></td>' +
+                    '</tr>'
+                );
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    /**
+     * END jobs dialogs
+     */
 });

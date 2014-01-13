@@ -36,44 +36,6 @@
                 <input class="form-control inline_date" name="job_start_date" type="text" placeholder="Start Date" required="required" />
                 <input class="form-control inline_date" name="job_due_date" type="text" placeholder="Due Date" required="required" />
             </div>
-            <div class="group">
-                <label>Quote</label>
-                <table class="table">
-                    <?php
-                    $substr_end = 12;
-                    for ($i = 0; $i < count($this->sys->template->departments); $i=$i+3) {
-                        echo '<tr>';
-                        echo '
-                            <td>
-                                <label>' . substr(ucwords(strtolower($this->sys->template->departments[$i]['department_name'])), 0, $substr_end) . '</label>
-                                <input class="form-control" name="quote[' . $this->sys->template->departments[$i]['department_id'] . ']" type="text" placeholder="Time" />
-                            </td>
-                        ';
-                        if (array_key_exists(($i+1), $this->sys->template->departments)) {
-                            echo '
-                                <td>
-                                    <label>' . substr(ucwords(strtolower($this->sys->template->departments[$i+1]['department_name'])), 0, $substr_end) . '</label>
-                                    <input class="form-control" name="quote[' . $this->sys->template->departments[$i+1]['department_id'] . ']" type="text" placeholder="Time" />
-                                </td>
-                            ';
-                        } else {
-                            echo '<td></td>';
-                        }
-                        if (array_key_exists(($i+2), $this->sys->template->departments)) {
-                            echo '
-                                <td>
-                                    <label>' . substr(ucwords(strtolower($this->sys->template->departments[$i+2]['department_name'])), 0, $substr_end) . '</label>
-                                    <input class="form-control" name="quote[' . $this->sys->template->departments[$i+2]['department_id'] . ']" type="text" placeholder="Time" />
-                                </td>
-                            ';
-                        } else {
-                            echo '<td></td>';
-                        }
-                        echo '</tr>';
-                    }
-                    ?>
-                </table>
-            </div>
             {response}
             <input class="form-control" name="add_job" type="submit" value="Add Job" />
             </form>

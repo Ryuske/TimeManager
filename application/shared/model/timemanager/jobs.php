@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/09/13
- * Date Modified: 1/8/14
+ * Date Modified: 1/9/14
  * Purpose: Used as a wrapper for various methods surrounding jobs
  */
 
@@ -101,30 +101,6 @@ class model_timemanager_jobs implements general_actions {
                     $error .= 'That UID is already in use by the job ' . $check_job[0]['job_name'] . ' for ' . $client[0]['client_name'] . '.';
                 }
             }
-            
-            if (array_key_exists('quote', $_POST)) {
-                $departments_query = $this->sys->db->query("SELECT * FROM `departments`");
-                $departments = array();
-                
-                foreach ($departments_query as $department) {
-                    $departments[$department['department_id']] = $department;
-                }
-                
-                $departments_query = array();
-                
-                foreach ($_POST['quote'] as $id=>&$time) {
-                    if (array_key_exists($id, $departments)) {
-                        if ('' === $time) {
-                            $time = 0;
-                        }
-                        
-                        $departments_query[$id] = $time;
-                    }
-                }
-                $_POST['quote'] = json_encode($departments_query);
-            } else {
-                $error .= '<p>Please enter quoted times.</p>';
-            }
         }
         
         switch ($method) {
@@ -172,7 +148,7 @@ class model_timemanager_jobs implements general_actions {
         }
 
         if (!empty($error)) {
-            $this->sys->template->response = '<div class="form_failed">' . $error . '</div>';
+            $this->sys->template->response = '<div id="response" class="form_failed">' . $error . '</div>';
             return true;
         }
             
@@ -192,11 +168,16 @@ class model_timemanager_jobs implements general_actions {
             ':quantity'     => (int) substr($_POST['job_quantity'], 0, 6),
             ':start_date'   => substr($_POST['job_start_date'], 0, 8),
             ':due_date'     => substr($_POST['job_due_date'], 0, 8),
-            ':quote'        => $_POST['quote']
         ));
         
+        $job_id = $this->sys->db->query("SELECT `job_id` FROM `jobs` WHERE `job_uid`=:job_uid", array(
+            ':job_uid' => substr($_POST['uid'], 0, 256)
+        ));
+        
+        $_POST['job_id'] = $job_id[0]['job_id'];
+        
         if (!$error) {
-            $this->sys->template->response = '<div class="form_success">Job Added Successfully</div>';
+            $this->sys->template->response = '<div id="response" class="form_success">Job Added Successfully</div>';
             $this->sys->template->meta = array('1', $this->sys->config->timemanager_root . 'jobs');
             return true;
         }
@@ -210,20 +191,20 @@ class model_timemanager_jobs implements general_actions {
     public function edit() {
         $error = $this->check_input('edit');
         
-        $this->sys->db->query("UPDATE `jobs` SET `job_uid`=:uid, `job_name`=:name, `client`=:client, `job_quantity`=:quantity, `job_start_date`=:start_date, `job_due_date`=:due_date, `status`=:status, `quoted_time`=:quote WHERE `job_id`=:id", array(
-            ':id'           => (int) substr($_POST['id'], 0, 10),
-            ':uid'          => substr($_POST['uid'], 0, 256),
-            ':name'         => ucwords(strtolower(substr($_POST['job_name'], 0, 256))),
-            ':client'       => (int) substr($_POST['client'], 0, 6),
-            ':quantity'     => (int) substr($_POST['job_quantity'], 0, 6),
-            ':start_date'   => substr($_POST['job_start_date'], 0, 8),
-            ':due_date'     => substr($_POST['job_due_date'], 0, 8),
-            ':status'       => $_POST['status'],
-            ':quote'        => $_POST['quote']
-        ));
-        
         if (!$error) {
-            $this->sys->template->response = '<div class="form_success">Job Updated Successfully</div>';
+            $this->sys->db->query("UPDATE `jobs` SET `job_uid`=:uid, `job_name`=:name, `client`=:client, `job_quantity`=:quantity, `job_start_date`=:start_date, `job_due_date`=:due_date, `status`=:status, `quoted_time`=:quote WHERE `job_id`=:id", array(
+                ':id'           => (int) substr($_POST['id'], 0, 10),
+                ':uid'          => substr($_POST['uid'], 0, 256),
+                ':name'         => ucwords(strtolower(substr($_POST['job_name'], 0, 256))),
+                ':client'       => (int) substr($_POST['client'], 0, 6),
+                ':quantity'     => (int) substr($_POST['job_quantity'], 0, 6),
+                ':start_date'   => substr($_POST['job_start_date'], 0, 8),
+                ':due_date'     => substr($_POST['job_due_date'], 0, 8),
+                ':status'       => $_POST['status'],
+                ':quote'        => $_POST['quote']
+            ));
+        
+            $this->sys->template->response = '<div id="response" class="form_success">Job Updated Successfully</div>';
             $this->sys->template->meta = array('0', $this->sys->config->timemanager_root . 'jobs');
             return true;
         }
@@ -252,7 +233,7 @@ class model_timemanager_jobs implements general_actions {
             ));
         }
         
-        Header('Location: ' . $this->sys->config->timemanager_root . 'jobs');
+        $this->sys->template->meta = array('0', $this->sys->config->timemanager_root . 'jobs');
     }
     
     /**

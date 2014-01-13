@@ -1,4 +1,10 @@
-### 1/9/14 - Commit 2 ###
+### 1/13/14 - Commit 1 ###
+* Adding backend features for quotes. Getting editing/updating working.
+* Fixed issue with job where it would try and run an edit query regardless of the status of $error
+* Fixed issue where you couldn't update clients
+* Made form responses way more user-friendly
+
+### 1/9/14 - Commit 1 ###
 * Finished graphical representation for quotes.
 * Fixed issue with variables on the navbar
 

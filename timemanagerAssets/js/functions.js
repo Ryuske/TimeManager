@@ -1,3 +1,5 @@
+var quoteId;
+
 function employeeTableClicked(action, employee_id, page_id) {
     switch (action) {
         case 'view':
@@ -51,6 +53,25 @@ function removeAttachment(attachment_id) {
             jQuery('#' + attachment_id).html('');
         }
     });
+}
+
+function updateQuote(operation, id, value) {
+    quoteId = id;
+    
+    if (operation == 'time') {
+        if (value == 'hourly_value') {
+            jQuery('.quote_hourly_value_update_dialog .dialog_input').val(jQuery('.time_hourly_value_' + id).eq(1).val());
+            jQuery('.quote_hourly_value_update_dialog').dialog('open');
+        }
+        if (value == 'initial_time') {
+            jQuery('.quote_initial_time_update_dialog .dialog_input').val(jQuery('.time_initial_time_' + id).eq(1).val());
+            jQuery('.quote_initial_time_update_dialog').dialog('open');
+        }
+        if (value == 'repeat_time') {
+            jQuery('.quote_repeat_time_update_dialog .dialog_input').val(jQuery('.time_repeat_time_' + id).eq(1).val());
+            jQuery('.quote_repeat_time_update_dialog').dialog('open');
+        }
+    }
 }
 
 function updateTime(date, time_index, time_operation) {
