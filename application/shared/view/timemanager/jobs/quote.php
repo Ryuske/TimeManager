@@ -1,6 +1,8 @@
 <?php
 $quoted_time = $this->model_quotes->get_time_quote($this->sys->template->departments, $this->sys->template->quote['quote']['quoted_time']);
+$quoted_material = $this->model_quotes->get_material($this->sys->template->quote['quote']['quoted_material']);
 ?>
+
 <script>
     jQuery(document).ready(function() {
         jQuery(window.location.hash).collapse('show');
@@ -146,7 +148,7 @@ $quoted_time = $this->model_quotes->get_time_quote($this->sys->template->departm
                             <a id="materials"></a>
                             <h3 class="panel-title">
                                 <a data-toggle="collapse" data-target="#collapseMaterialsQuote" href="#collapseMaterialsQuote">
-                                    Materials Quoted | Quoted Total: $1.68 | Original Total: $1.40
+                                    Materials Quoted | Quoted Total: $<?php echo number_format(array_shift($quoted_material), 2); ?> | Original Total: $<?php echo number_format(array_shift($quoted_material), 2); ?>
                                 </a>
                             </h3>
                         </div>
@@ -165,26 +167,18 @@ $quoted_time = $this->model_quotes->get_time_quote($this->sys->template->departm
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!--<tr>
-                                            <td>Screws</td>
-                                            <td>Company</td>
-                                            <td>8</td>
-                                            <td><!--Individual quantity * job quantity40</td>
-                                            <td>$0.01/ea</td>
-                                            <td>20%</td>
-                                            <td><!--(Material Cost * Total Quantity) * (1 + percentage_in_decimal)$0.48</td>
-                                        </tr>-->
                                         <?php
                                         if (!empty($quoted_material)) {
                                             foreach ($quoted_material as $material) {
                                                 echo '<tr>';
-                                                    echo '<td><span class="quoted_material_description_' . $material['material_id'] . '">' . $material['description'] . '</span> <input class="quoted_material_description_' . $material['material_id'] . '" name="quotes[material][' . $material['material_id'] . '][description]" type="hidden" value="' . $material['description'] . '" /></td>';
-                                                    echo '<td><span class="quoted_material_vendor_' . $material['material_id'] . '">' . $material['vendor'] . '</span> <input class="quoted_material_vendor_' . $material['material_id'] . '" name="quotes[material][' . $material['material_id'] . '][vendor]" type="hidden" value="' . $material['vendor'] . '" /></td>';
-                                                    echo '<td><span class="quoted_material_individual_quantity_' . $material['material_id'] . '">' . $material['individual_quantity'] . '</span> <input class="quoted_material_individual_quantity_' . $material['material_id'] . '" name="quotes[material][' . $material['material_id'] . '][individual_quantity]" type="hidden" value="' . $material['individual_quantity'] . '" /></td>';
-                                                    echo '<td>' . $material['total_quantity'] . '</td>';
-                                                    echo '<td>$<span class="quoted_material_cost_' . $material['material_id'] . '">' . $material['cost'] . '</span> <input class="quoted_material_cost_' . $material['material_id'] . '" name="quotes[material][' . $material['material_id'] . '][cost]" type="hidden" value="' . $material['cost'] . '" /></td>';
-                                                    echo '<td><span class="quoted_material_markup_' . $material['material_id'] . '">' . $material['markup'] . '</span>% <input class="quoted_material_markup_' . $material['material_id'] . '" name="quotes[material][' . $material['material_id'] . '][markup]" type="hidden" value="' . $material['markup'] . '" /></td>';
-                                                    echo '<td>' . $material['total_cost'] . '</td>';
+                                                    echo '
+                                                        <td onclick="updateQuote(\'quoted_material\', \'' . $material['material_id'] . '\', \'\')"><span class="quoted_material_description_' . $material['material_id'] . '">' . $material['description'] . '</span> <input class="quoted_material_description_' . $material['material_id'] . '" name="quotes[material][' . $material['material_id'] . '][description]" type="hidden" value="' . $material['description'] . '" /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_material\', \'' . $material['material_id'] . '\', \'\')"><span class="quoted_material_vendor_' . $material['material_id'] . '">' . $material['vendor'] . '</span> <input class="quoted_material_vendor_' . $material['material_id'] . '" name="quotes[material][' . $material['material_id'] . '][vendor]" type="hidden" value="' . $material['vendor'] . '" /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_material\', \'' . $material['material_id'] . '\', \'\')"><span class="quoted_material_individual_quantity_' . $material['material_id'] . '">' . $material['individual_quantity'] . '</span> <input class="quoted_material_individual_quantity_' . $material['material_id'] . '" name="quotes[material][' . $material['material_id'] . '][individual_quantity]" type="hidden" value="' . $material['individual_quantity'] . '" /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_material\', \'' . $material['material_id'] . '\', \'\')">' . $material['total_quantity'] . '</td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_material\', \'' . $material['material_id'] . '\', \'\')">$<span class="quoted_material_cost_' . $material['material_id'] . '">' . $material['cost'] . '</span> <input class="quoted_material_cost_' . $material['material_id'] . '" name="quotes[material][' . $material['material_id'] . '][cost]" type="hidden" value="' . $material['cost'] . '" /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_material\', \'' . $material['material_id'] . '\', \'\')"><span class="quoted_material_markup_' . $material['material_id'] . '">' . $material['markup'] . '</span>% <input class="quoted_material_markup_' . $material['material_id'] . '" name="quotes[material][' . $material['material_id'] . '][markup]" type="hidden" value="' . $material['markup'] . '" /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_material\', \'' . $material['material_id'] . '\', \'\')">$' . $material['total_cost'] . '</td>';
                                                 echo '</tr>';
                                             }
                                         }
@@ -766,10 +760,22 @@ $quoted_time = $this->model_quotes->get_time_quote($this->sys->template->departm
 </div>
 <div class="quote_add_material_dialog">
     <script type="text/javascript">
-        var quoted_material_id = <?php echo $this->sys->template->quote['max_ids']['quoted_material']; ?>;
+        quoted_material_id = <?php echo $this->sys->template->quote['max_ids']['quoted_material'] + 1; ?>;
     </script>
     <div class="dialog_text">
         <div class="bold dialog_title">Add Material</div>
+        <form name="quote_add_material" method="post" action="">
+            <input class="dialog_input" type="text" name="description" value="" placeholder="Description" />
+            <input class="dialog_input" type="text" name="vendor" value="" placeholder="Vendor" />
+            <input class="dialog_input" type="text" name="individual_quantity" value="" placeholder="Individual Quantity" />
+            <input class="dialog_input" type="text" name="cost" value="" placeholder="Individual Cost" />
+            <input class="dialog_input" type="text" name="markup" value="" placeholder="Mark-up Percentage" />
+        </form>
+    </div>
+</div>
+<div class="quote_update_material_dialog">
+    <div class="dialog_text">
+        <div class="bold dialog_title">Update Material</div>
         <form name="quote_add_material" method="post" action="">
             <input class="dialog_input" type="text" name="description" value="" placeholder="Description" />
             <input class="dialog_input" type="text" name="vendor" value="" placeholder="Vendor" />

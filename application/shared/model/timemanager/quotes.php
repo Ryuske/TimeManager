@@ -54,7 +54,7 @@ class model_timemanager_quotes implements general_actions {
                         $this->quoted['time'][] = $quote_array;
                         break;
                     case 'material':
-                        $this->quoted['material'][] = $quote_array;
+                        $this->quoted['material'] = $quote_array;
                         break;
                     case 'outsource':
                         $this->quoted['outsource'][] = $quote_array;
@@ -182,9 +182,6 @@ class model_timemanager_quotes implements general_actions {
         $error = $this->check_input('edit');
         
         if (empty($error)) {
-            print_r($this-);
-            die();
-        
             $this->sys->db->query("
                 UPDATE `job_quotes` SET
                     `quoted_time`=:quoted_time, `quoted_material`=:quoted_material, `actual_material`=:actual_material,
@@ -240,20 +237,20 @@ class model_timemanager_quotes implements general_actions {
             $return_quote['quoted_time'] = json_decode($quote['quoted_time']);
             $return_quote['quoted_time'] = $return_quote['quoted_time'][0];
             
-            $return_quote['quoted_material'] = json_decode($quote['quoted_time']);
-            $return_quote['actual_material'] = json_decode($quote['quoted_time']);
+            $return_quote['quoted_material'] = json_decode($quote['quoted_material']);
+            $return_quote['actual_material'] = json_decode($quote['actual_material']);
             
-            $return_quote['quoted_outsource'] = json_decode($quote['quoted_time']);
-            $return_quote['actual_outsource'] = json_decode($quote['quoted_time']);
+            $return_quote['quoted_outsource'] = json_decode($quote['quoted_outsource']);
+            $return_quote['actual_outsource'] = json_decode($quote['actual_outsource']);
             
-            $return_quote['quoted_sheets'] = json_decode($quote['quoted_time']);
-            $return_quote['actual_sheets'] = json_decode($quote['quoted_time']);
+            $return_quote['quoted_sheets'] = json_decode($quote['quoted_sheets']);
+            $return_quote['actual_sheets'] = json_decode($quote['actual_sheets']);
             
-            $return_quote['quoted_blanks'] = json_decode($quote['quoted_time']);
-            $return_quote['actual_blanks'] = json_decode($quote['quoted_time']);
+            $return_quote['quoted_blanks'] = json_decode($quote['quoted_blanks']);
+            $return_quote['actual_blanks'] = json_decode($quote['actual_blanks']);
             
-            $return_quote['quoted_parts'] = json_decode($quote['quoted_time']);
-            $return_quote['actual_parts'] = json_decode($quote['quoted_time']);
+            $return_quote['quoted_parts'] = json_decode($quote['quoted_parts']);
+            $return_quote['actual_parts'] = json_decode($quote['actual_parts']);
         }
         
         $return_quote = array(
@@ -290,7 +287,7 @@ class model_timemanager_quotes implements general_actions {
             $initial_time = ((is_object($time_quote) || is_array($time_quote)) && array_key_exists('initial_time', $time_quote)) ? $time_quote->initial_time : 0;
             $repeat_time = ((is_object($time_quote) || is_array($time_quote)) && array_key_exists('repeat_time', $time_quote)) ? $time_quote->repeat_time : 0;
             $initial_cost = ($initial_time * $hourly_value);
-            $total_time = $initial_time + $repeat_time;
+            $total_time = $initial_time + ($repeat_time * $this->sys->template->quote['job']['job_quantity']);
             $total_individual_cost = ($repeat_time * $hourly_value * $this->sys->template->quote['job']['job_quantity']);
             $total_cost = (0 != $total_individual_cost) ? ($initial_cost + $total_individual_cost) : $initial_cost;
             
@@ -312,6 +309,31 @@ class model_timemanager_quotes implements general_actions {
         }
         
         return $return_time;
+    }
+    
+    /**
+     * Purpose: Used to get information about materials
+     */
+    public function get_material($quote) {
+        $return_material = array('quoted_total' => 0, 'original_total' => 0);
+        
+        foreach ($quote as $key=>$material) {
+            $return_material[$key] = array(
+                'material_id'           => $key,
+                'description'           => $material->description,
+                'vendor'                => $material->vendor,
+                'individual_quantity'   => $material->individual_quantity,
+                'cost'                  => number_format(round($material->cost, 2), 2),
+                'markup'                => $material->markup
+            );
+            
+            $return_material[$key]['total_quantity']    = ($return_material[$key]['individual_quantity'] * $this->sys->template->quote['job']['job_quantity']);
+            $return_material[$key]['total_cost']        = number_format(round(($return_material[$key]['total_quantity'] * $return_material[$key]['cost'] * (($return_material[$key]['markup'] * 0.01)+1)), 2), 2);
+            $return_material['quoted_total']            += $return_material[$key]['total_cost'];
+            $return_material['original_total']          += round($return_material[$key]['total_quantity'] * $return_material[$key]['cost'], 2);
+        }
+        
+        return $return_material;
     }
     
     /**

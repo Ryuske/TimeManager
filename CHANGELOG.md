@@ -1,3 +1,7 @@
+### 1/13/14 - Commit 2 ### # Not commited yet
+* Fixed total time calculation on quotes
+* Finished `Materials Quoted` on quotes page
+
 ### 1/13/14 - Commit 1 ###
 * Adding backend features for quotes. Getting editing/updating working.
 * Fixed issue with job where it would try and run an edit query regardless of the status of $error

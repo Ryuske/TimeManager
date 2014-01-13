@@ -1,3 +1,5 @@
+var quoted_material_id;
+
 jQuery(document).ready(function() {
     /**
      * Employee Dialogs
@@ -300,6 +302,32 @@ jQuery(document).ready(function() {
                     '<td></td>' +
                     '</tr>'
                 );
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.quote_update_material_dialog').dialog({
+        autoOpen: false,
+        width: 345,
+        title: 'Update Material',
+        modal: true,
+        buttons: {
+            'Update': function() {
+                jQuery('.quoted_material_description_' + quoted_material_id).eq(0).text(jQuery('.quote_update_material_dialog .dialog_input[name=description]').val());
+                jQuery('.quoted_material_vendor_' + quoted_material_id).eq(0).text(jQuery('.quote_update_material_dialog .dialog_input[name=vendor]').val());
+                jQuery('.quoted_material_individual_quantity_' + quoted_material_id).eq(0).text(jQuery('.quote_update_material_dialog .dialog_input[name=individual_quantity]').val());
+                jQuery('.quoted_material_cost_' + quoted_material_id).eq(0).text(jQuery('.quote_update_material_dialog .dialog_input[name=cost]').val());
+                jQuery('.quoted_material_markup_' + quoted_material_id).eq(0).text(jQuery('.quote_update_material_dialog .dialog_input[name=markup]').val());
+                
+                jQuery('.quoted_material_description_' + quoted_material_id).eq(1).val(jQuery('.quote_update_material_dialog .dialog_input[name=description]').val());
+                jQuery('.quoted_material_vendor_' + quoted_material_id).eq(1).val(jQuery('.quote_update_material_dialog .dialog_input[name=vendor]').val());
+                jQuery('.quoted_material_individual_quantity_' + quoted_material_id).eq(1).val(jQuery('.quote_update_material_dialog .dialog_input[name=individual_quantity]').val());
+                jQuery('.quoted_material_cost_' + quoted_material_id).eq(1).val(jQuery('.quote_update_material_dialog .dialog_input[name=cost]').val());
+                jQuery('.quoted_material_markup_' + quoted_material_id).eq(1).val(jQuery('.quote_update_material_dialog .dialog_input[name=markup]').val());
                 
                 jQuery('form[name=update_quote_form]').submit();
             },

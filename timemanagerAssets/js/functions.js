@@ -71,6 +71,16 @@ function updateQuote(operation, id, value) {
             jQuery('.quote_repeat_time_update_dialog .dialog_input').val(jQuery('.time_repeat_time_' + id).eq(1).val());
             jQuery('.quote_repeat_time_update_dialog').dialog('open');
         }
+    } else if (operation == 'quoted_material') {
+        quoted_material_id = id;
+        
+        jQuery('.quote_update_material_dialog .dialog_input[name=description]').val(jQuery('.quoted_material_description_' + id).eq(1).val());
+        jQuery('.quote_update_material_dialog .dialog_input[name=vendor]').val(jQuery('.quoted_material_vendor_' + id).eq(1).val());
+        jQuery('.quote_update_material_dialog .dialog_input[name=individual_quantity]').val(jQuery('.quoted_material_individual_quantity_' + id).eq(1).val());
+        jQuery('.quote_update_material_dialog .dialog_input[name=cost]').val(jQuery('.quoted_material_cost_' + id).eq(1).val());
+        jQuery('.quote_update_material_dialog .dialog_input[name=markup]').val(jQuery('.quoted_material_markup_' + id).eq(1).val());
+        
+        jQuery('.quote_update_material_dialog').dialog('open');
     }
 }
 
