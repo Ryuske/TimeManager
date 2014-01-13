@@ -1,4 +1,7 @@
-### 1/13/14 - Commit 2 ### # Not commited yet
+### 1/13/14 - Commit 3 ###
+* https://github.com/Ryuske/TimeManager-dev/issues/2 <-- Finished material quotes
+
+### 1/13/14 - Commit 2 ###
 * Fixed total time calculation on quotes
 * Finished `Materials Quoted` on quotes page
 

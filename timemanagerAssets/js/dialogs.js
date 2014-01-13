@@ -286,7 +286,7 @@ jQuery(document).ready(function() {
     });
     jQuery('.quote_add_material_dialog').dialog({
         autoOpen: false,
-        width: 345,
+        width: 400,
         title: 'Add Material',
         modal: true,
         buttons: {
@@ -312,7 +312,7 @@ jQuery(document).ready(function() {
     });
     jQuery('.quote_update_material_dialog').dialog({
         autoOpen: false,
-        width: 345,
+        width: 400,
         title: 'Update Material',
         modal: true,
         buttons: {
@@ -328,6 +328,61 @@ jQuery(document).ready(function() {
                 jQuery('.quoted_material_individual_quantity_' + quoted_material_id).eq(1).val(jQuery('.quote_update_material_dialog .dialog_input[name=individual_quantity]').val());
                 jQuery('.quoted_material_cost_' + quoted_material_id).eq(1).val(jQuery('.quote_update_material_dialog .dialog_input[name=cost]').val());
                 jQuery('.quoted_material_markup_' + quoted_material_id).eq(1).val(jQuery('.quote_update_material_dialog .dialog_input[name=markup]').val());
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.actual_add_material_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Add Material',
+        modal: true,
+        buttons: {
+            'Add': function() {
+                jQuery('#collapseMaterialsActual table tbody').append(
+                    '<tr>' +
+                    '<td><span class="actual_material_description_' + quoted_material_id + '">' + jQuery('.actual_add_material_dialog .dialog_input').val() + '</span> <input class="actual_material_description_' + quoted_material_id + '" name="actuals[material][' + quoted_material_id + '][description]" type="hidden" value="' + jQuery('.actual_add_material_dialog .dialog_input[name=description]').val() + '" /></td>' +
+                    '<td><span class="actual_material_vendor_' + quoted_material_id + '">' + jQuery('.actual_add_material_dialog .dialog_input[name=vendor]').val() + '</span> <input class="actual_material_vendor_' + quoted_material_id + '" name="actuals[material][' + quoted_material_id + '][vendor]" type="hidden" value="' + jQuery('.actual_add_material_dialog .dialog_input[name=vendor]').val() + '" /></td>' +
+                    '<td><span class="actual_material_individual_quantity_' + quoted_material_id + '">' + jQuery('.actual_add_material_dialog .dialog_input[name=individual_quantity]').val() + '</span> <input class="actual_material_individual_quantity_' + quoted_material_id + '" name="actuals[material][' + quoted_material_id + '][individual_quantity]" type="hidden" value="' + jQuery('.actual_add_material_dialog .dialog_input[name=individual_quantity]').val() + '" /></td>' +
+                    '<td></td>' +
+                    '<td>$<span class="actual_material_cost_' + quoted_material_id + '">' + jQuery('.actual_add_material_dialog .dialog_input[name=cost]').val() + '</span> <input class="actual_material_cost_' + quoted_material_id + '" name="actuals[material][' + quoted_material_id + '][cost]" type="hidden" value="' + jQuery('.actual_add_material_dialog .dialog_input[name=cost]').val() + '" /></td>' +
+                    '<td></td>' +
+                    '<td><span class="actual_material_po_' + quoted_material_id + '">' + jQuery('.actual_add_material_dialog .dialog_input[name=po]').val() + '</span> <input class="actual_material_po_' + quoted_material_id + '" name="actuals[material][' + quoted_material_id + '][po]" type="hidden" value="' + jQuery('.actual_add_material_dialog .dialog_input[name=po]').val() + '" /></td>' +
+                    '<td><span class="actual_material_delivery_date_' + quoted_material_id + '">' + jQuery('.actual_add_material_dialog .dialog_input[name=delivery_date]').val() + '</span> <input class="actual_material_delivery_date_' + quoted_material_id + '" name="actuals[material][' + quoted_material_id + '][delivery_date]" type="hidden" value="' + jQuery('.actual_add_material_dialog .dialog_input[name=delivery_date]').val() + '" /></td>' +
+                    '</tr>'
+                );
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.actual_update_material_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Update Material',
+        modal: true,
+        buttons: {
+            'Update': function() {
+                jQuery('.actual_material_description_' + quoted_material_id).eq(0).text(jQuery('.actual_update_material_dialog .dialog_input[name=description]').val());
+                jQuery('.actual_material_vendor_' + quoted_material_id).eq(0).text(jQuery('.actual_update_material_dialog .dialog_input[name=vendor]').val());
+                jQuery('.actual_material_individual_quantity_' + quoted_material_id).eq(0).text(jQuery('.actual_update_material_dialog .dialog_input[name=individual_quantity]').val());
+                jQuery('.actual_material_cost_' + quoted_material_id).eq(0).text(jQuery('.actual_update_material_dialog .dialog_input[name=cost]').val());
+                jQuery('.actual_material_po_' + quoted_material_id).eq(0).text(jQuery('.actual_update_material_dialog .dialog_input[name=po]').val());
+                jQuery('.actual_material_delivery_date_' + quoted_material_id).eq(0).text(jQuery('.actual_update_material_dialog .dialog_input[name=delivery_date]').val());
+                
+                jQuery('.actual_material_description_' + quoted_material_id).eq(1).val(jQuery('.actual_update_material_dialog .dialog_input[name=description]').val());
+                jQuery('.actual_material_vendor_' + quoted_material_id).eq(1).val(jQuery('.actual_update_material_dialog .dialog_input[name=vendor]').val());
+                jQuery('.actual_material_individual_quantity_' + quoted_material_id).eq(1).val(jQuery('.actual_update_material_dialog .dialog_input[name=individual_quantity]').val());
+                jQuery('.actual_material_cost_' + quoted_material_id).eq(1).val(jQuery('.actual_update_material_dialog .dialog_input[name=cost]').val());
+                jQuery('.actual_material_po_' + quoted_material_id).eq(1).val(jQuery('.actual_update_material_dialog .dialog_input[name=po]').val());
+                jQuery('.actual_material_delivery_date_' + quoted_material_id).eq(1).val(jQuery('.actual_update_material_dialog .dialog_input[name=delivery_date]').val());
                 
                 jQuery('form[name=update_quote_form]').submit();
             },

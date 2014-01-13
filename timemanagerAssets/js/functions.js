@@ -81,7 +81,23 @@ function updateQuote(operation, id, value) {
         jQuery('.quote_update_material_dialog .dialog_input[name=markup]').val(jQuery('.quoted_material_markup_' + id).eq(1).val());
         
         jQuery('.quote_update_material_dialog').dialog('open');
+    } else if (operation == 'actual_material') {
+        quoted_material_id = id;
+        
+        jQuery('.actual_update_material_dialog .dialog_input[name=description]').val(jQuery('.actual_material_description_' + id).eq(1).val());
+        jQuery('.actual_update_material_dialog .dialog_input[name=vendor]').val(jQuery('.actual_material_vendor_' + id).eq(1).val());
+        jQuery('.actual_update_material_dialog .dialog_input[name=individual_quantity]').val(jQuery('.actual_material_individual_quantity_' + id).eq(1).val());
+        jQuery('.actual_update_material_dialog .dialog_input[name=cost]').val(jQuery('.actual_material_cost_' + id).eq(1).val());
+        jQuery('.actual_update_material_dialog .dialog_input[name=po]').val(jQuery('.actual_material_po_' + id).eq(1).val());
+        jQuery('.actual_update_material_dialog .dialog_input[name=delivery_date]').val(jQuery('.actual_material_delivery_date_' + id).eq(1).val());
+        
+        jQuery('.actual_update_material_dialog').dialog('open');
     }
+}
+
+function removeRow(object) {
+    jQuery(object).parent().html('');
+    jQuery('form[name=update_quote_form]').submit();
 }
 
 function updateTime(date, time_index, time_operation) {

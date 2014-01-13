@@ -57,16 +57,16 @@ class model_timemanager_quotes implements general_actions {
                         $this->quoted['material'] = $quote_array;
                         break;
                     case 'outsource':
-                        $this->quoted['outsource'][] = $quote_array;
+                        $this->quoted['outsource'] = $quote_array;
                         break;
                     case 'sheets':
-                        $this->quoted['sheets'][] = $quote_array;
+                        $this->quoted['sheets'] = $quote_array;
                         break;
                     case 'blanks':
-                        $this->quoted['blanks'][] = $quote_array;
+                        $this->quoted['blanks'] = $quote_array;
                         break;
                     case 'parts':
-                        $this->quoted['parts'][] = $quote_array;
+                        $this->quoted['parts'] = $quote_array;
                         break;
                     default:
                         //Do nothing
@@ -79,19 +79,19 @@ class model_timemanager_quotes implements general_actions {
             foreach ($_POST['actuals'] as $actual_type=>$actual_array) {
                 switch ($actual_type) {
                     case 'material':
-                        $this->actual['material'][] = $actual_array;
+                        $this->actual['material'] = $actual_array;
                         break;
                     case 'outsource':
-                        $this->actual['outsource'][] = $actual_array;
+                        $this->actual['outsource'] = $actual_array;
                         break;
                     case 'sheets':
-                        $this->actual['sheets'][] = $actual_array;
+                        $this->actual['sheets'] = $actual_array;
                         break;
                     case 'blanks':
-                        $this->actual['blanks'][] = $actual_array;
+                        $this->actual['blanks'] = $actual_array;
                         break;
                     case 'parts':
-                        $this->actual['parts'][] = $actual_array;
+                        $this->actual['parts'] = $actual_array;
                         break;
                     default:
                         //Do nothing
@@ -268,7 +268,8 @@ class model_timemanager_quotes implements general_actions {
             ),
             'quote'     => $return_quote,
             'max_ids'   => array(
-                'quoted_material' => $this->find_max_id($return_quote['quoted_material'])
+                'quoted_material' => $this->find_max_id($return_quote['quoted_material']),
+                'actual_material' => $this->find_max_id($return_quote['actual_material'])
             )
         );
         
@@ -314,23 +315,45 @@ class model_timemanager_quotes implements general_actions {
     /**
      * Purpose: Used to get information about materials
      */
-    public function get_material($quote) {
-        $return_material = array('quoted_total' => 0, 'original_total' => 0);
+    public function get_material($quote, $array_to_use) {
+        if ('quoted' === $array_to_use) {
+            $return_material = array('quoted_total' => 0, 'original_total' => 0);
+        } elseif ('actual' === $array_to_use) {
+            $return_material = array('total_cost' => 0);
+        }
         
-        foreach ($quote as $key=>$material) {
-            $return_material[$key] = array(
-                'material_id'           => $key,
-                'description'           => $material->description,
-                'vendor'                => $material->vendor,
-                'individual_quantity'   => $material->individual_quantity,
-                'cost'                  => number_format(round($material->cost, 2), 2),
-                'markup'                => $material->markup
-            );
-            
-            $return_material[$key]['total_quantity']    = ($return_material[$key]['individual_quantity'] * $this->sys->template->quote['job']['job_quantity']);
-            $return_material[$key]['total_cost']        = number_format(round(($return_material[$key]['total_quantity'] * $return_material[$key]['cost'] * (($return_material[$key]['markup'] * 0.01)+1)), 2), 2);
-            $return_material['quoted_total']            += $return_material[$key]['total_cost'];
-            $return_material['original_total']          += round($return_material[$key]['total_quantity'] * $return_material[$key]['cost'], 2);
+        if (!empty($quote)) {
+            foreach ($quote as $key=>$material) {
+                if ('quoted' == $array_to_use) {
+                    $return_material[$key] = array(
+                        'material_id'           => $key,
+                        'description'           => $material->description,
+                        'vendor'                => $material->vendor,
+                        'individual_quantity'   => $material->individual_quantity,
+                        'cost'                  => number_format(round($material->cost, 2), 2),
+                        'markup'                => $material->markup
+                    );
+                    
+                    $return_material[$key]['total_quantity']    = ($return_material[$key]['individual_quantity'] * $this->sys->template->quote['job']['job_quantity']);
+                    $return_material[$key]['total_cost']        = number_format(round(($return_material[$key]['total_quantity'] * $return_material[$key]['cost'] * (($return_material[$key]['markup'] * 0.01)+1)), 2), 2);
+                    $return_material['quoted_total']            += $return_material[$key]['total_cost'];
+                    $return_material['original_total']          += round($return_material[$key]['total_quantity'] * $return_material[$key]['cost'], 2);
+                } elseif ('actual' === $array_to_use) {
+                    $return_material[$key] = array(
+                        'material_id'           => $key,
+                        'description'           => $material->description,
+                        'vendor'                => $material->vendor,
+                        'individual_quantity'   => $material->individual_quantity,
+                        'cost'                  => number_format(round($material->cost, 2), 2),
+                        'po'                    => $material->po,
+                        'delivery_date'         => $material->delivery_date
+                    );
+                    
+                    $return_material[$key]['total_quantity']    = ($return_material[$key]['individual_quantity'] * $this->sys->template->quote['job']['job_quantity']);
+                    $return_material[$key]['total_cost']        = number_format(round($return_material[$key]['total_quantity'] * $return_material[$key]['cost'], 2), 2);
+                    $return_material['total_cost']              += round($return_material[$key]['total_quantity'] * $return_material[$key]['cost'], 2);
+                }
+            }
         }
         
         return $return_material;
