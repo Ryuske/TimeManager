@@ -92,6 +92,27 @@ function updateQuote(operation, id, value) {
         jQuery('.actual_update_material_dialog .dialog_input[name=delivery_date]').val(jQuery('.actual_material_delivery_date_' + id).eq(1).val());
         
         jQuery('.actual_update_material_dialog').dialog('open');
+    } else if (operation == 'quoted_outsource') {
+        quoted_outsource_id = id;
+        
+        jQuery('.quote_update_outsource_dialog .dialog_input[name=process]').val(jQuery('.quoted_outsource_process_' + id).eq(1).val());
+        jQuery('.quote_update_outsource_dialog .dialog_input[name=company]').val(jQuery('.quoted_outsource_company_' + id).eq(1).val());
+        jQuery('.quote_update_outsource_dialog .dialog_input[name=quantity]').val(jQuery('.quoted_outsource_quantity_' + id).eq(1).val());
+        jQuery('.quote_update_outsource_dialog .dialog_input[name=cost]').val(jQuery('.quoted_outsource_cost_' + id).eq(1).val());
+        jQuery('.quote_update_outsource_dialog .dialog_input[name=markup]').val(jQuery('.quoted_outsource_markup_' + id).eq(1).val());
+        
+        jQuery('.quote_update_outsource_dialog').dialog('open');
+    } else if (operation == 'actual_outsource') {
+        actual_outsource_id = id;
+        
+        jQuery('.actual_update_outsource_dialog .dialog_input[name=process]').val(jQuery('.actual_outsource_process_' + id).eq(1).val());
+        jQuery('.actual_update_outsource_dialog .dialog_input[name=company]').val(jQuery('.actual_outsource_company_' + id).eq(1).val());
+        jQuery('.actual_update_outsource_dialog .dialog_input[name=quantity]').val(jQuery('.actual_outsource_quantity_' + id).eq(1).val());
+        jQuery('.actual_update_outsource_dialog .dialog_input[name=cost]').val(jQuery('.actual_outsource_cost_' + id).eq(1).val());
+        jQuery('.actual_update_outsource_dialog .dialog_input[name=po]').val(jQuery('.actual_outsource_po_' + id).eq(1).val());
+        jQuery('.actual_update_outsource_dialog .dialog_input[name=delivery_date]').val(jQuery('.actual_outsource_delivery_date_' + id).eq(1).val());
+        
+        jQuery('.actual_update_outsource_dialog').dialog('open');
     }
 }
 

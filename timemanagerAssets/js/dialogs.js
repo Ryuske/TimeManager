@@ -391,6 +391,166 @@ jQuery(document).ready(function() {
             }
         }
     });
+    jQuery('.quote_add_outsource_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Add Outsource',
+        modal: true,
+        buttons: {
+            'Add': function() {
+                jQuery('#collapseOutsourceQuote table tbody').append(
+                    '<tr>' +
+                        '<td><span class="quoted_outsource_process' + quoted_outsource_id + '">' +jQuery('.quote_add_outsource_dialog .dialog_input').val() + '</span>' +
+                            '<input class="quoted_outsource_process_' + quoted_outsource_id +
+                            '" name="quotes[outsource][' + quoted_outsource_id + '][process]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_outsource_dialog .dialog_input[name=process]').val() +
+                        '" /></td>' +
+                        '<td><span class="quoted_outsource_company' + quoted_outsource_id + '">' + jQuery('.quote_add_outsource_dialog .dialog_input[name=company]').val() + '</span>' +
+                            '<input class="quoted_outsource_vendor_' + quoted_outsource_id +
+                            '" name="quotes[outsource][' + quoted_outsource_id + '][company]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_outsource_dialog .dialog_input[name=company]').val() +
+                        '" /></td>' +
+                        '<td><span class="quoted_outsource_quantity' + quoted_outsource_id + '">' + jQuery('.quote_add_outsource_dialog .dialog_input[name=quantity]').val() + '</span>' +
+                            '<input class="quoted_outsource_quantity_' + quoted_outsource_id + '"' +
+                            ' name="quotes[outsource][' + quoted_outsource_id + '][quantity]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_outsource_dialog .dialog_input[name=quantity]').val() +
+                        '" /></td>' +
+                        '<td>$<span class="quoted_outsource_cost_' + quoted_outsource_id + '">' + jQuery('.quote_add_outsource_dialog .dialog_input[name=cost]').val() + '</span>' +
+                            '<input class="quoted_outsource_cost_' + quoted_outsource_id + '"' +
+                            ' name="quotes[outsource][' + quoted_outsource_id + '][cost]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_outsource_dialog .dialog_input[name=cost]').val() +
+                        '" /></td>' +
+                        '<td><span class="quoted_outsource_markup_' + quoted_outsource_id + '">' + jQuery('.quote_add_outsource_dialog .dialog_input[name=markup]').val() + '</span>%' +
+                            '<input class="quoted_outsource_markup_' + quoted_outsource_id + '"' +
+                            ' name="quotes[outsource][' + quoted_outsource_id + '][markup]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_outsource_dialog .dialog_input[name=markup]').val() +
+                        '" /></td>' +
+                        '<td></td>' +
+                    '</tr>'
+                );
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.quote_update_outsource_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Update Outsource',
+        modal: true,
+        buttons: {
+            'Update': function() {
+                jQuery('.quoted_outsource_process_' + quoted_outsource_id).eq(0).text(jQuery('.quote_update_outsource_dialog .dialog_input[name=process]').val());
+                jQuery('.quoted_outsource_company_' + quoted_outsource_id).eq(0).text(jQuery('.quote_update_outsource_dialog .dialog_input[name=company]').val());
+                jQuery('.quoted_outsource_quantity_' + quoted_outsource_id).eq(0).text(jQuery('.quote_update_outsource_dialog .dialog_input[name=quantity]').val());
+                jQuery('.quoted_outsource_cost_' + quoted_outsource_id).eq(0).text(jQuery('.quote_update_outsource_dialog .dialog_input[name=cost]').val());
+                jQuery('.quoted_outsource_markup_' + quoted_outsource_id).eq(0).text(jQuery('.quote_update_outsource_dialog .dialog_input[name=markup]').val());
+                
+                jQuery('.quoted_outsource_process_' + quoted_outsource_id).eq(1).val(jQuery('.quote_update_outsource_dialog .dialog_input[name=process]').val());
+                jQuery('.quoted_outsource_company_' + quoted_outsource_id).eq(1).val(jQuery('.quote_update_outsource_dialog .dialog_input[name=company]').val());
+                jQuery('.quoted_outsource_quantity_' + quoted_outsource_id).eq(1).val(jQuery('.quote_update_outsource_dialog .dialog_input[name=quantity]').val());
+                jQuery('.quoted_outsource_cost_' + quoted_outsource_id).eq(1).val(jQuery('.quote_update_outsource_dialog .dialog_input[name=cost]').val());
+                jQuery('.quoted_outsource_markup_' + quoted_outsource_id).eq(1).val(jQuery('.quote_update_outsource_dialog .dialog_input[name=markup]').val());
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.actual_add_outsource_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Add Outsource',
+        modal: true,
+        buttons: {
+            'Add': function() {
+                jQuery('#collapseOutsourceActual table tbody').append(
+                    '<tr>' +
+                        '<td><span class="actual_outsource_process_' + actual_outsource_id + '">' +jQuery('.actual_add_outsource_dialog .dialog_input').val() + '</span>' +
+                            '<input class="actual_outsource_process_' + actual_outsource_id +
+                            '" name="actuals[outsource][' + actual_outsource_id + '][process]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_outsource_dialog .dialog_input[name=process]').val() +
+                        '" /></td>' +
+                        '<td><span class="actual_outsource_company_' + actual_outsource_id + '">' + jQuery('.actual_add_outsource_dialog .dialog_input[name=company]').val() + '</span>' +
+                            '<input class="actual_outsource_vendor_' + actual_outsource_id +
+                            '" name="actuals[outsource][' + actual_outsource_id + '][company]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_outsource_dialog .dialog_input[name=company]').val() +
+                        '" /></td>' +
+                        '<td><span class="actual_outsource_quantity_' + actual_outsource_id + '">' + jQuery('.actual_add_outsource_dialog .dialog_input[name=quantity]').val() + '</span>' +
+                            '<input class="actual_outsource_quantity_' + actual_outsource_id + '"' +
+                            ' name="actuals[outsource][' + actual_outsource_id + '][quantity]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_outsource_dialog .dialog_input[name=quantity]').val() +
+                        '" /></td>' +
+                        '<td>$<span class="actual_outsource_cost_' + actual_outsource_id + '">' + jQuery('.actual_add_outsource_dialog .dialog_input[name=cost]').val() + '</span>' +
+                            '<input class="actual_outsource_cost_' + actual_outsource_id + '"' +
+                            ' name="actuals[outsource][' + actual_outsource_id + '][cost]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_outsource_dialog .dialog_input[name=cost]').val() +
+                        '" /></td>' +
+                        '<td></td>' +
+                        '<td><span class="actual_outsource_po_' + actual_outsource_id + '">' + jQuery('.actual_add_outsource_dialog .dialog_input[name=po]').val() + '</span>' +
+                            '<input class="actual_outsource_po_' + actual_outsource_id + '"' +
+                            ' name="actuals[outsource][' + actual_outsource_id + '][po]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_outsource_dialog .dialog_input[name=po]').val() +
+                        '" /></td>' +
+                        '<td><span class="actual_outsource_delivery_date_' + actual_outsource_id + '">' + jQuery('.actual_add_outsource_dialog .dialog_input[name=delivery_date]').val() + '</span>' +
+                            '<input class="actual_outsource_delivery_date_' + actual_outsource_id + '"' +
+                            ' name="actuals[outsource][' + actual_outsource_id + '][delivery_date]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_outsource_dialog .dialog_input[name=delivery_date]').val() +
+                        '" /></td>' +
+                    '</tr>'
+                );
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.actual_update_outsource_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Update Outsource',
+        modal: true,
+        buttons: {
+            'Update': function() {
+                jQuery('.actual_outsource_process_' + actual_outsource_id).eq(0).text(jQuery('.actual_update_outsource_dialog .dialog_input[name=process]').val());
+                jQuery('.actual_outsource_company_' + actual_outsource_id).eq(0).text(jQuery('.actual_update_outsource_dialog .dialog_input[name=company]').val());
+                jQuery('.actual_outsource_quantity_' + actual_outsource_id).eq(0).text(jQuery('.actual_update_outsource_dialog .dialog_input[name=quantity]').val());
+                jQuery('.actual_outsource_cost_' + actual_outsource_id).eq(0).text(jQuery('.actual_update_outsource_dialog .dialog_input[name=cost]').val());
+                jQuery('.actual_outsource_po_' + actual_outsource_id).eq(0).text(jQuery('.actual_update_outsource_dialog .dialog_input[name=po]').val());
+                jQuery('.actual_outsource_delivery_date_' + actual_outsource_id).eq(0).text(jQuery('.actual_update_outsource_dialog .dialog_input[name=delivery_date]').val());
+                
+                jQuery('.actual_outsource_process_' + actual_outsource_id).eq(1).val(jQuery('.actual_update_outsource_dialog .dialog_input[name=process]').val());
+                jQuery('.actual_outsource_company_' + actual_outsource_id).eq(1).val(jQuery('.actual_update_outsource_dialog .dialog_input[name=company]').val());
+                jQuery('.actual_outsource_quantity_' + actual_outsource_id).eq(1).val(jQuery('.actual_update_outsource_dialog .dialog_input[name=quantity]').val());
+                jQuery('.actual_outsource_cost_' + actual_outsource_id).eq(1).val(jQuery('.actual_update_outsource_dialog .dialog_input[name=cost]').val());
+                jQuery('.actual_outsource_po_' + actual_outsource_id).eq(1).val(jQuery('.actual_update_outsource_dialog .dialog_input[name=po]').val());
+                jQuery('.actual_outsource_delivery_date_' + actual_outsource_id).eq(1).val(jQuery('.actual_update_outsource_dialog .dialog_input[name=delivery_date]').val());
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
     /**
      * END jobs dialogs
      */

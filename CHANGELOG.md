@@ -1,3 +1,6 @@
+### 1/13/14 - Commit 4 ###
+* https://github.com/Ryuske/TimeManager-dev/issues/1 <-- Finished outsource quotes
+
 ### 1/13/14 - Commit 3 ###
 * https://github.com/Ryuske/TimeManager-dev/issues/2 <-- Finished material quotes
 

@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 1/9/13
- * Date Modified: 1/9/14
+ * Date Modified: 1/13/14
  * Purpose: Used as a wrapper for various methods surrounding quotes
  */
 
@@ -269,10 +269,18 @@ class model_timemanager_quotes implements general_actions {
             'quote'     => $return_quote,
             'max_ids'   => array(
                 'quoted_material' => $this->find_max_id($return_quote['quoted_material']),
-                'actual_material' => $this->find_max_id($return_quote['actual_material'])
+                'actual_material' => $this->find_max_id($return_quote['actual_material']),
+                'quoted_outsource' => $this->find_max_id($return_quote['quoted_outsource']),
+                'actual_outsource' => $this->find_max_id($return_quote['actual_outsource']),
+                'quoted_sheets' => $this->find_max_id($return_quote['quoted_sheets']),
+                'actual_sheets' => $this->find_max_id($return_quote['actual_sheets']),
+                'quoted_blanks' => $this->find_max_id($return_quote['quoted_blanks']),
+                'actual_blanks' => $this->find_max_id($return_quote['actual_blanks']),
+                'quoted_parts' => $this->find_max_id($return_quote['quoted_parts']),
+                'actual_parts' => $this->find_max_id($return_quote['actual_parts'])
             )
         );
-        
+
         return $return_quote;
     }
     
@@ -357,6 +365,51 @@ class model_timemanager_quotes implements general_actions {
         }
         
         return $return_material;
+    }
+    
+    /**
+     * Purpose: Used to get information about materials
+     */
+    public function get_outsource($quote, $array_to_use) {
+        if ('quoted' === $array_to_use) {
+            $return_outsource = array('quoted_total' => 0, 'original_total' => 0);
+        } elseif ('actual' === $array_to_use) {
+            $return_outsource = array('total_cost' => 0);
+        }
+        
+        if (!empty($quote)) {
+            foreach ($quote as $key=>$outsource) {
+                if ('quoted' == $array_to_use) {
+                    $return_outsource[$key] = array(
+                        'outsource_id'  => $key,
+                        'process'       => $outsource->process,
+                        'company'       => $outsource->company,
+                        'quantity'      => $outsource->quantity,
+                        'cost'          => number_format(round($outsource->cost, 2), 2),
+                        'markup'        => $outsource->markup
+                    );
+                    
+                    $return_outsource[$key]['total_cost']   = number_format(round(($return_outsource[$key]['quantity'] * $return_outsource[$key]['cost'] * (($return_outsource[$key]['markup'] * 0.01)+1)), 2), 2);
+                    $return_outsource['quoted_total']       += $return_outsource[$key]['total_cost'];
+                    $return_outsource['original_total']     += round($return_outsource[$key]['quantity'] * $return_outsource[$key]['cost'], 2);
+                } elseif ('actual' === $array_to_use) {
+                    $return_outsource[$key] = array(
+                        'outsource_id'  => $key,
+                        'process'       => $outsource->process,
+                        'company'       => $outsource->company,
+                        'quantity'      => $outsource->quantity,
+                        'cost'          => number_format(round($outsource->cost, 2), 2),
+                        'po'            => $outsource->po,
+                        'delivery_date' => $outsource->delivery_date
+                    );
+                    
+                    $return_outsource[$key]['total_cost']   = number_format(round($return_outsource[$key]['quantity'] * $return_outsource[$key]['cost'], 2), 2);
+                    $return_outsource['total_cost']         += round($return_outsource[$key]['quantity'] * $return_outsource[$key]['cost'], 2);
+                }
+            }
+        }
+        
+        return $return_outsource;
     }
     
     /**
