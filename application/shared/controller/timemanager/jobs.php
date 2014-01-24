@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/09/13
- * Date Modified: 1/9/14
+ * Date Modified: 1/24/14
  * Purpose: Controller for Jobs/Job Tracking
  */
 
@@ -67,7 +67,7 @@ class timemanager_jobs extends controller {
      * Purpose: Loads the home page for jobs; Also has information about job quotes
      */
     public function index($page_id=1) {
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'jobs'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'jobs', 'quotes', 'departments'));
         $this->login_failed();
 
         if ($this->is_logged_in()) {
@@ -102,6 +102,8 @@ class timemanager_jobs extends controller {
         if ($this->is_logged_in()) {
             $this->sys->template->admin                 = $this->model_settings->is_admin();
             $this->sys->template->quote                 = $this->model_quotes->get($job_uid);
+            $this->sys->template->hours_by_department   = $this->model_jobs->total_hours($job_uid, true);
+            $this->sys->template->total_worked_hours    = $this->model_jobs->total_hours($job_uid);
             $this->sys->template->departments           = $this->model_departments->get(true);
             $this->sys->template->title                 = 'Time Manager | Jobs | Quote';
             $this->sys->template->jobs_quoting_active   = 'class="active"';
@@ -113,14 +115,33 @@ class timemanager_jobs extends controller {
     }
     
     /**
+     * Purpose: Used to modify the defaults of quotes. Like hourly value of departments
+     */
+    public function defaults() {
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'departments'));
+        $this->login_failed();
+        
+        if ($this->is_logged_in() && $this->model_settings->is_admin()) {
+            $this->sys->template->title         = 'Time Manager | Jobs | Quotes | Defaults';
+            $this->sys->template->departments   = $this->model_departments->get(true);
+            $this->sys->template->response      = ('' !== $this->sys->template->response) ? $this->sys->template->response : '';
+            
+            //Parses the HTML from the view
+            $this->model_renderPage->parse('jobs_defaults', true);
+        } else {
+            $this->load_home();
+            return true;
+        }
+    }
+    
+    /**
      * Purpose: Loads page that has information about job tracking
      */
     public function tracking($page_id=1) {
         $this->load_dependencies(array('loggedIn', 'renderPage', 'settings', 'jobs'));
         $this->login_failed();
 
-        if ($this->is_logged_in()) {
-            $this->sys->template->admin                 = $this->model_settings->is_admin();
+        if ($this->is_logged_in() && $this->model_settings->is_admin()) {
             $this->sys->template->title                 = 'Time Manager | Jobs | Tracking';
             $this->sys->template->jobs_tracking_active  = 'class="active"';
             $this->sys->template->page_id               = (int) $page_id;
@@ -129,16 +150,13 @@ class timemanager_jobs extends controller {
             $this->sys->template->pagination            = $this->model_renderPage->generate_pagination('jobs/tracking', 'jobs', (int) $page_id);
             $this->sys->template->response              = ('' !== $this->sys->template->response) ? $this->sys->template->response : '';
             
-            $parse = ($this->sys->template->admin) ? 'admin_jobs_tracking' : 'jobs_tracking';
-            $full_page = True;
+            $parse = ($this->model_settings->is_admin()) ? 'admin_jobs_tracking' : 'jobs_tracking';
+            
+            //Parses the HTML from the view
+            $this->model_renderPage->parse($parse, true);
         } else {
-            $this->sys->template->title = 'Time Manager | Sign In';
-            $parse = 'login';
-            $full_page = False;
+            $this->load_home();
         }
-
-        //Parses the HTML from the view
-        $this->model_renderPage->parse($parse, $full_page);
     }
     
     /**
@@ -243,7 +261,7 @@ class timemanager_jobs extends controller {
      * Purpose: Used to view an existing jobs time card
      */
     public function view($job_uid, $page_id = 1) {
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'departments', 'jobs', 'settings'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'departments', 'jobs', 'quotes', 'settings'));
         $this->sys->template->page_id       = (int) $page_id;
         $this->sys->template->paginate_by   = $this->model_settings->paginate_by;
         $this->sys->template->job_id        = $job_uid;
@@ -258,10 +276,12 @@ class timemanager_jobs extends controller {
             $this->sys->template->pagination            = $this->model_renderPage->generate_pagination('jobs/view/' . $job_uid . '', (int) $page_id);
             $this->sys->template->employees             = $this->model_employees->get();
             $this->sys->template->departments           = $this->model_departments->get(true);
+            $this->sys->template->quote                 = $this->model_quotes->get($job_uid);
+            $this->sys->template->quoted_time           = $this->model_quotes->get_time_quote($this->sys->template->departments, $this->sys->template->quote);
             $this->sys->template->total_hours           = $this->model_jobs->total_hours($job_uid, false);
             $this->sys->template->hours_by_department   = $this->model_jobs->total_hours($job_uid, true);
             $this->sys->template->worked_load           = $this->model_jobs->work_load($job_uid, false, true);
-            $this->sys->template->quoted_load           = $this->model_jobs->work_load($job_uid, true, true);
+            $this->sys->template->quoted_load           = $this->model_jobs->work_load($job_uid, $this->sys->template->quote, true);
             
             $this->sys->template->title = 'Time Manager | Jobs | View';
             $parse = ($this->sys->template->admin) ? 'admin_jobs_view' : 'jobs_view';
@@ -277,20 +297,22 @@ class timemanager_jobs extends controller {
      * Purpose: Used to generate a printer friendly version of a jobs time
      */
     public function print_friendly($job_uid) {
-        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'departments', 'jobs', 'settings'));
+        $this->load_dependencies(array('loggedIn', 'renderPage', 'employees', 'departments', 'jobs', 'quotes', 'settings'));
         $this->sys->template->job_id = $job_uid;
         
         if ($this->is_logged_in()) {
+            $this->sys->template->departments           = $this->model_departments->get(true);
+            $this->sys->template->quote                 = $this->model_quotes->get($job_uid);
+            $this->sys->template->quoted_time           = $this->model_quotes->get_time_quote($this->sys->template->departments, $this->sys->template->quote);
             $this->sys->template->job                   = $this->model_jobs->get($job_uid, false);
             $this->sys->template->job_table             = $this->model_jobs->generate_job_table($job_uid);
             $this->sys->template->start_date            = $this->model_jobs->find_dates($job_uid, 'start');
             $this->sys->template->last_date             = $this->model_jobs->find_dates($job_uid, 'end');
             $this->sys->template->employees             = $this->model_employees->get();
-            $this->sys->template->departments           = $this->model_departments->get(true);
             $this->sys->template->total_hours           = $this->model_jobs->total_hours($job_uid, false);
             $this->sys->template->hours_by_department   = $this->model_jobs->total_hours($job_uid, true);
             $this->sys->template->worked_load           = $this->model_jobs->work_load($job_uid, false, true);
-            $this->sys->template->quoted_load           = $this->model_jobs->work_load($job_uid, true, true);
+            $this->sys->template->quoted_load           = $this->model_jobs->work_load($job_uid, $this->sys->template->quote, true);
             
             $this->sys->template->title = 'Time Manager | Jobs | Print';
             $parse = 'jobs_print';

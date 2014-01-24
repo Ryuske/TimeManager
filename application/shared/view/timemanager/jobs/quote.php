@@ -1,9 +1,13 @@
 <?php
-$quoted_time = $this->model_quotes->get_time_quote($this->sys->template->departments, $this->sys->template->quote['quote']['quoted_time']);
+$quoted_time = $this->model_quotes->get_time_quote($this->sys->template->departments, $this->sys->template->quote);
 $quoted_material = $this->model_quotes->get_material($this->sys->template->quote['quote']['quoted_material'], 'quoted');
 $actual_material = $this->model_quotes->get_material($this->sys->template->quote['quote']['actual_material'], 'actual');
 $quoted_outsource = $this->model_quotes->get_outsource($this->sys->template->quote['quote']['quoted_outsource'], 'quoted');
 $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quote['quote']['actual_outsource'], 'actual');
+$this->model_quotes->get_information($this->sys->template->quote['quote']);
+$total_quoted_cost = number_format($quoted_time['total_cost'] + $quoted_material['quoted_total'] + $quoted_outsource['quoted_total'] + $this->model_quotes->get_shared_data('sheets_total_cost', 0), 2);
+$total_actual_cost = number_format($this->sys->template->total_worked_hours['cost'] + $quoted_material['original_total'] + $quoted_outsource['original_total'] + $this->model_quotes->get_shared_data('sheets_total_cost', 0, 'actual'), 2);
+$profit = number_format($total_quoted_cost - $total_actual_cost, 2);
 ?>
 
 <script>
@@ -18,11 +22,9 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
             {quote['job']['client_name']} {quote['job']['job_name']} | Quantity: {quote['job']['job_quantity']} | Job #: {quote['job']['job_uid']}
         </p>
         <p>
-            Quoted Total: $133.33
+            Quoted Total: $<?php echo $total_quoted_cost; ?>
             &bull;
-            Actual Total: $76.94
-            &bull; 
-            Profit: <span class="green">$56.39</span>
+            Profit: <?php echo (0 >= $profit) ? '<span class="red">$' . $profit . '</span>' : '<span class="green">$' . $profit . '</span>' ; ?>
         </p>
     </div>
 </div>
@@ -121,7 +123,7 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                             <a id="time"></a>
                             <h3 class="panel-title">
                                 <a data-toggle="collapse" data-target="#collapseTimeActual" href="#collapseTimeActual">
-                                    Time Actual | Total Time: 0.25 hours | Total Cost: $7.50
+                                    Time Actual | Total Time: <?php echo number_format($this->sys->template->total_worked_hours['hours'], 2); ?> hours | Total Cost: $<?php echo number_format($this->sys->template->total_worked_hours['cost'], 2); ?>
                                 </a>
                             </h3>
                         </div>
@@ -139,14 +141,39 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
+                                        <!--<tr>
                                             <td>Engineering</td>
                                             <td>$30</td>
                                             <td>.5</td>
                                             <td>.25</td>
                                             <td><span class="green">.25</span></td>
                                             <td><span class="green">$22.5</span></td>
-                                        </tr>
+                                        </tr>-->
+                                        <?php
+                                        foreach ($this->sys->template->departments as $department) {
+                                            $worked = (array_key_exists($department['department_id'], $this->sys->template->hours_by_department))
+                                                ? $this->sys->template->hours_by_department[$department['department_id']]
+                                                : 0;
+                                            $total_cost = (float) $department['payed_hourly_value'] * $worked;
+                                            $quoted_time_work = (array_key_exists($department['department_id'], $quoted_time)) ? $quoted_time[$department['department_id']]['total_time'] : 0;
+                                            $quoted_time_cost = (array_key_exists($department['department_id'], $quoted_time)) ? $quoted_time[$department['department_id']]['total_cost'] : 0;
+                                            $time_difference = (0 > ($quoted_time_work - $worked))
+                                                ? '<span class="red">' . $quoted_time_work - $worked . '</span>'
+                                                : '<span class="green">' . $quoted_time_work - $worked . '</span>';
+                                            $cost_difference = (0 > ($quoted_time_cost - $total_cost))
+                                                ? '<span class="red">' . $quoted_time_cost - $total_cost . '</span>'
+                                                : '<span class="green">' . $quoted_time_cost - $total_cost . '</span>';
+                                            
+                                            echo '<tr>';
+                                                echo '<td>' . $department['department_name'] . '</td>';
+                                                echo '<td>$' . number_format($department['payed_hourly_value'], 2) . '</td>';
+                                                echo '<td>' . $quoted_time_work . '</td>';
+                                                echo '<td>' . $worked . '</td>';
+                                                echo '<td>' . $time_difference . '</td>';
+                                                echo '<td>' . $cost_difference . '</td>';
+                                            echo '</tr>';
+                                        }
+                                        ?>
                                     </tbody>
                                     <tfoot>
                                         <tr>
@@ -442,7 +469,7 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                                             <th>Process</th>
                                             <th>Company</th>
                                             <th>Quantity</th>
-                                            <th>Cost of each</th>
+                                            <th>Individual Cost</th>
                                             <th>Mark-up</th>
                                             <th>Total</th>
                                             <th></th>
@@ -538,7 +565,7 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                                             <th>Process</th>
                                             <th>Company</th>
                                             <th>Quantity</th>
-                                            <th>Cost of each</th>
+                                            <th>Individual Cost</th>
                                             <th>Total</th>
                                             <th>P.O. #</th>
                                             <th>Completion Date</th>
@@ -557,7 +584,7 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                             <a id="sheets"></a>
                             <h3 class="panel-title">
                                 <a data-toggle="collapse" data-target="#collapseSheetsQuote" href="#collapseSheetsQuote">
-                                    Sheets Quoted | Quoted Total: $37.25 | Actual Total: $31.04
+                                    Sheets Quoted | Quoted Total: $<?php echo $this->model_quotes->get_shared_data('sheets_total_cost', 0); ?> | Actual Total: $<?php echo $this->model_quotes->get_shared_data('sheets_total_cost', 1); ?>
                                 </a>
                             </h3>
                         </div>
@@ -574,23 +601,75 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                                             <th>Sheets Required</th>
                                             <th>Cost/Sheet</th>
                                             <th>Cost/Lbs</th>
-                                            <th>Sheet Cost</th>
+                                            <th>Total</th>
                                             <th>Mark-up</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>18 GA G-30</td>
-                                            <td>Company</td>
-                                            <td>48x120</td>
-                                            <td>80</td>
-                                            <td><!-- Sum of sheet usage -->0.68</td>
-                                            <td>$45.65</td>
-                                            <td><!-- (lbs/sheet / cost/sheet) -->$0.57</td>
-                                            <td>$45.65</td>
-                                            <td>20%</td>
-                                        </tr>
+                                        <?php
+                                        if (!empty($this->model_quotes->sheets['quoted'])) {
+                                            foreach ($this->model_quotes->sheets['quoted'] as $sheet) {
+                                                $required_sheets = $this->model_quotes->get_shared_data('sheets_required', $sheet['sheet_id']);
+                                                
+                                                echo '<tr>';
+                                                    echo '<td onclick="updateQuote(\'quoted_sheets\', \'' . $sheet['sheet_id'] . '\', \'\')">' . $sheet['sheet_id'] . '</td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_sheets\', \'' . $sheet['sheet_id'] . '\', \'\')">
+                                                            <span class="quoted_sheet_material_' . $sheet['sheet_id'] . '">' . $sheet['material'] . '</span>
+                                                            <input class="quoted_sheet_material_' . $sheet['sheet_id'] . '"
+                                                                name="quotes[sheets][' . $sheet['sheet_id'] . '][material]"
+                                                                type="hidden"
+                                                                value="' . $sheet['material'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_sheet\', \'' . $sheet['sheet_id'] . '\', \'\')">
+                                                            <span class="quoted_sheet_vendor_' . $sheet['sheet_id'] . '">' . $sheet['vendor'] . '</span>
+                                                            <input class="quoted_sheet_vendor_' . $sheet['sheet_id'] . '"
+                                                                name="quotes[sheets][' . $sheet['sheet_id'] . '][vendor]"
+                                                                type="hidden"
+                                                                value="' . $sheet['vendor'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_sheet\', \'' . $sheet['sheet_id'] . '\', \'\')">
+                                                            <span class="quoted_sheet_size_' . $sheet['sheet_id'] . '">' . $sheet['size'] . '</span>
+                                                            <input class="quoted_sheet_size_' . $sheet['sheet_id'] . '"
+                                                                name="quotes[sheets][' . $sheet['sheet_id'] . '][size]"
+                                                                type="hidden"
+                                                                value="' . $sheet['size'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_sheet\', \'' . $sheet['sheet_id'] . '\', \'\')">
+                                                            <span class="quoted_sheet_lbs_sheet_' . $sheet['sheet_id'] . '">' . $sheet['lbs_sheet'] . '</span>
+                                                            <input class="quoted_sheet_lbs_sheet_' . $sheet['sheet_id'] . '"
+                                                                name="quotes[sheets][' . $sheet['sheet_id'] . '][lbs_sheet]"
+                                                                type="hidden"
+                                                                value="' . $sheet['lbs_sheet'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_sheet\', \'' . $sheet['sheet_id'] . '\', \'\')">
+                                                            ' . $required_sheets . '
+                                                            </td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_sheet\', \'' . $sheet['sheet_id'] . '\', \'\')">
+                                                            $' . $sheet['cost_sheet'] . '
+                                                            </td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_sheet\', \'' . $sheet['sheet_id'] . '\', \'\')">
+                                                            $<span class="quoted_sheet_cost_lb_' . $sheet['sheet_id'] . '">' . $sheet['cost_lb'] . '</span>
+                                                            <input class="quoted_sheet_cost_lb_' . $sheet['sheet_id'] . '"
+                                                                name="quotes[sheets][' . $sheet['sheet_id'] . '][cost_lb]"
+                                                                type="hidden"
+                                                                value="' . $sheet['cost_lb'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_sheet\', \'' . $sheet['sheet_id'] . '\', \'\')">
+                                                            $' . $this->model_quotes->get_shared_data('sheet_total_cost', $sheet['sheet_id']) . '
+                                                            </td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_sheet\', \'' . $sheet['sheet_id'] . '\', \'\')">
+                                                            <span class="quoted_sheet_markup_' . $sheet['sheet_id'] . '">' . $sheet['markup'] . '</span>%
+                                                            <input class="quoted_sheet_markup_' . $sheet['sheet_id'] . '"
+                                                                name="quotes[sheets][' . $sheet['sheet_id'] . '][markup]"
+                                                                type="hidden"
+                                                                value="' . $sheet['markup'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="removeRow(this);"><span class="ui-icon ui-icon-trash"></span></td>';
+                                                echo '</tr>';
+                                            }
+                                        }
+                                        ?>
                                     </tbody>
                                     <tfoot>
                                         <tr>
@@ -602,12 +681,13 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                                             <th>Sheets Required</th>
                                             <th>Cost/Sheet</th>
                                             <th>Cost/Lbs</th>
-                                            <th>Sheet Cost</th>
+                                            <th>Total</th>
                                             <th>Mark-up</th>
+                                            <th></th>
                                         </tr>
                                     </tfoot>
                                 </table>
-                                <a href="#">Add Sheet</a>
+                                <a onclick="jQuery('.quote_add_sheet_dialog').dialog('open')">Add Sheet</a>
                             </div>
                         </div>
                     </div> <!-- END: sheets quoted -->
@@ -616,7 +696,7 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                             <a id="sheets"></a>
                             <h3 class="panel-title">
                                 <a data-toggle="collapse" data-target="#collapseSheetsActual" href="#collapseSheetsActual">
-                                    Sheets Actual | Total: $31.04
+                                    Sheets Actual | Total: $<?php echo $this->model_quotes->get_shared_data('sheets_total_cost', 0, 'actual'); ?>
                                 </a>
                             </h3>
                         </div>
@@ -634,20 +714,67 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                                             <th>Cost/Sheet</th>
                                             <th>Cost/Lbs</th>
                                             <th>Sheet Cost</th>
+                                            <th>Total</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>18 GA G-30</td>
-                                            <td>Company</td>
-                                            <td>48x120</td>
-                                            <td>80</td>
-                                            <td><!-- Sum of sheet usage -->0.68</td>
-                                            <td>$45.65</td>
-                                            <td><!-- (lbs/sheet / cost/sheet) -->$0.57</td>
-                                            <td>$45.65</td>
-                                        </tr>
+                                        <?php
+                                        if (!empty($this->model_quotes->sheets['actual'])) {
+                                            foreach ($this->model_quotes->sheets['actual'] as $sheet) {
+                                                $required_sheets = $this->model_quotes->get_shared_data('sheets_required', $sheet['sheet_id'], 'actual');
+                                                
+                                                echo '<tr>';
+                                                    echo '<td onclick="updateQuote(\'actual_sheet\', \'' . $sheet['sheet_id'] . '\', \'\')">' . $sheet['sheet_id'] . '</td>';
+                                                    echo '<td onclick="updateQuote(\'actual_sheet\', \'' . $sheet['sheet_id'] . '\', \'\')">
+                                                            <span class="actual_sheet_material_' . $sheet['sheet_id'] . '">' . $sheet['material'] . '</span>
+                                                            <input class="actual_sheet_material_' . $sheet['sheet_id'] . '"
+                                                                name="actuals[sheets][' . $sheet['sheet_id'] . '][material]"
+                                                                type="hidden"
+                                                                value="' . $sheet['material'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'actual_sheet\', \'' . $sheet['sheet_id'] . '\', \'\')">
+                                                            <span class="actual_sheet_vendor_' . $sheet['sheet_id'] . '">' . $sheet['vendor'] . '</span>
+                                                            <input class="actual_sheet_vendor_' . $sheet['sheet_id'] . '"
+                                                                name="actuals[sheets][' . $sheet['sheet_id'] . '][vendor]"
+                                                                type="hidden"
+                                                                value="' . $sheet['vendor'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'actual_sheet\', \'' . $sheet['sheet_id'] . '\', \'\')">
+                                                            <span class="actual_sheet_size_' . $sheet['sheet_id'] . '">' . $sheet['size'] . '</span>
+                                                            <input class="actual_sheet_size_' . $sheet['sheet_id'] . '"
+                                                                name="actuals[sheets][' . $sheet['sheet_id'] . '][size]"
+                                                                type="hidden"
+                                                                value="' . $sheet['size'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'actual_sheet\', \'' . $sheet['sheet_id'] . '\', \'\')">
+                                                            <span class="actual_sheet_lbs_sheet_' . $sheet['sheet_id'] . '">' . $sheet['lbs_sheet'] . '</span>
+                                                            <input class="actual_sheet_lbs_sheet_' . $sheet['sheet_id'] . '"
+                                                                name="actuals[sheets][' . $sheet['sheet_id'] . '][lbs_sheet]"
+                                                                type="hidden"
+                                                                value="' . $sheet['lbs_sheet'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'actual_sheet\', \'' . $sheet['sheet_id'] . '\', \'\')">
+                                                            ' . $required_sheets . '
+                                                            </td>';
+                                                    echo '<td onclick="updateQuote(\'actual_sheet\', \'' . $sheet['sheet_id'] . '\', \'\')">
+                                                            $' . $sheet['cost_sheet'] . '
+                                                            </td>';
+                                                    echo '<td onclick="updateQuote(\'actual_sheet\', \'' . $sheet['sheet_id'] . '\', \'\')">
+                                                            $<span class="actual_sheet_cost_lb_' . $sheet['sheet_id'] . '">' . $sheet['cost_lb'] . '</span>
+                                                            <input class="actual_sheet_cost_lb_' . $sheet['sheet_id'] . '"
+                                                                name="actuals[sheets][' . $sheet['sheet_id'] . '][cost_lb]"
+                                                                type="hidden"
+                                                                value="' . $sheet['cost_lb'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'actual_sheet\', \'' . $sheet['sheet_id'] . '\', \'\')">
+                                                            $' . $this->model_quotes->get_shared_data('sheet_total_cost', $sheet['sheet_id']) . '
+                                                            </td>';
+                                                    echo '<td onclick="removeRow(this);"><span class="ui-icon ui-icon-trash"></span></td>';
+                                                echo '</tr>';
+                                            }
+                                        }
+                                        ?>
                                     </tbody>
                                     <tfoot>
                                         <tr>
@@ -660,10 +787,12 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                                             <th>Cost/Sheet</th>
                                             <th>Cost/Lbs</th>
                                             <th>Sheet Cost</th>
+                                            <th>Total</th>
+                                            <th></th>
                                         </tr>
                                     </tfoot>
                                 </table>
-                                <a href="#">Add Sheet</a>
+                                <a onclick="jQuery('.actual_add_sheet_dialog').dialog('open')">Add Sheet</a>
                             </div>
                         </div>
                     </div> <!-- END: sheets actual -->
@@ -688,30 +817,77 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                                             <th>Min. blanks</th>
                                             <th>Blanks req'd</th>
                                             <th>Sheet usage</th>
+                                            <th>Lbs/blank</th>
                                             <th>Cost/blank</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
+                                        <!--<tr>
                                             <td>1</td>
                                             <td>1</td>
                                             <td>48x24</td>
                                             <td>5</td>
-                                            <td><!-- (sum(parts/blank) * sum(parts/job)) / job quantity -->0.4</td>
-                                            <td><!-- min blanks + 0.5-->0.9</td>
-                                            <td><!-- blanks red'd / blanks/sheet -->0.18</td>
-                                            <td><!-- sheet cost/lb * lbs/blank-->$6.51</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>1</td>
-                                            <td>48x40</td>
-                                            <td>3</td>
-                                            <td><!-- (sum(parts/blank) * sum(parts/job)) / job quantity -->1</td>
-                                            <td><!-- min blanks + 0.5-->1.5</td>
-                                            <td><!-- blanks red'd / blanks/sheet -->0.5</td>
-                                            <td><!-- sheet cost/lb * lbs/blank-->$11.12</td>
-                                        </tr>
+                                            <td><!-- (sum(parts/blank) * sum(parts/job)) / job quantity 0.4</td>
+                                            <td><!-- min blanks + 0.5 0.9</td>
+                                            <td><!-- blanks red'd / blanks/sheet 0.18</td>
+                                            <td><!-- sheet cost/lb * lbs/blank $6.51</td>
+                                        </tr>-->
+                                        <?php
+                                        if (!empty($this->model_quotes->blanks['quoted'])) {
+                                            foreach ($this->model_quotes->blanks['quoted'] as $blank) {
+                                                $blanks_minimum = $this->model_quotes->get_shared_data('blanks_minimum', $blank['blank_id']);
+                                                $blanks_required = $this->model_quotes->get_shared_data('blanks_minimum', $blank['blank_id']);
+                                                $sheet_usage = $this->model_quotes->get_shared_data('sheet_usage', $blank['blank_id']);
+                                                $total_cost = $this->model_quotes->get_shared_data('blanks_total_cost', $blank['blank_id']);
+                                                
+                                                echo '<tr>';
+                                                    echo '<td onclick="updateQuote(\'quoted_blanks\', \'' . $blank['blank_id'] . '\', \'\')">' . $blank['blank_id'] . '</td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_blanks\', \'' . $blank['blank_id'] . '\', \'\')">
+                                                            <span class="quoted_blank_sheet_id_' . $blank['blank_id'] . '">' . $blank['sheet_id'] . '</span>
+                                                            <input class="quoted_blank_sheet_id_' . $blank['blank_id'] . '"
+                                                                name="quotes[blanks][' . $blank['blank_id'] . '][sheet_id]"
+                                                                type="hidden"
+                                                                value="' . $blank['sheet_id'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_blanks\', \'' . $blank['blank_id'] . '\', \'\')">
+                                                            <span class="quoted_blank_size_' . $blank['blank_id'] . '">' . $blank['size'] . '</span>
+                                                            <input class="quoted_blank_size_' . $blank['blank_id'] . '"
+                                                                name="quotes[blanks][' . $blank['blank_id'] . '][size]"
+                                                                type="hidden"
+                                                                value="' . $blank['size'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_blanks\', \'' . $blank['blank_id'] . '\', \'\')">
+                                                            <span class="quoted_blank_blanks_sheet_' . $blank['blank_id'] . '">' . $blank['blanks_sheet'] . '</span>
+                                                            <input class="quoted_blank_blanks_sheet_' . $blank['blank_id'] . '"
+                                                                name="quotes[blanks][' . $blank['blank_id'] . '][blanks_sheet]"
+                                                                type="hidden"
+                                                                value="' . $blank['blanks_sheet'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_blanks\', \'' . $blank['blank_id'] . '\', \'\')">
+                                                            ' . $blanks_minimum . '
+                                                            </td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_blanks\', \'' . $blank['blank_id'] . '\', \'\')">
+                                                            ' . $blanks_required . '
+                                                            </td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_blanks\', \'' . $blank['blank_id'] . '\', \'\')">
+                                                            <span class="quoted_blank_sheet_usage_' . $blank['blank_id'] . '">' . $sheet_usage . '</span>%
+                                                        </td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_blanks\', \'' . $blank['blank_id'] . '\', \'\')">
+                                                            <span class="quoted_blank_lbs_blank_' . $blank['blank_id'] . '">' . $blank['lbs_blank'] . '</span>
+                                                            <input class="quoted_blank_lbs_blank_' . $blank['blank_id'] . '"
+                                                                name="quotes[blanks][' . $blank['blank_id'] . '][lbs_blank]"
+                                                                type="hidden"
+                                                                value="' . $blank['lbs_blank'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_blanks\', \'' . $blank['blank_id'] . '\', \'\')">
+                                                            $' . $total_cost . '
+                                                            </td>';
+                                                    echo '<td onclick="removeRow(this);"><span class="ui-icon ui-icon-trash"></span></td>';
+                                                echo '</tr>';
+                                            }
+                                        }
+                                        ?>
                                     </tbody>
                                     <tfoot>
                                         <tr>
@@ -722,11 +898,13 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                                             <th>Min. blanks</th>
                                             <th>Blanks req'd</th>
                                             <th>Sheet usage</th>
+                                            <th>Lbs/blank</th>
                                             <th>Cost/blank</th>
+                                            <th></th>
                                         </tr>
                                     </tfoot>
                                 </table>
-                                <a href="#">Add Blank</a>
+                                <a onclick="jQuery('.quote_add_blank_dialog').dialog('open');">Add Blank</a>
                             </div>
                         </div>
                     </div> <!-- END: blanks quoted -->
@@ -748,27 +926,78 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                                             <th>Sheet ID</th>
                                             <th>Size</th>
                                             <th>Blanks/sheet</th>
-                                            <th># of blanks</th>
+                                            <th>Min. blanks</th>
+                                            <th>Blanks req'd</th>
                                             <th>Sheet usage</th>
+                                            <th>Lbs/Blank</th>
+                                            <th>Cost/Blank</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
+                                        <!--<tr>
                                             <td>1</td>
                                             <td>1</td>
                                             <td>48x24</td>
                                             <td>5</td>
-                                            <td><!-- min blanks + 0.5-->0.9</td>
-                                            <td><!-- blanks red'd / blanks/sheet -->0.18</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>1</td>
-                                            <td>48x40</td>
-                                            <td>3</td>
-                                            <td><!-- min blanks + 0.5-->1.5</td>
-                                            <td><!-- blanks red'd / blanks/sheet -->0.5</td>
-                                        </tr>
+                                            <td><!-- min blanks + 0.5 0.9</td>
+                                            <td><!-- blanks red'd / blanks/sheet 0.18</td>
+                                        </tr>-->
+                                        <?php
+                                        if (!empty($this->model_quotes->blanks['actual'])) {
+                                            foreach ($this->model_quotes->blanks['actual'] as $blank) {
+                                                $blanks_minimum = $this->model_quotes->get_shared_data('blanks_minimum', $blank['blank_id'], 'actual');
+                                                $blanks_required = $this->model_quotes->get_shared_data('blanks_minimum', $blank['blank_id'], 'actual');
+                                                $sheet_usage = $this->model_quotes->get_shared_data('sheet_usage', $blank['blank_id'], 'actual');
+                                                $total_cost = $this->model_quotes->get_shared_data('blanks_total_cost', $blank['blank_id'], 'actual');
+                                                
+                                                echo '<tr>';
+                                                    echo '<td onclick="updateQuote(\'actual_blanks\', \'' . $blank['blank_id'] . '\', \'\')">' . $blank['blank_id'] . '</td>';
+                                                    echo '<td onclick="updateQuote(\'actual_blanks\', \'' . $blank['blank_id'] . '\', \'\')">
+                                                            <span class="actual_blank_sheet_id_' . $blank['blank_id'] . '">' . $blank['sheet_id'] . '</span>
+                                                            <input class="actual_blank_sheet_id_' . $blank['blank_id'] . '"
+                                                                name="actuals[blanks][' . $blank['blank_id'] . '][sheet_id]"
+                                                                type="hidden"
+                                                                value="' . $blank['sheet_id'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'actual_blanks\', \'' . $blank['blank_id'] . '\', \'\')">
+                                                            <span class="actual_blank_size_' . $blank['blank_id'] . '">' . $blank['size'] . '</span>
+                                                            <input class="actual_blank_size_' . $blank['blank_id'] . '"
+                                                                name="actuals[blanks][' . $blank['blank_id'] . '][size]"
+                                                                type="hidden"
+                                                                value="' . $blank['size'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'actual_blanks\', \'' . $blank['blank_id'] . '\', \'\')">
+                                                            <span class="actual_blank_blanks_sheet_' . $blank['blank_id'] . '">' . $blank['blanks_sheet'] . '</span>
+                                                            <input class="actual_blank_blanks_sheet_' . $blank['blank_id'] . '"
+                                                                name="actuals[blanks][' . $blank['blank_id'] . '][blanks_sheet]"
+                                                                type="hidden"
+                                                                value="' . $blank['blanks_sheet'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'actual_blanks\', \'' . $blank['blank_id'] . '\', \'\')">
+                                                            ' . $blanks_minimum . '
+                                                            </td>';
+                                                    echo '<td onclick="updateQuote(\'actual_blanks\', \'' . $blank['blank_id'] . '\', \'\')">
+                                                            ' . $blanks_required . '
+                                                            </td>';
+                                                    echo '<td onclick="updateQuote(\'actual_blanks\', \'' . $blank['blank_id'] . '\', \'\')">
+                                                            <span class="actual_blank_sheet_usage_' . $blank['blank_id'] . '">' . $sheet_usage . '</span>%
+                                                        </td>';
+                                                    echo '<td onclick="updateQuote(\'actual_blanks\', \'' . $blank['blank_id'] . '\', \'\')">
+                                                            <span class="actual_blank_lbs_blank_' . $blank['blank_id'] . '">' . $blank['lbs_blank'] . '</span>
+                                                            <input class="actual_blank_lbs_blank_' . $blank['blank_id'] . '"
+                                                                name="actuals[blanks][' . $blank['blank_id'] . '][lbs_blank]"
+                                                                type="hidden"
+                                                                value="' . $blank['lbs_blank'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'actual_blanks\', \'' . $blank['blank_id'] . '\', \'\')">
+                                                            $' . $total_cost . '
+                                                            </td>';
+                                                    echo '<td onclick="removeRow(this);"><span class="ui-icon ui-icon-trash"></span></td>';
+                                                echo '</tr>';
+                                            }
+                                        }
+                                        ?>
                                     </tbody>
                                     <tfoot>
                                         <tr>
@@ -779,10 +1008,13 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                                             <th>Min. blanks</th>
                                             <th>Blanks req'd</th>
                                             <th>Sheet usage</th>
+                                            <th>Lbs/Blank</th>
+                                            <th>Cost/Blank</th>
+                                            <th></th>
                                         </tr>
                                     </tfoot>
                                 </table>
-                                <a href="#">Add Blank</a>
+                                <a onclick="jQuery('.actual_add_blank_dialog').dialog('open');">Add Blank</a>
                             </div>
                         </div>
                     </div> <!-- END: blanks actual -->
@@ -810,24 +1042,68 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
+                                        <!--<tr>
                                             <td>1</td>
                                             <td>Part A</td>
                                             <td>YYxYY</td>
                                             <td>1</td>
                                             <td>2</td>
-                                            <td><!-- blanks/sheet * parts/blank -->10</td>
-                                            <td><!-- cost/blank / parts/blank -->$3.26</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Part B</td>
-                                            <td>YYxYY</td>
-                                            <td>2</td>
-                                            <td>3</td>
-                                            <td><!-- blanks/sheet * parts/blank -->6</td>
-                                            <td><!-- cost/blank / parts/blank -->$3.71</td>
-                                        </tr>
+                                            <td><!-- blanks/sheet * parts/blank 10</td>
+                                            <td><!-- cost/blank / parts/blank $3.26</td>
+                                        </tr>-->
+                                        <?php
+                                        if (!empty($this->model_quotes->parts['quoted'])) {
+                                            foreach ($this->model_quotes->parts['quoted'] as $part) {
+                                                $parts_sheet = $this->model_quotes->get_shared_data('parts_sheet', $part['part_id']);
+                                                $total_cost = $this->model_quotes->get_shared_data('parts_total_cost', $part['part_id']);
+                                                
+                                                echo '<tr>';
+                                                    echo '<td onclick="updateQuote(\'quoted_parts\', \'' . $part['part_id'] . '\', \'\')">
+                                                            <span class="quoted_part_blank_id_' . $part['part_id'] . '">' . $part['blank_id'] . '</span>
+                                                            <input class="quoted_part_blank_id_' . $part['part_id'] . '"
+                                                                name="quotes[parts][' . $part['part_id'] . '][blank_id]"
+                                                                type="hidden"
+                                                                value="' . $part['blank_id'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_parts\', \'' . $part['part_id'] . '\', \'\')">
+                                                            <span class="quoted_part_description_' . $part['part_id'] . '">' . $part['description'] . '</span>
+                                                            <input class="quoted_part_description_' . $part['part_id'] . '"
+                                                                name="quotes[parts][' . $part['part_id'] . '][description]"
+                                                                type="hidden"
+                                                                value="' . $part['description'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_parts\', \'' . $part['part_id'] . '\', \'\')">
+                                                            <span class="quoted_part_size_' . $part['part_id'] . '">' . $part['size'] . '</span>
+                                                            <input class="quoted_part_size_' . $part['part_id'] . '"
+                                                                name="quotes[parts][' . $part['part_id'] . '][size]"
+                                                                type="hidden"
+                                                                value="' . $part['size'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_parts\', \'' . $part['part_id'] . '\', \'\')">
+                                                            <span class="quoted_part_parts_assembly_' . $part['part_id'] . '">' . $part['parts_assembly'] . '</span>
+                                                            <input class="quoted_part_parts_assembly_' . $part['part_id'] . '"
+                                                                name="quotes[parts][' . $part['part_id'] . '][parts_assembly]"
+                                                                type="hidden"
+                                                                value="' . $part['parts_assembly'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_parts\', \'' . $part['part_id'] . '\', \'\')">
+                                                            <span class="quoted_part_parts_blank_' . $part['part_id'] . '">' . $part['parts_blank'] . '</span>
+                                                            <input class="quoted_part_parts_blank_' . $part['part_id'] . '"
+                                                                name="quotes[parts][' . $part['part_id'] . '][parts_blank]"
+                                                                type="hidden"
+                                                                value="' . $part['parts_blank'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_parts\', \'' . $part['part_id'] . '\', \'\')">
+                                                            <span class="quoted_part_parts_sheet_' . $part['part_id'] . '">' . $parts_sheet . '</span>
+                                                        </td>';
+                                                    echo '<td onclick="updateQuote(\'quoted_parts\', \'' . $part['part_id'] . '\', \'\')">
+                                                            $' . $total_cost . '
+                                                            </td>';
+                                                    echo '<td onclick="removeRow(this);"><span class="ui-icon ui-icon-trash"></span></td>';
+                                                echo '</tr>';
+                                            }
+                                        }
+                                        ?>
                                     </tbody>
                                     <tfoot>
                                         <tr>
@@ -841,7 +1117,7 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                                         </tr>
                                     </tfoot>
                                 </table>
-                                <a href="#">Add Part</a>
+                                <a onclick="jQuery('.quote_add_part_dialog').dialog('open')">Add Part</a>
                             </div>
                         </div>
                     </div> <!-- END: parts quoted -->
@@ -865,25 +1141,72 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                                             <th>Parts/assembly</th>
                                             <th>Parts/blank</th>
                                             <th>Parts/sheet</th>
+                                            <th>Cost/Part</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
+                                        <!--<tr>
                                             <td>1</td>
                                             <td>Part A</td>
                                             <td>YYxYY</td>
                                             <td>1</td>
                                             <td>2</td>
-                                            <td><!-- blanks/sheet * parts/blank -->10</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Part B</td>
-                                            <td>YYxYY</td>
-                                            <td>2</td>
-                                            <td>3</td>
-                                            <td><!-- blanks/sheet * parts/blank -->6</td>
-                                        </tr>
+                                            <td><!-- blanks/sheet * parts/blank 10</td>
+                                        </tr>-->
+                                        <?php
+                                        if (!empty($this->model_quotes->parts['actual'])) {
+                                            foreach ($this->model_quotes->parts['actual'] as $part) {
+                                                $parts_sheet = $this->model_quotes->get_shared_data('parts_sheet', $part['part_id'], 'actual');
+                                                $total_cost = $this->model_quotes->get_shared_data('parts_total_cost', $part['part_id'], 'actual');
+                                                
+                                                echo '<tr>';
+                                                    echo '<td onclick="updateQuote(\'actual_parts\', \'' . $part['part_id'] . '\', \'\')">
+                                                            <span class="actual_part_blank_id_' . $part['part_id'] . '">' . $part['blank_id'] . '</span>
+                                                            <input class="actual_part_blank_id_' . $part['part_id'] . '"
+                                                                name="actuals[parts][' . $part['part_id'] . '][blank_id]"
+                                                                type="hidden"
+                                                                value="' . $part['blank_id'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'actual_parts\', \'' . $part['part_id'] . '\', \'\')">
+                                                            <span class="actual_part_description_' . $part['part_id'] . '">' . $part['description'] . '</span>
+                                                            <input class="actual_part_description_' . $part['part_id'] . '"
+                                                                name="actuals[parts][' . $part['part_id'] . '][description]"
+                                                                type="hidden"
+                                                                value="' . $part['description'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'actual_parts\', \'' . $part['part_id'] . '\', \'\')">
+                                                            <span class="actual_part_size_' . $part['part_id'] . '">' . $part['size'] . '</span>
+                                                            <input class="actual_part_size_' . $part['part_id'] . '"
+                                                                name="actuals[parts][' . $part['part_id'] . '][size]"
+                                                                type="hidden"
+                                                                value="' . $part['size'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'actual_parts\', \'' . $part['part_id'] . '\', \'\')">
+                                                            <span class="actual_part_parts_assembly_' . $part['part_id'] . '">' . $part['parts_assembly'] . '</span>
+                                                            <input class="actual_part_parts_assembly_' . $part['part_id'] . '"
+                                                                name="actuals[parts][' . $part['part_id'] . '][parts_assembly]"
+                                                                type="hidden"
+                                                                value="' . $part['parts_assembly'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'actual_parts\', \'' . $part['part_id'] . '\', \'\')">
+                                                            <span class="actual_part_parts_blank_' . $part['part_id'] . '">' . $part['parts_blank'] . '</span>
+                                                            <input class="actual_part_parts_blank_' . $part['part_id'] . '"
+                                                                name="actuals[parts][' . $part['part_id'] . '][parts_blank]"
+                                                                type="hidden"
+                                                                value="' . $part['parts_blank'] . '"
+                                                            /></td>';
+                                                    echo '<td onclick="updateQuote(\'actual_parts\', \'' . $part['part_id'] . '\', \'\')">
+                                                            <span class="actual_part_parts_sheet_' . $part['part_id'] . '">' . $parts_sheet . '</span>
+                                                        </td>';
+                                                    echo '<td onclick="updateQuote(\'actual_parts\', \'' . $part['part_id'] . '\', \'\')">
+                                                            $' . $total_cost . '
+                                                            </td>';
+                                                    echo '<td onclick="removeRow(this);"><span class="ui-icon ui-icon-trash"></span></td>';
+                                                echo '</tr>';
+                                            }
+                                        }
+                                        ?>
                                     </tbody>
                                     <tfoot>
                                         <tr>
@@ -893,10 +1216,12 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                                             <th>Parts/assembly</th>
                                             <th>Parts/blank</th>
                                             <th>Parts/sheet</th>
+                                            <th>Cost/Part</th>
+                                            <th></th>
                                         </tr>
                                     </tfoot>
                                 </table>
-                                <a href="#">Add Part</a>
+                                <a onclick="jQuery('.actual_add_part_dialog').dialog('open')">Add Part</a>
                             </div>
                         </div>
                     </div> <!-- END: parts actual -->
@@ -1084,6 +1409,256 @@ $actual_outsource = $this->model_quotes->get_outsource($this->sys->template->quo
                     <input class="dialog_input" type="text" name="cost" value="" placeholder="Individual Cost" />
                     <input class="dialog_input" type="text" name="po" value="" placeholder="P.O. Number" />
                     <input class="dialog_input inline_date" type="text" name="delivery_date" value="" placeholder="Delivery Date" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="quote_add_sheet_dialog">
+    <script type="text/javascript">
+        quoted_sheet_id = <?php echo $this->sys->template->quote['max_ids']['quoted_sheets'] + 1; ?>;
+    </script>
+    <div class="dialog_text">
+        <div class="bold dialog_title">Add Sheet</div>
+        <form name="quote_add_sheet" method="post" action="">
+            <div class="row">
+                <div class="col-sm-6">
+                    <input class="dialog_input" type="text" name="material" value="" placeholder="Material" />
+                    <input class="dialog_input" type="text" name="vendor" value="" placeholder="Vendor" />
+                    <input class="dialog_input" type="text" name="size" value="" placeholder="Size" />
+                </div>
+                <div class="col-sm-6">
+                    <input class="dialog_input" type="text" name="lbs_sheet" value="" placeholder="Lbs/Sheet" />
+                    <input class="dialog_input" type="text" name="cost_lb" value="" placeholder="Cost/Lbs" />
+                    <input class="dialog_input" type="text" name="markup" value="" placeholder="Mark-up Percentage" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="quote_update_sheet_dialog">
+    <div class="dialog_text">
+        <div class="bold dialog_title">Update Sheet</div>
+        <form name="quote_update_sheet" method="post" action="">
+            <div class="row">
+                <div class="col-sm-6">
+                    <input class="dialog_input" type="text" name="material" value="" placeholder="Material" />
+                    <input class="dialog_input" type="text" name="vendor" value="" placeholder="Vendor" />
+                    <input class="dialog_input" type="text" name="size" value="" placeholder="Size" />
+                </div>
+                <div class="col-sm-6">
+                    <input class="dialog_input" type="text" name="lbs_sheet" value="" placeholder="Lbs/Sheet" />
+                    <input class="dialog_input" type="text" name="cost_lb" value="" placeholder="Cost/Lbs" />
+                    <input class="dialog_input" type="text" name="markup" value="" placeholder="Mark-up Percentage" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="actual_add_sheet_dialog">
+    <script type="text/javascript">
+        actual_sheet_id = <?php echo $this->sys->template->quote['max_ids']['actual_sheets'] + 1; ?>;
+    </script>
+    <div class="dialog_text">
+        <div class="bold dialog_title">Add Sheet</div>
+        <form name="actual_add_sheet" method="post" action="">
+            <div class="row">
+                <div class="col-sm-6">
+                    <input class="dialog_input" type="text" name="material" value="" placeholder="Material" />
+                    <input class="dialog_input" type="text" name="vendor" value="" placeholder="Vendor" />
+                    <input class="dialog_input" type="text" name="size" value="" placeholder="Size" />
+                </div>
+                <div class="col-sm-6">
+                    <input class="dialog_input" type="text" name="lbs_sheet" value="" placeholder="Lbs/Sheet" />
+                    <input class="dialog_input" type="text" name="cost_lb" value="" placeholder="Cost/Lbs" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="actual_update_sheet_dialog">
+    <div class="dialog_text">
+        <div class="bold dialog_title">Update Sheet</div>
+        <form name="actual_update_sheet" method="post" action="">
+            <div class="row">
+                <div class="col-sm-6">
+                    <input class="dialog_input" type="text" name="material" value="" placeholder="Material" />
+                    <input class="dialog_input" type="text" name="vendor" value="" placeholder="Vendor" />
+                    <input class="dialog_input" type="text" name="size" value="" placeholder="Size" />
+                </div>
+                <div class="col-sm-6">
+                    <input class="dialog_input" type="text" name="lbs_sheet" value="" placeholder="Lbs/Sheet" />
+                    <input class="dialog_input" type="text" name="cost_lb" value="" placeholder="Cost/Lbs" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="quote_add_blank_dialog">
+    <script type="text/javascript">
+        quoted_blank_id = <?php echo $this->sys->template->quote['max_ids']['quoted_blanks'] + 1; ?>;
+    </script>
+    <div class="dialog_text">
+        <div class="bold dialog_title">Add Blank</div>
+        <form name="quote_add_blank" method="post" action="">
+            <div class="row">
+                <div class="col-sm-6">
+                    <input class="dialog_input" type="text" name="sheet_id" value="" placeholder="Sheet ID" />
+                    <input class="dialog_input" type="text" name="size" value="" placeholder="Size" />
+                </div>
+                <div class="col-sm-6">
+                    <input class="dialog_input" type="text" name="blanks_sheet" value="" placeholder="Blanks/Sheet" />
+                    <input class="dialog_input" type="text" name="lbs_blank" value="" placeholder="Lbs/Blank" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="quote_update_blank_dialog update_dialog">
+    <div class="dialog_text">
+        <div class="bold dialog_title">Update Blank</div>
+        <form name="quote_update_blank" method="post" action="">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label class="dialog_label">Sheet ID</label>
+                        <input class="dialog_input" type="text" name="sheet_id" value="" placeholder="Sheet ID" />
+                    <label class="dialog_label">Size</label>
+                        <input class="dialog_input" type="text" name="size" value="" placeholder="Size" />
+                </div>
+                <div class="col-sm-6">
+                    <label class="dialog_label">Blanks/Sheet</label>
+                        <input class="dialog_input" type="text" name="blanks_sheet" value="" placeholder="Blanks/Sheet" />
+                    <label class="dialog_label">Lbs/Blank</label>
+                        <input class="dialog_input" type="text" name="lbs_blank" value="" placeholder="Lbs/Blank" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="actual_add_blank_dialog">
+    <script type="text/javascript">
+        actual_blank_id = <?php echo $this->sys->template->quote['max_ids']['actual_blanks'] + 1; ?>;
+    </script>
+    <div class="dialog_text">
+        <div class="bold dialog_title">Add Blank</div>
+        <form name="actual_add_blank" method="post" action="">
+            <div class="row">
+                <div class="col-sm-6">
+                    <input class="dialog_input" type="text" name="sheet_id" value="" placeholder="Sheet ID" />
+                    <input class="dialog_input" type="text" name="size" value="" placeholder="Size" />
+                </div>
+                <div class="col-sm-6">
+                    <input class="dialog_input" type="text" name="blanks_sheet" value="" placeholder="Blanks/Sheet" />
+                    <input class="dialog_input" type="text" name="lbs_blank" value="" placeholder="Lbs/Blank" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="actual_update_blank_dialog update_dialog">
+    <div class="dialog_text">
+        <div class="bold dialog_title">Update Blank</div>
+        <form name="actual_update_blank" method="post" action="">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label class="dialog_label">Sheet ID</label>
+                        <input class="dialog_input" type="text" name="sheet_id" value="" placeholder="Sheet ID" />
+                    <label class="dialog_label">Size</label>
+                        <input class="dialog_input" type="text" name="size" value="" placeholder="Size" />
+                </div>
+                <div class="col-sm-6">
+                    <label class="dialog_label">Blanks/Sheet</label>
+                        <input class="dialog_input" type="text" name="blanks_sheet" value="" placeholder="Blanks/Sheet" />
+                    <label class="dialog_label">Lbs/Blank</label>
+                        <input class="dialog_input" type="text" name="lbs_blank" value="" placeholder="Lbs/Blank" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="quote_add_part_dialog">
+    <script type="text/javascript">
+        quoted_part_id = <?php echo $this->sys->template->quote['max_ids']['quoted_parts'] + 1; ?>;
+    </script>
+    <div class="dialog_text">
+        <div class="bold dialog_title">Add Part</div>
+        <form name="quote_add_part" method="post" action="">
+            <div class="row">
+                <div class="col-sm-6">
+                    <input class="dialog_input" type="text" name="blank_id" value="" placeholder="Blank ID" />
+                    <input class="dialog_input" type="text" name="description" value="" placeholder="Description" />
+                    <input class="dialog_input" type="text" name="size" value="" placeholder="Size" />
+                </div>
+                <div class="col-sm-6">
+                    <input class="dialog_input" type="text" name="parts_assembly" value="" placeholder="Parts/Assembly" />
+                    <input class="dialog_input" type="text" name="parts_blank" value="" placeholder="Parts/Blank" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="quote_update_part_dialog update_dialog">
+    <div class="dialog_text">
+        <div class="bold dialog_title">Update Blank</div>
+        <form name="quote_update_part" method="post" action="">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label class="dialog_label">Blank ID</label>
+                        <input class="dialog_input" type="text" name="blank_id" value="" placeholder="Blank ID" />
+                    <label class="dialog_label">Description</label>
+                        <input class="dialog_input" type="text" name="description" value="" placeholder="Description" />
+                    <label class="dialog_label">Size</label>
+                        <input class="dialog_input" type="text" name="size" value="" placeholder="Size" />
+                </div>
+                <div class="col-sm-6">
+                    <label class="dialog_label">Parts/Assembly</label>
+                        <input class="dialog_input" type="text" name="parts_assembly" value="" placeholder="Parts/Assembly" />
+                    <label class="dialog_label">Parts/Blank</label>
+                        <input class="dialog_input" type="text" name="parts_blank" value="" placeholder="Parts/Blank" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="actual_add_part_dialog">
+    <script type="text/javascript">
+        actual_part_id = <?php echo $this->sys->template->quote['max_ids']['actual_parts'] + 1; ?>;
+    </script>
+    <div class="dialog_text">
+        <div class="bold dialog_title">Add Part</div>
+        <form name="actual_add_part" method="post" action="">
+            <div class="row">
+                <div class="col-sm-6">
+                    <input class="dialog_input" type="text" name="blank_id" value="" placeholder="Blank ID" />
+                    <input class="dialog_input" type="text" name="description" value="" placeholder="Description" />
+                    <input class="dialog_input" type="text" name="size" value="" placeholder="Size" />
+                </div>
+                <div class="col-sm-6">
+                    <input class="dialog_input" type="text" name="parts_assembly" value="" placeholder="Parts/Assembly" />
+                    <input class="dialog_input" type="text" name="parts_blank" value="" placeholder="Parts/Blank" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="actual_update_part_dialog update_dialog">
+    <div class="dialog_text">
+        <div class="bold dialog_title">Update Blank</div>
+        <form name="actual_update_part" method="post" action="">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label class="dialog_label">Blank ID</label>
+                        <input class="dialog_input" type="text" name="blank_id" value="" placeholder="Blank ID" />
+                    <label class="dialog_label">Description</label>
+                        <input class="dialog_input" type="text" name="description" value="" placeholder="Description" />
+                    <label class="dialog_label">Size</label>
+                        <input class="dialog_input" type="text" name="size" value="" placeholder="Size" />
+                </div>
+                <div class="col-sm-6">
+                    <label class="dialog_label">Parts/Assembly</label>
+                        <input class="dialog_input" type="text" name="parts_assembly" value="" placeholder="Parts/Assembly" />
+                    <label class="dialog_label">Parts/Blank</label>
+                        <input class="dialog_input" type="text" name="parts_blank" value="" placeholder="Parts/Blank" />
                 </div>
             </div>
         </form>

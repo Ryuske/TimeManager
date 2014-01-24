@@ -1,3 +1,9 @@
+### 1/24/14 - Commit 1 ###
+* Finished quoting system
+* Can now updated values for default hourly ($) values
+* Fixed a couple bugs
+* https://github.com/Ryuske/TimeManager-dev/issues/3 <-- Finished up time quoting
+
 ### 1/13/14 - Commit 4 ###
 * https://github.com/Ryuske/TimeManager-dev/issues/1 <-- Finished outsource quotes
 

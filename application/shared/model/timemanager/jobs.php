@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/09/13
- * Date Modified: 1/9/14
+ * Date Modified: 1/17/14
  * Purpose: Used as a wrapper for various methods surrounding jobs
  */
 
@@ -161,7 +161,7 @@ class model_timemanager_jobs implements general_actions {
     public function add() {
         $error = $this->check_input('add');
 
-        $this->sys->db->query("INSERT INTO `jobs` (`job_id`, `job_uid`, `job_name`, `client`, `job_quantity`, `job_start_date`, `job_due_date`, `status`, `quoted_time`) VALUES (NULL, :id, :name, :client, :quantity, :start_date, :due_date, 'na', :quote)", array(
+        $this->sys->db->query("INSERT INTO `jobs` (`job_id`, `job_uid`, `job_name`, `client`, `status`, `job_quantity`, `job_start_date`, `job_due_date`) VALUES (NULL, :id, :name, :client, 'na', :quantity, :start_date, :due_date)", array(
             ':id'           => substr($_POST['uid'], 0, 256),
             ':name'         => ucwords(strtolower(substr($_POST['job_name'], 0, 256))),
             ':client'       => (int) substr($_POST['client'], 0, 6),
@@ -362,10 +362,6 @@ class model_timemanager_jobs implements general_actions {
                 FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client
                 WHERE jobs.status <> 'c'
                 ORDER BY convert(jobs.job_due_date, date) DESC, $sort_by $limit");
-
-            foreach ($jobs as &$job) {
-                $job['quoted_time'] = json_decode($job['quoted_time'], true);
-            }
         } else if ('all' !== $action) {
             $jobs = $this->sys->db->query("
                 SELECT *
@@ -378,7 +374,6 @@ class model_timemanager_jobs implements general_actions {
 
             if (!empty($jobs)) {
                 $jobs = $jobs[0];
-                $jobs['quoted_time'] = json_decode($jobs['quoted_time'], true);
             } else {
                 return false;
             }
@@ -387,9 +382,6 @@ class model_timemanager_jobs implements general_actions {
                 SELECT *
                 FROM `jobs` AS jobs JOIN `clients` AS clients on clients.client_id = jobs.client
                 ORDER BY $sort_by $limit");
-            foreach ($jobs as &$job) {
-                $job['quoted_time'] = json_decode($job['quoted_time'], true);
-            }
         }
 
         return $jobs;
@@ -488,19 +480,24 @@ class model_timemanager_jobs implements general_actions {
     /**
      * Purpose: Used to calculate the load a job;
      */
-    public function work_load($job_uid, $quoted_load=true, $by_department=false) {
-        $load_time = ($quoted_load) ? $this->get($job_uid, false) : $this->total_hours($job_uid, true);
-        $zero_load = 0;
-        
-        if (array_key_exists('quoted_time', $load_time)) {
-            $load_time = $load_time['quoted_time'];
+    public function work_load($job_uid, $quoted_load=false, $by_department=false) {
+        if (false !== $quoted_load) {
+            $load_time = array();
+            
+            foreach ($quoted_load['quote']['quoted_time'] as $id=>$department) {
+                $load_time[$id] = $department->initial_time + ($department->repeat_time * $quoted_load['job']['job_quantity']);
+            }
+        } else {
+            $load_time = $this->total_hours($job_uid, true);
         }
+        
+        $zero_load = 0;
         
         $total_load = 0;
         $total_employees = 0;
         $load = array();
         $employees = array();
-        
+
         foreach ($load_time as $department=>$time) {
             $department_employees = $this->sys->db->query("SELECT `employee_id` FROM `employees` WHERE `department_id`=:department_id", array(
                 ':department_id' => (int) substr($department, 0, 4)
@@ -530,7 +527,7 @@ class model_timemanager_jobs implements general_actions {
             }
         }
         
-        $total_load = (0 === $zero_load) ? 100 : $total_load;
+        $total_load = (0 === $zero_load && false !== $quoted_load) ? 100 : $total_load;
         return $total_load;
     }
     

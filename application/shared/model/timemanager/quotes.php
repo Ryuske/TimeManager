@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 1/9/13
- * Date Modified: 1/13/14
+ * Date Modified: 1/24/14
  * Purpose: Used as a wrapper for various methods surrounding quotes
  */
 
@@ -10,6 +10,10 @@ global $sys;
 $sys->router->load_helpers('interfaces', 'general', 'timemanager');
  
 class model_timemanager_quotes implements general_actions {
+    public $sheets;
+    public $blanks;
+    public $parts;
+    
     public function __construct() {
         global $sys;
         $this->sys = &$sys;
@@ -180,7 +184,7 @@ class model_timemanager_quotes implements general_actions {
      */
     public function edit() {
         $error = $this->check_input('edit');
-        
+
         if (empty($error)) {
             $this->sys->db->query("
                 UPDATE `job_quotes` SET
@@ -235,7 +239,7 @@ class model_timemanager_quotes implements general_actions {
         foreach ($quotes_query as $quote ) {
             
             $return_quote['quoted_time'] = json_decode($quote['quoted_time']);
-            $return_quote['quoted_time'] = $return_quote['quoted_time'][0];
+            $return_quote['quoted_time'] = (array_key_exists(0, $return_quote['quoted_time'])) ? $return_quote['quoted_time'][0] : array();
             
             $return_quote['quoted_material'] = json_decode($quote['quoted_material']);
             $return_quote['actual_material'] = json_decode($quote['actual_material']);
@@ -288,19 +292,20 @@ class model_timemanager_quotes implements general_actions {
      * Purpose: Used to get all the information about time quotes
      */
     public function get_time_quote($departments, $quote) {
+        $quoted_time = $quote['quote']['quoted_time'];
         $return_time = array('total_time' => 0, 'total_cost' => 0);
         
         foreach ($departments as $department) {
-            $time_quote = $quote->$department['department_id'];
-            $hourly_value = ((is_object($time_quote) || is_array($time_quote)) && array_key_exists('hourly_value', $time_quote)) ? $time_quote->hourly_value : $department['hourly_value'];
+            $time_quote = (is_object($quoted_time)) ? $quoted_time->$department['department_id'] : 0;
+            $hourly_value = ((is_object($time_quote) || is_array($time_quote)) && array_key_exists('hourly_value', $time_quote)) ? $time_quote->hourly_value : $department['charged_hourly_value'];
             $initial_time = ((is_object($time_quote) || is_array($time_quote)) && array_key_exists('initial_time', $time_quote)) ? $time_quote->initial_time : 0;
             $repeat_time = ((is_object($time_quote) || is_array($time_quote)) && array_key_exists('repeat_time', $time_quote)) ? $time_quote->repeat_time : 0;
             $initial_cost = ($initial_time * $hourly_value);
-            $total_time = $initial_time + ($repeat_time * $this->sys->template->quote['job']['job_quantity']);
-            $total_individual_cost = ($repeat_time * $hourly_value * $this->sys->template->quote['job']['job_quantity']);
+            $total_time = $initial_time + ($repeat_time * $quote['job']['job_quantity']);
+            $total_individual_cost = ($repeat_time * $hourly_value * $quote['job']['job_quantity']);
             $total_cost = (0 != $total_individual_cost) ? ($initial_cost + $total_individual_cost) : $initial_cost;
             
-            $return_time[] = array(
+            $return_time[$department['department_id']] = array(
                 'department_id'             => $department['department_id'],
                 'department_name'           => $department['department_name'],
                 'hourly_value'              => number_format(round($hourly_value, 2), 2),
@@ -368,7 +373,7 @@ class model_timemanager_quotes implements general_actions {
     }
     
     /**
-     * Purpose: Used to get information about materials
+     * Purpose: Used to get information about outsourced tasks
      */
     public function get_outsource($quote, $array_to_use) {
         if ('quoted' === $array_to_use) {
@@ -410,6 +415,210 @@ class model_timemanager_quotes implements general_actions {
         }
         
         return $return_outsource;
+    }
+    
+    /**
+     * Purpose: Used to get information about sheets, blanks and parts
+     */
+    public function get_information($quote) {
+        $this->sheets = array(
+            'quoted' => $this->get_sheets($quote['quoted_sheets'], 'quoted'),
+            'actual' => $this->get_sheets($quote['actual_sheets'], 'actual')
+        );
+
+        $this->blanks = array(
+            'quoted' => $this->get_blanks($quote['quoted_blanks'], 'quoted'),
+            'actual' => $this->get_blanks($quote['actual_blanks'], 'actual')
+        );
+
+        $this->parts = array(
+            'quoted' => $this->get_parts($quote['quoted_parts'], 'quoted'),
+            'actual' => $this->get_parts($quote['actual_parts'], 'actual')
+        );
+    }
+    
+    public function get_shared_data($option, $id, $type='quoted') {
+        if (!in_array($type, array('quoted', 'actual'))) {
+            return 0;
+        }
+        
+        switch ($option) {
+            case 'sheets_required':
+                $total_blanks = 0;
+                $blanks_sheet = 0;
+
+                foreach ($this->blanks[$type] as $blank) {
+                    if ($blank['sheet_id'] === $id) {
+                        $total_blanks += $this->get_shared_data('blanks_required', $blank['blank_id']);
+                        $blanks_sheet += $blank['blanks_sheet'];
+                    }
+                }
+                
+                $response = ($blanks_sheet > 0) ? $total_blanks / $blanks_sheet : 0;
+                break;
+            case 'sheets_total_cost': //Total of all the sheets required
+                $total_cost = 0;
+                
+                foreach ($this->sheets[$type] as $sheet) {
+                    //Had to come up with a way to get rid of the need for markup when finding the actual total of quoted sheets
+                    $markup = ('actual' === $type || 1 === $id) ? 1 : ($sheet['markup'] * 0.01)+1;
+                    $total_cost += $this->get_shared_data('sheet_total_cost', $sheet['sheet_id'], $type) * $markup;
+                }
+                
+                return number_format(round($total_cost, 2), 2);
+                break;
+            case 'sheet_total_cost': //Total of the required number of specifics sheet
+                $response = number_format(round(($this->get_shared_data('sheets_required', $id, $type) * $this->sheets[$type][$id]['cost_sheet']), 2), 2);
+                break;
+            case 'sheet_quoted_cost': //Total of the required number of specifics sheet plus markup
+                $response = number_format(round((
+                    $this->get_shared_data('sheets_required', $id) * $this->sheets['quoted'][$id]['cost_sheet'] * (($this->sheets['quoted'][$id]['markup'] * 0.01)+1)
+                ), 2), 2);
+                break;
+            case 'blanks_minimum':
+                $parts_blank = 0;
+                $parts_assembly = 0;
+                
+                foreach ($this->parts[$type] as $part) {
+                    if ($part['blank_id'] === $id) {
+                        $parts_blank += $part['parts_blank'];
+                        $parts_assembly += $part['parts_assembly'];
+                    }
+                }
+                
+                $response = ($parts_blank * $parts_assembly) / $this->sys->template->quote['job']['job_quantity'];
+                break;
+            case 'blanks_required':
+                $response = $blanks_minimum = $this->get_shared_data('blanks_minimum', $id, $type); + 0.5;
+                break;
+            case 'sheet_usage':
+                $blanks_required = 0;
+                
+                foreach ($this->blanks[$type] as $blank) {
+                    if ($blank['sheet_id'] === $id) {
+                        $blanks_required += $blank['blanks_required'];
+                    }
+                }
+                
+                $response = $blanks_required / $this->blanks[$type][$id]['blanks_sheet'];
+                break;
+            case 'blanks_total_cost':
+                $response = number_format(round(($this->get_shared_data('blanks_required', $id, $type) * $this->get_shared_data('cost_blank', $id, $type)), 2), 2);
+                break;
+            case 'cost_blank':
+                $response = number_format(round($this->sheets[$type][$this->blanks[$type][$id]['sheet_id']]['cost_lb'] * $this->blanks[$type][$id]['lbs_blank'], 2), 2);
+                break;
+            case 'parts_sheet':
+                $response = $this->blanks[$type][$this->parts[$type][$id]['blank_id']]['blanks_sheet'] * $this->parts[$type][$id]['parts_blank'];
+                break;
+            case 'parts_total_cost':
+                $response = number_format(round(($this->get_shared_data('cost_blank', $this->parts[$type][$id]['blank_id'], $type) / $this->parts[$type][$id]['parts_blank']), 2), 2);
+                break;
+            default:
+                $response = 'Undefined Operation';
+        }
+        
+        return $response;
+    }
+    
+    /**
+     * Purpose: Used to get information about sheets
+     */
+    public function get_sheets($quote, $array_to_use) {
+        $return_sheet = array();
+        
+        if (!empty($quote)) {
+            foreach ($quote as $key=>$sheet) {
+                if ('quoted' == $array_to_use) {
+                    $return_sheet[$key] = array(
+                        'sheet_id'          => $key,
+                        'material'          => $sheet->material,
+                        'vendor'            => $sheet->vendor,
+                        'size'              => $sheet->size,
+                        'lbs_sheet'         => $sheet->lbs_sheet,
+                        'cost_lb'           => number_format(round($sheet->cost_lb, 2), 2),
+                        'markup'            => $sheet->markup,
+                        'cost_sheet'        => number_format(round($sheet->cost_lb * $sheet->lbs_sheet, 2), 2)
+                    );
+                } elseif ('actual' === $array_to_use) {
+                    $return_sheet[$key] = array(
+                        'sheet_id'          => $key,
+                        'material'          => $sheet->material,
+                        'vendor'            => $sheet->vendor,
+                        'size'              => $sheet->size,
+                        'lbs_sheet'         => $sheet->lbs_sheet,
+                        'cost_lb'           => number_format(round($sheet->cost_lb, 2), 2),
+                        'cost_sheet'        => number_format(round($sheet->cost_lb * $sheet->lbs_sheet, 2), 2)
+                    );
+                }
+            }
+        }
+        
+        return $return_sheet;
+    }
+    
+    /**
+     * Purpose: Used to get information about blanks
+     */
+    public function get_blanks($quote, $array_to_use) {
+        $return_blanks = array();
+        
+        if (!empty($quote)) {
+            foreach ($quote as $key=>$blank) {
+                if ('quoted' == $array_to_use) {
+                    $return_blanks[$key] = array(
+                        'blank_id'         => $key,
+                        'sheet_id'          => $blank->sheet_id,
+                        'size'              => $blank->size,
+                        'blanks_sheet'      => $blank->blanks_sheet,
+                        'lbs_blank'         => $blank->lbs_blank
+                    );
+                } elseif ('actual' === $array_to_use) {
+                    $return_blanks[$key] = array(
+                        'blank_id'         => $key,
+                        'sheet_id'          => $blank->sheet_id,
+                        'size'              => $blank->size,
+                        'blanks_sheet'      => $blank->blanks_sheet,
+                        'lbs_blank'         => $blank->lbs_blank
+                    );
+                }
+            }
+        }
+        
+        return $return_blanks;
+    }
+    
+    /**
+     * Purpose: Used to get information about parts
+     */
+    public function get_parts($quote, $array_to_use) {
+        $return_parts = array();
+        
+        if (!empty($quote)) {
+            foreach ($quote as $key=>$part) {
+                if ('quoted' == $array_to_use) {
+                    $return_parts[$key] = array(
+                        'part_id'           => $key,
+                        'blank_id'          => $part->blank_id,
+                        'description'       => $part->description,
+                        'size'              => $part->size,
+                        'parts_assembly'    => $part->parts_assembly,
+                        'parts_blank'       => $part->parts_blank,
+                    );
+                } elseif ('actual' === $array_to_use) {
+                    $return_parts[$key] = array(
+                        'part_id'           => $key,
+                        'blank_id'          => $part->blank_id,
+                        'description'       => $part->description,
+                        'size'              => $part->size,
+                        'parts_assembly'    => $part->parts_assembly,
+                        'parts_blank'       => $part->parts_blank,
+                    );
+                }
+            }
+        }
+        
+        return $return_parts;
     }
     
     /**

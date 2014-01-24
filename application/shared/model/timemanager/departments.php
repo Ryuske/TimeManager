@@ -2,7 +2,7 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/10/13
- * Date Modified: 1/3/14
+ * Date Modified: 1/24/14
  * Purpose: Used as a wrapper for various methods surrounding employee departments
  */
 
@@ -32,6 +32,9 @@ $sys->router->load_helpers('interfaces', 'general', 'timemanager');
         }
         if (array_key_exists('remove_department', $_POST) && $is_admin) {
             $this->remove();
+        }
+        if (array_key_exists('charged_hourly_value', $_POST) && is_array($_POST['charged_hourly_value']) && $is_admin) {
+            $this->update_defaults();
         }
     }
     
@@ -101,6 +104,60 @@ $sys->router->load_helpers('interfaces', 'general', 'timemanager');
     }
     
     /**
+     * Purpose: Used to update the default values for how much each department is charged/cost to run
+     */
+    protected function update_defaults() {
+        $query_bindings = array();
+        $sql_charged_hourly_value = '';
+        $sql_payed_hourly_value = '';
+        $ids = '';
+        
+        //print_r($_POST);
+        foreach ($_POST['charged_hourly_value'] as $id=>$value) {
+            $ids .= $id . ', ';
+            $query_bindings[':charged_id_' . $id] = $id;
+            $query_bindings[':charged_value_' . $id] = $value;
+            $sql_charged_hourly_value .= "
+                WHEN :charged_id_$id THEN :charged_value_$id";
+        }
+        foreach ($_POST['payed_hourly_value'] as $id=>$value) {
+            $query_bindings[':payed_id_' . $id] = $id;
+            $query_bindings[':payed_value_' . $id] = $value;
+            $sql_payed_hourly_value .= "
+                WHEN :payed_id_$id THEN :payed_value_$id";
+        }
+        
+        $sql = "
+            UPDATE `departments`
+                SET `charged_hourly_value` = CASE `department_id`
+                    $sql_charged_hourly_value
+                END,
+                SET `payed_hourly_value`
+                    $sql_payed_hourly_value
+                END
+            WHERE `department_id` IN (" . substr($ids, 0, -2) . ")
+        ";
+        //echo $sql;
+        /*print_r($query_bindings);
+        echo $sql_charged_hourly_value;
+        echo $sql_payed_hourly_value;
+        die();*/
+        
+        $this->sys->db->query("
+            UPDATE `departments`
+                SET `charged_hourly_value` = CASE `department_id`
+                    $sql_charged_hourly_value
+                END,
+                `payed_hourly_value` = CASE `department_id`
+                    $sql_payed_hourly_value
+                END;
+            WHERE `department_id` IN (" . substr($ids, 0, -2) . ")
+        ", $query_bindings);
+        
+        $this->sys->template->response = '<div id="response" class="form_success">Updated Defaults Successfully</div>';
+    }
+    
+    /**
      * Purpose: Used to edit departments in the database
      */
     public function edit() {
@@ -144,6 +201,7 @@ $sys->router->load_helpers('interfaces', 'general', 'timemanager');
     
     /**
      * Purpose: Returns a list of all the departments.
+     * $action sorts departments by ID instead of sequentially
      */
     public function get($action=false, $pagination=false) {
         $departments = $this->sys->db->query("SELECT * FROM `departments`");

@@ -13,7 +13,7 @@
                     <h3 class="panel-title">Job Mangement</h3>
                 </div>
                 <div class="panel-body center">
-                    <p><a href="#">Quoting Defaults</a></p>
+                    <p><a href="{timemanager_root}jobs/defaults">Quoting Defaults</a></p>
                     <p><a href="{timemanager_root}jobs/add">Add New Job</a></p>
                 </div>
             </div>
@@ -44,6 +44,10 @@
                     <tbody>
                         <?php
                         for ($i=0; $i<count($this->sys->template->jobs); $i++) {
+                            $totals = $this->model_jobs->total_hours($this->sys->template->jobs[$i]['job_uid'], false);
+                            $quote = $this->model_quotes->get($this->sys->template->jobs[$i]['job_uid']);
+                            $quoted_time = $this->model_quotes->get_time_quote($this->model_departments->get(true), $quote);
+                            
                             $status = array('', '');
                             switch ($this->sys->template->jobs[$i]['status']) {
                                 case 'na':
@@ -63,10 +67,10 @@
                             <td onclick="jobTableClicked('quote', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['job_uid']}</td>
                             <td onclick="jobTableClicked('quote', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['client_name']}</td>
                             <td onclick="jobTableClicked('quote', '{jobs[<?php echo $i; ?>]['job_uid']}')">{jobs[<?php echo $i; ?>]['job_name']}</td>
-                            <td onclick="jobTableClicked('quote', '{jobs[<?php echo $i; ?>]['job_uid']}')"><?php echo $this->model_jobs->total_hours($this->sys->template->jobs[$i]['job_uid'], false); ?></td>
-                            <td onclick="jobTableClicked('quote', '{jobs[<?php echo $i; ?>]['job_uid']}')"><?php echo $this->model_jobs->quoted_hours($this->sys->template->jobs[$i]['job_id']); ?></td>
+                            <td onclick="jobTableClicked('quote', '{jobs[<?php echo $i; ?>]['job_uid']}')"><?php echo $totals['hours']; ?></td>
+                            <td onclick="jobTableClicked('quote', '{jobs[<?php echo $i; ?>]['job_uid']}')"><?php echo $quoted_time['total_time']; ?> hours</td>
                             <td onclick="jobTableClicked('quote', '{jobs[<?php echo $i; ?>]['job_uid']}')"><?php echo $this->model_jobs->work_load($this->sys->template->jobs[$i]['job_uid'], false, false); ?>%</td>
-                            <td onclick="jobTableClicked('quote', '{jobs[<?php echo $i; ?>]['job_uid']}')"><?php echo $this->model_jobs->work_load($this->sys->template->jobs[$i]['job_uid'], true, false); ?>%</td>
+                            <td onclick="jobTableClicked('quote', '{jobs[<?php echo $i; ?>]['job_uid']}')"><?php echo $this->model_jobs->work_load($this->sys->template->jobs[$i]['job_uid'], $quote, false); ?>%</td>
                             <td onclick="jobTableClicked('quote', '{jobs[<?php echo $i; ?>]['job_uid']}')"><div class="<?php echo $status[0]; ?>"><?php echo $status[1]; ?></div></td>
                                 <td>
                                     <ul class="icons">

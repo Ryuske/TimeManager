@@ -113,6 +113,66 @@ function updateQuote(operation, id, value) {
         jQuery('.actual_update_outsource_dialog .dialog_input[name=delivery_date]').val(jQuery('.actual_outsource_delivery_date_' + id).eq(1).val());
         
         jQuery('.actual_update_outsource_dialog').dialog('open');
+    } else if (operation == 'quoted_sheet') {
+        quoted_sheet_id = id;
+        
+        jQuery('.quote_update_sheet_dialog .dialog_input[name=material]').val(jQuery('.quoted_sheet_material_' + id).eq(1).val());
+        jQuery('.quote_update_sheet_dialog .dialog_input[name=vendor]').val(jQuery('.quoted_sheet_vendor_' + id).eq(1).val());
+        jQuery('.quote_update_sheet_dialog .dialog_input[name=size]').val(jQuery('.quoted_sheet_size_' + id).eq(1).val());
+        jQuery('.quote_update_sheet_dialog .dialog_input[name=lbs_sheet]').val(jQuery('.quoted_sheet_lbs_sheet_' + id).eq(1).val());
+        jQuery('.quote_update_sheet_dialog .dialog_input[name=cost_lb]').val(jQuery('.quoted_sheet_cost_lb_' + id).eq(1).val());
+        jQuery('.quote_update_sheet_dialog .dialog_input[name=markup]').val(jQuery('.quoted_sheet_markup_' + id).eq(1).val());
+        
+        jQuery('.quote_update_sheet_dialog').dialog('open');
+    } else if (operation == 'actual_sheet') {
+        actual_sheet_id = id;
+        
+        jQuery('.actual_update_sheet_dialog .dialog_input[name=material]').val(jQuery('.actual_sheet_material_' + id).eq(1).val());
+        jQuery('.actual_update_sheet_dialog .dialog_input[name=vendor]').val(jQuery('.actual_sheet_vendor_' + id).eq(1).val());
+        jQuery('.actual_update_sheet_dialog .dialog_input[name=size]').val(jQuery('.actual_sheet_size_' + id).eq(1).val());
+        jQuery('.actual_update_sheet_dialog .dialog_input[name=lbs_sheet]').val(jQuery('.actual_sheet_lbs_sheet_' + id).eq(1).val());
+        jQuery('.actual_update_sheet_dialog .dialog_input[name=cost_lb]').val(jQuery('.actual_sheet_cost_lb_' + id).eq(1).val());
+        jQuery('.actual_update_sheet_dialog .dialog_input[name=markup]').val(jQuery('.actual_sheet_markup_' + id).eq(1).val());
+        
+        jQuery('.actual_update_sheet_dialog').dialog('open');
+    } else if (operation == 'quoted_blanks') {
+        quoted_blank_id = id;
+        
+        jQuery('.quote_update_blank_dialog .dialog_input[name=sheet_id]').val(jQuery('.quoted_blank_sheet_id_' + id).eq(1).val());
+        jQuery('.quote_update_blank_dialog .dialog_input[name=size]').val(jQuery('.quoted_blank_size_' + id).eq(1).val());
+        jQuery('.quote_update_blank_dialog .dialog_input[name=blanks_sheet]').val(jQuery('.quoted_blank_blanks_sheet_' + id).eq(1).val());
+        jQuery('.quote_update_blank_dialog .dialog_input[name=lbs_blank]').val(jQuery('.quoted_blank_lbs_blank_' + id).eq(1).val());
+        
+        jQuery('.quote_update_blank_dialog').dialog('open');
+    } else if (operation == 'actual_blanks') {
+        actual_blank_id = id;
+        
+        jQuery('.actual_update_blank_dialog .dialog_input[name=sheet_id]').val(jQuery('.actual_blank_sheet_id_' + id).eq(1).val());
+        jQuery('.actual_update_blank_dialog .dialog_input[name=size]').val(jQuery('.actual_blank_size_' + id).eq(1).val());
+        jQuery('.actual_update_blank_dialog .dialog_input[name=blanks_sheet]').val(jQuery('.actual_blank_blanks_sheet_' + id).eq(1).val());
+        jQuery('.actual_update_blank_dialog .dialog_input[name=lbs_blank]').val(jQuery('.actual_blank_lbs_blank_' + id).eq(1).val());
+        
+        jQuery('.actual_update_blank_dialog').dialog('open');
+    } else if (operation == 'quoted_parts') {
+        quoted_part_id = id;
+        
+        jQuery('.quote_update_part_dialog .dialog_input[name=blank_id]').val(jQuery('.quoted_part_blank_id_' + id).eq(1).val());
+        jQuery('.quote_update_part_dialog .dialog_input[name=description]').val(jQuery('.quoted_part_description_' + id).eq(1).val());
+        jQuery('.quote_update_part_dialog .dialog_input[name=size]').val(jQuery('.quoted_part_size_' + id).eq(1).val());
+        jQuery('.quote_update_part_dialog .dialog_input[name=parts_assembly]').val(jQuery('.quoted_part_parts_assembly_' + id).eq(1).val());
+        jQuery('.quote_update_part_dialog .dialog_input[name=parts_blank]').val(jQuery('.quoted_part_parts_blank_' + id).eq(1).val());
+        
+        jQuery('.quote_update_part_dialog').dialog('open');
+    } else if (operation == 'actual_parts') {
+        actual_part_id = id;
+        
+        jQuery('.actual_update_part_dialog .dialog_input[name=blank_id]').val(jQuery('.actual_part_blank_id_' + id).eq(1).val());
+        jQuery('.actual_update_part_dialog .dialog_input[name=description]').val(jQuery('.actual_part_description_' + id).eq(1).val());
+        jQuery('.actual_update_part_dialog .dialog_input[name=size]').val(jQuery('.actual_part_size_' + id).eq(1).val());
+        jQuery('.actual_update_part_dialog .dialog_input[name=parts_assembly]').val(jQuery('.actual_part_parts_assembly_' + id).eq(1).val());
+        jQuery('.actual_update_part_dialog .dialog_input[name=parts_blank]').val(jQuery('.actual_part_parts_blank_' + id).eq(1).val());
+        
+        jQuery('.actual_update_part_dialog').dialog('open');
     }
 }
 

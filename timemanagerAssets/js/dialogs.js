@@ -551,6 +551,472 @@ jQuery(document).ready(function() {
             }
         }
     });
+    jQuery('.quote_add_sheet_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Add Sheet',
+        modal: true,
+        buttons: {
+            'Add': function() {
+                jQuery('#collapseSheetsQuote table tbody').append(
+                    '<tr>' +
+                        '<td>' + quoted_sheet_id + '</td>' +
+                        '<td><span class="quoted_sheet_material' + quoted_sheet_id + '">' +jQuery('.quote_add_sheet_dialog .dialog_input').val() + '</span>' +
+                            '<input class="quoted_sheet_material_' + quoted_sheet_id +
+                            '" name="quotes[sheets][' + quoted_sheet_id + '][material]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_sheet_dialog .dialog_input[name=material]').val() +
+                        '" /></td>' +
+                        '<td><span class="quoted_sheet_vendor' + quoted_sheet_id + '">' + jQuery('.quote_add_sheet_dialog .dialog_input[name=vendor]').val() + '</span>' +
+                            '<input class="quoted_sheet_vendor_' + quoted_sheet_id +
+                            '" name="quotes[sheets][' + quoted_sheet_id + '][vendor]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_sheet_dialog .dialog_input[name=vendor]').val() +
+                        '" /></td>' +
+                        '<td><span class="quoted_sheet_size' + quoted_sheet_id + '">' + jQuery('.quote_add_sheet_dialog .dialog_input[name=size]').val() + '</span>' +
+                            '<input class="quoted_sheet_size_' + quoted_sheet_id + '"' +
+                            ' name="quotes[sheets][' + quoted_sheet_id + '][size]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_sheet_dialog .dialog_input[name=size]').val() +
+                        '" /></td>' +
+                        '<td><span class="quoted_sheet_lbs_sheet_' + quoted_sheet_id + '">' + jQuery('.quote_add_sheet_dialog .dialog_input[name=lbs_sheet]').val() + '</span>' +
+                            '<input class="quoted_sheet_lbs_sheet_' + quoted_sheet_id + '"' +
+                            ' name="quotes[sheets][' + quoted_sheet_id + '][lbs_sheet]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_sheet_dialog .dialog_input[name=lbs_sheet]').val() +
+                        '" /></td>' +
+                        '<td></td>' +
+                        '<td></td>' +
+                        '<td>$<span class="quoted_sheet_cost_lb_' + quoted_sheet_id + '">' + jQuery('.quote_add_sheet_dialog .dialog_input[name=cost_lb]').val() + '</span>' +
+                            '<input class="quoted_sheet_cost_lb_' + quoted_sheet_id + '"' +
+                            ' name="quotes[sheets][' + quoted_sheet_id + '][cost_lb]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_sheet_dialog .dialog_input[name=cost_lb]').val() +
+                        '" /></td>' +
+                        '<td></td>' +
+                        '<td><span class="quoted_sheet_markup_' + quoted_sheet_id + '">' + jQuery('.quote_add_sheet_dialog .dialog_input[name=markup]').val() + '</span>%' +
+                            '<input class="quoted_sheet_markup_' + quoted_sheet_id + '"' +
+                            ' name="quotes[sheets][' + quoted_sheet_id + '][markup]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_sheet_dialog .dialog_input[name=markup]').val() +
+                        '" /></td>' +
+                    '</tr>'
+                );
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.quote_update_sheet_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Update Sheet',
+        modal: true,
+        buttons: {
+            'Update': function() {
+                jQuery('.quoted_sheet_material_' + quoted_sheet_id).eq(0).text(jQuery('.quote_update_sheet_dialog .dialog_input[name=material]').val());
+                jQuery('.quoted_sheet_vendor_' + quoted_sheet_id).eq(0).text(jQuery('.quote_update_sheet_dialog .dialog_input[name=vendor]').val());
+                jQuery('.quoted_sheet_size_' + quoted_sheet_id).eq(0).text(jQuery('.quote_update_sheet_dialog .dialog_input[name=size]').val());
+                jQuery('.quoted_sheet_lbs_sheet_' + quoted_sheet_id).eq(0).text(jQuery('.quote_update_sheet_dialog .dialog_input[name=lbs_sheet]').val());
+                jQuery('.quoted_sheet_cost_lb_' + quoted_sheet_id).eq(0).text(jQuery('.quote_update_sheet_dialog .dialog_input[name=cost_lb]').val());
+                jQuery('.quoted_sheet_markup_' + quoted_sheet_id).eq(0).text(jQuery('.quote_update_sheet_dialog .dialog_input[name=markup]').val());
+                
+                jQuery('.quoted_sheet_material_' + quoted_sheet_id).eq(1).val(jQuery('.quote_update_sheet_dialog .dialog_input[name=material]').val());
+                jQuery('.quoted_sheet_vendor_' + quoted_sheet_id).eq(1).val(jQuery('.quote_update_sheet_dialog .dialog_input[name=vendor]').val());
+                jQuery('.quoted_sheet_size_' + quoted_sheet_id).eq(1).val(jQuery('.quote_update_sheet_dialog .dialog_input[name=size]').val());
+                jQuery('.quoted_sheet_lbs_sheet_' + quoted_sheet_id).eq(1).val(jQuery('.quote_update_sheet_dialog .dialog_input[name=lbs_sheet]').val());
+                jQuery('.quoted_sheet_cost_lb_' + quoted_sheet_id).eq(1).val(jQuery('.quote_update_sheet_dialog .dialog_input[name=cost_lb]').val());
+                jQuery('.quoted_sheet_markup_' + quoted_sheet_id).eq(1).val(jQuery('.quote_update_sheet_dialog .dialog_input[name=markup]').val());
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.actual_add_sheet_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Add Sheet',
+        modal: true,
+        buttons: {
+            'Add': function() {
+                jQuery('#collapseSheetsActual table tbody').append(
+                    '<tr>' +
+                        '<td>' + actual_sheet_id + '</td>' +
+                        '<td><span class="actual_sheet_material' + actual_sheet_id + '">' +jQuery('.actual_add_sheet_dialog .dialog_input').val() + '</span>' +
+                            '<input class="actual_sheet_material_' + actual_sheet_id +
+                            '" name="actuals[sheets][' + actual_sheet_id + '][material]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_sheet_dialog .dialog_input[name=material]').val() +
+                        '" /></td>' +
+                        '<td><span class="actual_sheet_vendor' + actual_sheet_id + '">' + jQuery('.actual_add_sheet_dialog .dialog_input[name=vendor]').val() + '</span>' +
+                            '<input class="actual_sheet_vendor_' + actual_sheet_id +
+                            '" name="actuals[sheets][' + actual_sheet_id + '][vendor]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_sheet_dialog .dialog_input[name=vendor]').val() +
+                        '" /></td>' +
+                        '<td><span class="actual_sheet_size' + actual_sheet_id + '">' + jQuery('.actual_add_sheet_dialog .dialog_input[name=size]').val() + '</span>' +
+                            '<input class="actual_sheet_size_' + actual_sheet_id + '"' +
+                            ' name="actuals[sheets][' + actual_sheet_id + '][size]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_sheet_dialog .dialog_input[name=size]').val() +
+                        '" /></td>' +
+                        '<td><span class="actual_sheet_lbs_sheet_' + actual_sheet_id + '">' + jQuery('.actual_add_sheet_dialog .dialog_input[name=lbs_sheet]').val() + '</span>' +
+                            '<input class="actual_sheet_lbs_sheet_' + actual_sheet_id + '"' +
+                            ' name="actuals[sheets][' + actual_sheet_id + '][lbs_sheet]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_sheet_dialog .dialog_input[name=lbs_sheet]').val() +
+                        '" /></td>' +
+                        '<td></td>' +
+                        '<td></td>' +
+                        '<td>$<span class="actual_sheet_cost_lb_' + actual_sheet_id + '">' + jQuery('.actual_add_sheet_dialog .dialog_input[name=cost_lb]').val() + '</span>' +
+                            '<input class="actual_sheet_cost_lb_' + actual_sheet_id + '"' +
+                            ' name="actuals[sheets][' + actual_sheet_id + '][cost_lb]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_sheet_dialog .dialog_input[name=cost_lb]').val() +
+                        '" /></td>' +
+                        '<td></td>' +
+                    '</tr>'
+                );
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.actual_update_sheet_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Update Sheet',
+        modal: true,
+        buttons: {
+            'Update': function() {
+                jQuery('.actual_sheet_material_' + actual_sheet_id).eq(0).text(jQuery('.actual_update_sheet_dialog .dialog_input[name=material]').val());
+                jQuery('.actual_sheet_vendor_' + actual_sheet_id).eq(0).text(jQuery('.actual_update_sheet_dialog .dialog_input[name=vendor]').val());
+                jQuery('.actual_sheet_size_' + actual_sheet_id).eq(0).text(jQuery('.actual_update_sheet_dialog .dialog_input[name=size]').val());
+                jQuery('.actual_sheet_lbs_sheet_' + actual_sheet_id).eq(0).text(jQuery('.actual_update_sheet_dialog .dialog_input[name=lbs_sheet]').val());
+                jQuery('.actual_sheet_cost_lb_' + actual_sheet_id).eq(0).text(jQuery('.actual_update_sheet_dialog .dialog_input[name=cost_lb]').val());
+                
+                jQuery('.actual_sheet_material_' + actual_sheet_id).eq(1).val(jQuery('.actual_update_sheet_dialog .dialog_input[name=material]').val());
+                jQuery('.actual_sheet_vendor_' + actual_sheet_id).eq(1).val(jQuery('.actual_update_sheet_dialog .dialog_input[name=vendor]').val());
+                jQuery('.actual_sheet_size_' + actual_sheet_id).eq(1).val(jQuery('.actual_update_sheet_dialog .dialog_input[name=size]').val());
+                jQuery('.actual_sheet_lbs_sheet_' + actual_sheet_id).eq(1).val(jQuery('.actual_update_sheet_dialog .dialog_input[name=lbs_sheet]').val());
+                jQuery('.actual_sheet_cost_lb_' + actual_sheet_id).eq(1).val(jQuery('.actual_update_sheet_dialog .dialog_input[name=cost_lb]').val());
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.quote_add_blank_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Add Blank',
+        modal: true,
+        buttons: {
+            'Add': function() {
+                jQuery('#collapseBlanksQuote table tbody').append(
+                    '<tr>' +
+                        '<td>' + quoted_blank_id + '</td>' +
+                        '<td><span class="quoted_blank_sheet_id' + quoted_blank_id + '">' +jQuery('.quote_add_blank_dialog .dialog_input').val() + '</span>' +
+                            '<input class="quoted_blank_sheet_id_' + quoted_blank_id +
+                            '" name="quotes[blanks][' + quoted_blank_id + '][sheet_id]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_blank_dialog .dialog_input[name=sheet_id]').val() +
+                        '" /></td>' +
+                        '<td><span class="quoted_blank_size' + quoted_blank_id + '">' + jQuery('.quote_add_blank_dialog .dialog_input[name=size]').val() + '</span>' +
+                            '<input class="quoted_blank_size_' + quoted_blank_id + '"' +
+                            ' name="quotes[blanks][' + quoted_blank_id + '][size]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_blank_dialog .dialog_input[name=size]').val() +
+                        '" /></td>' +
+                        '<td><span class="quoted_blank_blanks_sheet_' + quoted_blank_id + '">' + jQuery('.quote_add_blank_dialog .dialog_input[name=blanks_sheet]').val() + '</span>' +
+                            '<input class="quoted_blank_blanks_sheet_' + quoted_blank_id + '"' +
+                            ' name="quotes[blanks][' + quoted_blank_id + '][blanks_sheet]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_blank_dialog .dialog_input[name=blanks_sheet]').val() +
+                        '" /></td>' +
+                        '<td></td>' +
+                        '<td></td>' +
+                        '<td></td>' +
+                        '<td><span class="quoted_blank_lbs_blank_' + quoted_blank_id + '">' + jQuery('.quote_add_blank_dialog .dialog_input[name=lbs_blank]').val() + '</span>' +
+                            '<input class="quoted_blank_lbs_blank_' + quoted_blank_id + '"' +
+                            ' name="quotes[blanks][' + quoted_blank_id + '][lbs_blank]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_blank_dialog .dialog_input[name=lbs_blank]').val() +
+                        '" /></td>' +
+                        '<td></td>' +
+                        '<td></td>' +
+                    '</tr>'
+                );
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.quote_update_blank_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Update Blank',
+        modal: true,
+        buttons: {
+            'Update': function() {
+                jQuery('.quoted_blank_sheet_id_' + quoted_blank_id).eq(0).text(jQuery('.quote_update_blank_dialog .dialog_input[name=sheet_id]').val());
+                jQuery('.quoted_blank_size_' + quoted_blank_id).eq(0).text(jQuery('.quote_update_blank_dialog .dialog_input[name=size]').val());
+                jQuery('.quoted_blank_blanks_sheet_' + quoted_blank_id).eq(0).text(jQuery('.quote_update_blank_dialog .dialog_input[name=blanks_sheet]').val());
+                jQuery('.quoted_blank_lbs_blank_' + quoted_blank_id).eq(0).text(jQuery('.quote_update_blank_dialog .dialog_input[name=lbs_blank]').val());
+                
+                jQuery('.quoted_blank_sheet_id_' + quoted_blank_id).eq(1).val(jQuery('.quote_update_blank_dialog .dialog_input[name=sheet_id]').val());
+                jQuery('.quoted_blank_size_' + quoted_blank_id).eq(1).val(jQuery('.quote_update_blank_dialog .dialog_input[name=size]').val());
+                jQuery('.quoted_blank_blanks_sheet_' + quoted_blank_id).eq(1).val(jQuery('.quote_update_blank_dialog .dialog_input[name=blanks_sheet]').val());
+                jQuery('.quoted_blank_lbs_blank_' + quoted_blank_id).eq(1).val(jQuery('.quote_update_blank_dialog .dialog_input[name=lbs_blank]').val());
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.actual_add_blank_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Add Blank',
+        modal: true,
+        buttons: {
+            'Add': function() {
+                jQuery('#collapseBlanksActual table tbody').append(
+                    '<tr>' +
+                        '<td>' + actual_blank_id + '</td>' +
+                        '<td><span class="actual_blank_sheet_id' + actual_blank_id + '">' +jQuery('.actual_add_blank_dialog .dialog_input').val() + '</span>' +
+                            '<input class="actual_blank_sheet_id_' + actual_blank_id +
+                            '" name="actuals[blanks][' + actual_blank_id + '][sheet_id]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_blank_dialog .dialog_input[name=sheet_id]').val() +
+                        '" /></td>' +
+                        '<td><span class="actual_blank_size' + actual_blank_id + '">' + jQuery('.actual_add_blank_dialog .dialog_input[name=size]').val() + '</span>' +
+                            '<input class="actual_blank_size_' + actual_blank_id + '"' +
+                            ' name="actuals[blanks][' + actual_blank_id + '][size]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_blank_dialog .dialog_input[name=size]').val() +
+                        '" /></td>' +
+                        '<td><span class="actual_blank_blanks_sheet_' + actual_blank_id + '">' + jQuery('.actual_add_blank_dialog .dialog_input[name=blanks_sheet]').val() + '</span>' +
+                            '<input class="actual_blank_blanks_sheet_' + actual_blank_id + '"' +
+                            ' name="actuals[blanks][' + actual_blank_id + '][blanks_sheet]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_blank_dialog .dialog_input[name=blanks_sheet]').val() +
+                        '" /></td>' +
+                        '<td></td>' +
+                        '<td></td>' +
+                        '<td></td>' +
+                        '<td><span class="actual_blank_lbs_blank_' + actual_blank_id + '">' + jQuery('.actual_add_blank_dialog .dialog_input[name=lbs_blank]').val() + '</span>' +
+                            '<input class="actual_blank_lbs_blank_' + actual_blank_id + '"' +
+                            ' name="actuals[blanks][' + actual_blank_id + '][lbs_blank]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_blank_dialog .dialog_input[name=lbs_blank]').val() +
+                        '" /></td>' +
+                        '<td></td>' +
+                        '<td></td>' +
+                    '</tr>'
+                );
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.actual_update_blank_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Update Blank',
+        modal: true,
+        buttons: {
+            'Update': function() {
+                jQuery('.actual_blank_sheet_id_' + actual_blank_id).eq(0).text(jQuery('.actual_update_blank_dialog .dialog_input[name=sheet_id]').val());
+                jQuery('.actual_blank_size_' + actual_blank_id).eq(0).text(jQuery('.actual_update_blank_dialog .dialog_input[name=size]').val());
+                jQuery('.actual_blank_blanks_sheet_' + actual_blank_id).eq(0).text(jQuery('.actual_update_blank_dialog .dialog_input[name=blanks_sheet]').val());
+                jQuery('.actual_blank_lbs_blank_' + actual_blank_id).eq(0).text(jQuery('.actual_update_blank_dialog .dialog_input[name=lbs_blank]').val());
+                
+                jQuery('.actual_blank_sheet_id_' + actual_blank_id).eq(1).val(jQuery('.actual_update_blank_dialog .dialog_input[name=sheet_id]').val());
+                jQuery('.actual_blank_size_' + actual_blank_id).eq(1).val(jQuery('.actual_update_blank_dialog .dialog_input[name=size]').val());
+                jQuery('.actual_blank_blanks_sheet_' + actual_blank_id).eq(1).val(jQuery('.actual_update_blank_dialog .dialog_input[name=blanks_sheet]').val());
+                jQuery('.actual_blank_lbs_blank_' + actual_blank_id).eq(1).val(jQuery('.actual_update_blank_dialog .dialog_input[name=lbs_blank]').val());
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.quote_add_part_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Add Part',
+        modal: true,
+        buttons: {
+            'Add': function() {
+                jQuery('#collapsePartsQuote table tbody').append(
+                    '<tr>' +
+                        '<td><span class="quoted_part_blank_id' + quoted_part_id + '">' +jQuery('.quote_add_part_dialog .dialog_input').val() + '</span>' +
+                            '<input class="quoted_part_blank_id_' + quoted_part_id +
+                            '" name="quotes[parts][' + quoted_part_id + '][blank_id]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_part_dialog .dialog_input[name=blank_id]').val() +
+                        '" /></td>' +
+                        '<td><span class="quoted_part_description' + quoted_part_id + '">' + jQuery('.quote_add_part_dialog .dialog_input[name=description]').val() + '</span>' +
+                            '<input class="quoted_part_description_' + quoted_part_id + '"' +
+                            ' name="quotes[parts][' + quoted_part_id + '][description]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_part_dialog .dialog_input[name=description]').val() +
+                        '" /></td>' +
+                        '<td><span class="quoted_part_size' + quoted_part_id + '">' + jQuery('.quote_add_part_dialog .dialog_input[name=size]').val() + '</span>' +
+                            '<input class="quoted_part_size_' + quoted_part_id + '"' +
+                            ' name="quotes[parts][' + quoted_part_id + '][size]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_part_dialog .dialog_input[name=size]').val() +
+                        '" /></td>' +
+                        '<td><span class="quoted_part_parts_assembly_' + quoted_part_id + '">' + jQuery('.quote_add_part_dialog .dialog_input[name=parts_assembly]').val() + '</span>' +
+                            '<input class="quoted_part_parts_assembly_' + quoted_part_id + '"' +
+                            ' name="quotes[parts][' + quoted_part_id + '][parts_assembly]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_part_dialog .dialog_input[name=parts_assembly]').val() +
+                        '" /></td>' +
+                        '<td><span class="quoted_part_parts_blank_' + quoted_part_id + '">' + jQuery('.quote_add_part_dialog .dialog_input[name=parts_blank]').val() + '</span>' +
+                            '<input class="quoted_part_parts_blank_' + quoted_part_id + '"' +
+                            ' name="quotes[parts][' + quoted_part_id + '][parts_blank]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.quote_add_part_dialog .dialog_input[name=parts_blank]').val() +
+                        '" /></td>' +
+                        '<td></td>' +
+                        '<td></td>' +
+                    '</tr>'
+                );
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.quote_update_part_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Update Part',
+        modal: true,
+        buttons: {
+            'Update': function() {
+                jQuery('.quoted_part_blank_id_' + quoted_part_id).eq(0).text(jQuery('.quote_update_part_dialog .dialog_input[name=blank_id]').val());
+                jQuery('.quoted_part_description_' + quoted_part_id).eq(0).text(jQuery('.quote_update_part_dialog .dialog_input[name=description]').val());
+                jQuery('.quoted_part_size_' + quoted_part_id).eq(0).text(jQuery('.quote_update_part_dialog .dialog_input[name=size]').val());
+                jQuery('.quoted_part_parts_assembly_' + quoted_part_id).eq(0).text(jQuery('.quote_update_part_dialog .dialog_input[name=parts_assembly]').val());
+                jQuery('.quoted_part_parts_blank_' + quoted_part_id).eq(0).text(jQuery('.quote_update_part_dialog .dialog_input[name=parts_blank]').val());
+                
+                jQuery('.quoted_part_blank_id_' + quoted_part_id).eq(1).val(jQuery('.quote_update_part_dialog .dialog_input[name=blank_id]').val());
+                jQuery('.quoted_part_description_' + quoted_part_id).eq(1).val(jQuery('.quote_update_part_dialog .dialog_input[name=description]').val());
+                jQuery('.quoted_part_size_' + quoted_part_id).eq(1).val(jQuery('.quote_update_part_dialog .dialog_input[name=size]').val());
+                jQuery('.quoted_part_parts_assembly_' + quoted_part_id).eq(1).val(jQuery('.quote_update_part_dialog .dialog_input[name=parts_assembly]').val());
+                jQuery('.quoted_part_parts_blank_' + quoted_part_id).eq(1).val(jQuery('.quote_update_part_dialog .dialog_input[name=parts_blank]').val());
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.actual_add_part_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Add Part',
+        modal: true,
+        buttons: {
+            'Add': function() {
+                jQuery('#collapsePartsActual table tbody').append(
+                    '<tr>' +
+                        '<td><span class="actual_part_blank_id' + actual_part_id + '">' +jQuery('.actual_add_part_dialog .dialog_input').val() + '</span>' +
+                            '<input class="actual_part_blank_id_' + actual_part_id +
+                            '" name="actuals[parts][' + actual_part_id + '][blank_id]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_part_dialog .dialog_input[name=blank_id]').val() +
+                        '" /></td>' +
+                        '<td><span class="actual_part_description' + actual_part_id + '">' + jQuery('.actual_add_part_dialog .dialog_input[name=description]').val() + '</span>' +
+                            '<input class="actual_part_description_' + actual_part_id + '"' +
+                            ' name="actuals[parts][' + actual_part_id + '][description]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_part_dialog .dialog_input[name=description]').val() +
+                        '" /></td>' +
+                        '<td><span class="actual_part_size' + actual_part_id + '">' + jQuery('.actual_add_part_dialog .dialog_input[name=size]').val() + '</span>' +
+                            '<input class="actual_part_size_' + actual_part_id + '"' +
+                            ' name="actuals[parts][' + actual_part_id + '][size]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_part_dialog .dialog_input[name=size]').val() +
+                        '" /></td>' +
+                        '<td><span class="actual_part_parts_assembly_' + actual_part_id + '">' + jQuery('.actual_add_part_dialog .dialog_input[name=parts_assembly]').val() + '</span>' +
+                            '<input class="actual_part_parts_assembly_' + actual_part_id + '"' +
+                            ' name="actuals[parts][' + actual_part_id + '][parts_assembly]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_part_dialog .dialog_input[name=parts_assembly]').val() +
+                        '" /></td>' +
+                        '<td><span class="actual_part_parts_blank_' + actual_part_id + '">' + jQuery('.actual_add_part_dialog .dialog_input[name=parts_blank]').val() + '</span>' +
+                            '<input class="actual_part_parts_blank_' + actual_part_id + '"' +
+                            ' name="actuals[parts][' + actual_part_id + '][parts_blank]"' +
+                            ' type="hidden"' +
+                            ' value="' + jQuery('.actual_add_part_dialog .dialog_input[name=parts_blank]').val() +
+                        '" /></td>' +
+                        '<td></td>' +
+                        '<td></td>' +
+                    '</tr>'
+                );
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
+    jQuery('.actual_update_part_dialog').dialog({
+        autoOpen: false,
+        width: 400,
+        title: 'Update Part',
+        modal: true,
+        buttons: {
+            'Update': function() {
+                jQuery('.actual_part_blank_id_' + actual_part_id).eq(0).text(jQuery('.actual_update_part_dialog .dialog_input[name=blank_id]').val());
+                jQuery('.actual_part_description_' + actual_part_id).eq(0).text(jQuery('.actual_update_part_dialog .dialog_input[name=description]').val());
+                jQuery('.actual_part_size_' + actual_part_id).eq(0).text(jQuery('.actual_update_part_dialog .dialog_input[name=size]').val());
+                jQuery('.actual_part_parts_assembly_' + actual_part_id).eq(0).text(jQuery('.actual_update_part_dialog .dialog_input[name=parts_assembly]').val());
+                jQuery('.actual_part_parts_blank_' + actual_part_id).eq(0).text(jQuery('.actual_update_part_dialog .dialog_input[name=parts_blank]').val());
+                
+                jQuery('.actual_part_blank_id_' + actual_part_id).eq(1).val(jQuery('.actual_update_part_dialog .dialog_input[name=blank_id]').val());
+                jQuery('.actual_part_description_' + actual_part_id).eq(1).val(jQuery('.actual_update_part_dialog .dialog_input[name=description]').val());
+                jQuery('.actual_part_size_' + actual_part_id).eq(1).val(jQuery('.actual_update_part_dialog .dialog_input[name=size]').val());
+                jQuery('.actual_part_parts_assembly_' + actual_part_id).eq(1).val(jQuery('.actual_update_part_dialog .dialog_input[name=parts_assembly]').val());
+                jQuery('.actual_part_parts_blank_' + actual_part_id).eq(1).val(jQuery('.actual_update_part_dialog .dialog_input[name=parts_blank]').val());
+                
+                jQuery('form[name=update_quote_form]').submit();
+            },
+            'Cancel': function() {
+                jQuery(this).dialog('close');
+            }
+        }
+    });
     /**
      * END jobs dialogs
      */

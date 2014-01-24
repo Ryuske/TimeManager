@@ -68,7 +68,7 @@ $date_format = 'm/d/y';
                         <div class="panel-heading">
                             <h3 class="panel-title row">
                                 <div class="title col-sm-12">
-                                    Hours Breakdown ({total_hours} Total Hours | <?php echo $this->model_jobs->quoted_hours($this->sys->template->job['job_id']); ?> Quoted Hours)
+                                    Hours Breakdown ({total_hours['hours']} Total Hours | {quoted_time['total_time']} Quoted Hours)
                                 </div>
                             </h3>
                         </div>
@@ -86,8 +86,14 @@ $date_format = 'm/d/y';
                                 </thead>
                                 <tbody>
                                     <?php
-                                    foreach ($this->sys->template->job['quoted_time'] as $department=>$time) {
-                                        if (0 < $time) {
+                                    foreach ($this->sys->template->quoted_load as $department=>$load) {
+                                        $quoted_time =
+                                            $this->sys->template->quote['quote']['quoted_time']->$department->initial_time
+                                            + (
+                                                $this->sys->template->quote['quote']['quoted_time']->$department->repeat_time
+                                                * $this->sys->template->quote['job']['job_quantity']
+                                            );
+                                        if (0 < $quoted_time) {
                                             echo '<tr>';
                                                 echo '<td>' . $this->sys->template->departments[$department]['department_name'] . '</td>';
                                                 
@@ -96,11 +102,7 @@ $date_format = 'm/d/y';
                                                 } else {
                                                     echo '<td>0%</td>';
                                                 }
-                                                if (array_key_exists($department, $this->sys->template->quoted_load)) {
-                                                    echo '<td>' . $this->sys->template->quoted_load[$department] . '%</td>';
-                                                } else {
-                                                    echo '<td>0%</td>';
-                                                }
+                                                echo '<td>' . $load . '%</td>';
                                                 
                                                 if (array_key_exists($department, $this->sys->template->hours_by_department)) {
                                                     $worked = $this->sys->template->hours_by_department[$department];
@@ -109,15 +111,15 @@ $date_format = 'm/d/y';
                                                     $worked = 0;
                                                     echo '<td>0</td>';
                                                 }
-                                                echo '<td>' . $time . '</td>';
+                                                echo '<td>' . $quoted_time . '</td>';
                                                 
-                                                $difference = $time - $worked;
+                                                $difference = $quoted_time - $worked;
                                                 if (0 <= $difference) {
                                                     echo '<td class="green">' . $difference . '</td>';
                                                 } else {
                                                     echo '<td class="red">' . $difference . '</td>';
                                                 }
-                                            echo '</tr>';
+                                            echo '<td></td><td></td><td></td></tr>';
                                         }
                                     }
                                     ?>

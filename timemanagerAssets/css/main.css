@@ -33,6 +33,13 @@ body {
     margin-top: 7px;
 }
 
+.bottom-spacing {
+    margin-bottom: 20px;
+}
+.bottom-spacing:last-child {
+    margin-bottom: 0;
+}
+
 .about .heading_info {
     margin-bottom: 20px;
 }
@@ -159,6 +166,15 @@ form .group {
     padding-top: 2px;
     text-align: center;
 }
+.dialog_label {
+    margin-top: 5px;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.update_dialog .dialog_input {
+    margin-top: 0;
+}
+
 #ui-datepicker-div {
     font-size: .8em;
 }

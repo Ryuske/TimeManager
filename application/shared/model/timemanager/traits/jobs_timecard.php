@@ -2,20 +2,24 @@
 /**
  * Author: Kenyon Haliwell
  * Date Created: 12/10/13
- * Date Modified: 1/3/14
+ * Date Modified: 1/17/14
  * Purpose: A trait for general job operations
  */
 
 trait job_timecard {
     /**
      * Purpose: Used to display the total hours assigned to a job
+     * Takes the times that have been worked and turns them into a total number of hours worked
+     * Also calculates the total cost of a job
      */
     public function total_hours($job_id, $by_department=false) {
         $return_hours = 0;
+        $return_cost = 0;
         $hours = $this->get_hours($job_id);
         
         if ($by_department) {
             $return_hours = array();
+            $return_cost = array();
             
             foreach ($hours as $hour) {
                 if (!array_key_exists('department_name', $hour)) {
@@ -36,40 +40,22 @@ trait job_timecard {
         } else {
             foreach ($hours as $hour) {
                 if (!array_key_exists('total_hours', $hour)) {
+                    $hour['payed_hourly_value'] = 0;
                     $hour['total_hours'] = 0;
                 }
                 
+                $return_cost += $hour['total_hours'] * $hour['payed_hourly_value'];
                 $return_hours += $hour['total_hours'];
             }
+            $return_hours = array('hours' => $return_hours, 'cost' => $return_cost);
         }
         
         return $return_hours;
     }
     
     /**
-     * Purpose: Calculate the total quoted hours of a job
-     */
-    public function quoted_hours($job_id) {
-        $job = $this->sys->db->query("SELECT `quoted_time` FROM `jobs` WHERE `job_id`=:id", array(
-            ':id' => (int) substr($job_id, 0, 10)
-        ));
-        
-        if (!empty($job)) {
-            $times = json_decode($job[0]['quoted_time'], true);
-            $total_time = 0;
-            
-            foreach ($times as $time) {
-                $total_time += $time;
-            }
-            
-            return $total_time;
-        }
-        
-        return false;
-    }
-    
-    /**
      * Purpose: Get the hours worked for a job
+     * Returns times that have been worked (i.e. in: 5am; out: 5:30am)
      */
     protected function get_hours($job_id) {
         $hours = $this->sys->db->query("
@@ -82,7 +68,6 @@ trait job_timecard {
         ));
         
         $return_hours = array();
-        
         array_walk($hours, function($row) use(&$return_hours) {
             if ('in' === $row['operation']) {
                 $return_hours[$row['punch_id']]['in'] = $row['time'];
@@ -90,18 +75,19 @@ trait job_timecard {
                 $return_hours[$row['punch_id']]['out'] = $row['time'];
             }
             
-            $return_hours[$row['punch_id']]['total_hours']      = 0;
-            $return_hours[$row['punch_id']]['employee']         = $row['employee_id'];
-            $return_hours[$row['punch_id']]['job_id']           = $row['job_id'];
-            $return_hours[$row['punch_id']]['date']             = $row['date'];
-            $return_hours[$row['punch_id']]['department_id']    = $row['department_id'];
-            $return_hours[$row['punch_id']]['department_name']  = $row['department_name'];
+            $return_hours[$row['punch_id']]['total_hours']          = 0;
+            $return_hours[$row['punch_id']]['employee']             = $row['employee_id'];
+            $return_hours[$row['punch_id']]['job_id']               = $row['job_id'];
+            $return_hours[$row['punch_id']]['date']                 = $row['date'];
+            $return_hours[$row['punch_id']]['department_id']        = $row['department_id'];
+            $return_hours[$row['punch_id']]['department_name']      = $row['department_name'];
+            $return_hours[$row['punch_id']]['payed_hourly_value']   = $row['payed_hourly_value'];
         });
         $return_hours = array_reverse($return_hours, true);
 
         $sys = $this->sys;
         array_walk($return_hours, function($hour, $punch_id) use(&$return_hours, $sys) {
-            if (!is_integer($punch_id/2)) {
+            if (!is_integer($punch_id/2) || array_key_exists('in', $hour)) {
                 $hour['in'] = $hour;
 
                 if (!array_key_exists(($punch_id+1), $return_hours)) {
@@ -319,6 +305,16 @@ trait job_timecard {
             ));
 
             if (!empty($check_job) && !empty($check_employee)) {
+                $something = $this->sys->db->query("SELECT * FROM `employees` LIMIT 0,100");
+                foreach ($something as $someone) {
+                    echo $someone['employee_firstname'] . ' ' . $someone['employee_lastname'] . ', ' . $someone['employee_uid'] . '<br />';
+                }
+                die();
+                $check_punch_id = $this->sys->db->query("SELECT `punch_id` FROM `job_punch` ORDER BY `punch_id` DESC LIMIT 1", array(
+                    ':job_uid' => substr($_POST['id'], 0, 256)
+                ));
+                print_r($check_punch_id);
+                die();
                 //Punch in
                 $this->sys->db->query("INSERT INTO `job_punch` (`punch_id`, `job_id`, `employee_id`, `department_id`, `date`, `time`, `operation`) VALUES (NULL, :job_id, :employee_id, :department_id, :date, '', 'in')", array(
                     ':job_id'         => (int) substr($_POST['id'], 0, 10),

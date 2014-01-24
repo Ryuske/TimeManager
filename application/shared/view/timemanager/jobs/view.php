@@ -67,7 +67,7 @@ $date_format = 'm/d/y';
                         <div class="panel-heading">
                             <h3 class="panel-title row">
                                 <div class="title col-sm-12">
-                                    Hours Breakdown ({total_hours} Total Hours | <?php echo $this->model_jobs->quoted_hours($this->sys->template->job['job_id']); ?> Quoted Hours)
+                                    Hours Breakdown ({total_hours} Total Hours | {quoted_time['total_time']} Quoted Hours)
                                 </div>
                             </h3>
                         </div>
